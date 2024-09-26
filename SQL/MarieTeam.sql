@@ -1,72 +1,89 @@
-DROP DATABASE IF EXISTS MarieTeam;
-CREATE DATABASE MarieTeam;
-USE MarieTeam;
+DROP DATABASE IF EXISTS marieteam;
+CREATE DATABASE marieteam;
+USE marieteam;
 
 DROP TABLE IF EXISTS Utilisateur ;
-CREATE TABLE Utilisateur(idUtilisateur INT AUTO_INCREMENT NOT NULL,
+CREATE TABLE Utilisateur (idUtilisateur INT AUTO_INCREMENT NOT NULL,
+email VARCHAR(255),
+password VARCHAR(255),
 nomUtilisateur VARCHAR(255),
 prenomUtilisateur VARCHAR(255),
 dateAnnivUti DATE,
 PRIMARY KEY (idUtilisateur)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Trajet ;
-CREATE TABLE Trajet(idTrajet INT AUTO_INCREMENT NOT NULL,
+CREATE TABLE Trajet (idTrajet INT AUTO_INCREMENT NOT NULL,
 villeDepart VARCHAR(255),
 villeArrivee VARCHAR(255),
+date DATE,
 heureDepart DATETIME,
 heureArrivee DATETIME,
+tarifEnfant FLOAT,
+tarifAdulte FLOAT,
+tarifVoiture FLOAT,
+tarifPoidsLourd FLOAT,
 etat VARCHAR(255),
 PRIMARY KEY (idTrajet)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Capitaine ;
-CREATE TABLE Capitaine(idCapitaine INT AUTO_INCREMENT NOT NULL,
+CREATE TABLE Capitaine (idCapitaine INT AUTO_INCREMENT NOT NULL,
 nomCapitaine VARCHAR(255),
 prenomCapitaine VARCHAR(255),
 dateAnnivCapi DATE,
 PRIMARY KEY (idCapitaine)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Bateau ;
-CREATE TABLE Bateau(matricule VARCHAR(255) AUTO_INCREMENT NOT NULL,
+CREATE TABLE Bateau (matricule VARCHAR(255) AUTO_INCREMENT NOT NULL,
 modele VARCHAR(255),
 marque VARCHAR(255),
-capacite VARCHAR(255),
+capaciteHumaine VARCHAR(255),
+capaciteVehicules INT,
 PRIMARY KEY (matricule)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Administrateur ;
-CREATE TABLE Administrateur(idAdmin INT AUTO_INCREMENT NOT NULL,
+CREATE TABLE Administrateur (idAdmin INT AUTO_INCREMENT NOT NULL,
 pseudo VARCHAR(255),
-idCapitaine INT,
 PRIMARY KEY (idAdmin)) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS Reserver;
-CREATE TABLE Reserver(idUtilisateur INT AUTO_INCREMENT NOT NULL,
+DROP TABLE IF EXISTS Reserver ;
+CREATE TABLE Reserver (idUtilisateur INT AUTO_INCREMENT NOT NULL,
 idTrajet INT NOT NULL,
+reference TEXT,
+nbEnfant INT,
+nbAdulte INT,
+nbVoiture INT,
+nbPoidsLourd INT,
 PRIMARY KEY (idUtilisateur,
- idTrajet)) ENGINE=InnoDB;
+idTrajet)) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS Modifier;
-CREATE TABLE Modifier(idCapitaine INT AUTO_INCREMENT NOT NULL,
+DROP TABLE IF EXISTS Assigner ;
+CREATE TABLE Assigner (idAdmin INT AUTO_INCREMENT NOT NULL,
+idCapitaine INT NOT NULL,
+idTrajet INT NOT NULL,
+PRIMARY KEY (idAdmin,
+idCapitaine,
+idTrajet)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Modifier ;
+CREATE TABLE Modifier (idCapitaine INT AUTO_INCREMENT NOT NULL,
 idTrajet INT NOT NULL,
 descriptionEtat VARCHAR(255),
 PRIMARY KEY (idCapitaine,
- idTrajet)) ENGINE=InnoDB;
+idTrajet)) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS Detailler;
-CREATE TABLE Detailler(idCapitaine INT AUTO_INCREMENT NOT NULL,
+DROP TABLE IF EXISTS Detailler ;
+CREATE TABLE Detailler (idCapitaine INT AUTO_INCREMENT NOT NULL,
 matricule VARCHAR(255) NOT NULL,
 PRIMARY KEY (idCapitaine,
- matricule)) ENGINE=InnoDB;
+matricule)) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS Avis;
-CREATE TABLE Avis(idAvis INT AUTO_INCREMENT NOT NULL,
-nomAvis VARCHAR(255),
-note FLOAT,
-PRIMARY KEY (idAvis)) ENGINE=InnoDB;
-
-ALTER TABLE Administrateur ADD CONSTRAINT FK_Administrateur_idCapitaine FOREIGN KEY (idCapitaine) REFERENCES Capitaine (idCapitaine);
 ALTER TABLE Reserver ADD CONSTRAINT FK_Reserver_idUtilisateur FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur (idUtilisateur);
-ALTER TABLE Reserver ADD CONSTRAINT FK_Reserver_idTrajet FOREIGN KEY (idTrajet) REFERENCES trajet (idTrajet);
-ALTER TABLE Modifier ADD CONSTRAINT FK_Modifier__idCapitaine FOREIGN KEY (idCapitaine) REFERENCES Capitaine (idCapitaine);
-ALTER TABLE Modifier ADD CONSTRAINT FK_Modifier__idTrajet FOREIGN KEY (idTrajet) REFERENCES trajet (idTrajet);
+
+ALTER TABLE Reserver ADD CONSTRAINT FK_Reserver_idTrajet FOREIGN KEY (idTrajet) REFERENCES Trajet (idTrajet);
+ALTER TABLE Assigner ADD CONSTRAINT FK_Assigner_idAdmin FOREIGN KEY (idAdmin) REFERENCES Administrateur (idAdmin);
+ALTER TABLE Assigner ADD CONSTRAINT FK_Assigner_idCapitaine FOREIGN KEY (idCapitaine) REFERENCES Capitaine (idCapitaine);
+ALTER TABLE Assigner ADD CONSTRAINT FK_Assigner_idTrajet FOREIGN KEY (idTrajet) REFERENCES Trajet (idTrajet);
+ALTER TABLE Modifier ADD CONSTRAINT FK_Modifier_idCapitaine FOREIGN KEY (idCapitaine) REFERENCES Capitaine (idCapitaine);
+ALTER TABLE Modifier ADD CONSTRAINT FK_Modifier_idTrajet FOREIGN KEY (idTrajet) REFERENCES Trajet (idTrajet);
 ALTER TABLE Detailler ADD CONSTRAINT FK_Detailler_idCapitaine FOREIGN KEY (idCapitaine) REFERENCES Capitaine (idCapitaine);
 ALTER TABLE Detailler ADD CONSTRAINT FK_Detailler_matricule FOREIGN KEY (matricule) REFERENCES Bateau (matricule);
