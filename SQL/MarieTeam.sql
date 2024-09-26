@@ -33,7 +33,7 @@ dateAnnivCapi DATE,
 PRIMARY KEY (idCapitaine)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Bateau ;
-CREATE TABLE Bateau (matricule VARCHAR(255) AUTO_INCREMENT NOT NULL,
+CREATE TABLE Bateau (matricule VARCHAR(255) NOT NULL,
 modele VARCHAR(255),
 marque VARCHAR(255),
 capaciteHumaine VARCHAR(255),
