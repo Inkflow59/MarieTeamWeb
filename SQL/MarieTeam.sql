@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS marieteam;
-CREATE DATABASE marieteam;
-USE marieteam;
+DROP DATABASE IF EXISTS marieTeam;
+CREATE DATABASE marieTeam;
+USE marieTeam;
 
 DROP TABLE IF EXISTS Utilisateur ;
 CREATE TABLE Utilisateur (idUtilisateur INT AUTO_INCREMENT NOT NULL,
@@ -9,6 +9,8 @@ password VARCHAR(255),
 nomUtilisateur VARCHAR(255),
 prenomUtilisateur VARCHAR(255),
 dateAnnivUti DATE,
+created_at DATETIME,
+updated_at DATETIME,
 PRIMARY KEY (idUtilisateur)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Trajet ;
@@ -16,13 +18,15 @@ CREATE TABLE Trajet (idTrajet INT AUTO_INCREMENT NOT NULL,
 villeDepart VARCHAR(255),
 villeArrivee VARCHAR(255),
 date DATE,
-heureDepart DATETIME,
-heureArrivee DATETIME,
+heureDepart TIME,
+heureArrivee TIME,
 tarifEnfant FLOAT,
 tarifAdulte FLOAT,
 tarifVoiture FLOAT,
 tarifPoidsLourd FLOAT,
 etat VARCHAR(255),
+created_at DATETIME,
+updated_at DATETIME,
 PRIMARY KEY (idTrajet)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Capitaine ;
@@ -30,19 +34,27 @@ CREATE TABLE Capitaine (idCapitaine INT AUTO_INCREMENT NOT NULL,
 nomCapitaine VARCHAR(255),
 prenomCapitaine VARCHAR(255),
 dateAnnivCapi DATE,
+created_at DATETIME,
+updated_at DATETIME,
 PRIMARY KEY (idCapitaine)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Bateau ;
 CREATE TABLE Bateau (matricule VARCHAR(255) NOT NULL,
 modele VARCHAR(255),
 marque VARCHAR(255),
-capaciteHumaine VARCHAR(255),
+capaciteHumaine INT,
 capaciteVehicules INT,
+created_at DATETIME,
+updated_at DATETIME,
 PRIMARY KEY (matricule)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Administrateur ;
 CREATE TABLE Administrateur (idAdmin INT AUTO_INCREMENT NOT NULL,
 pseudo VARCHAR(255),
+emailAdmin VARCHAR(255),
+mdp VARCHAR(255),
+created_at DATETIME,
+updated_at DATETIME,
 PRIMARY KEY (idAdmin)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Reserver ;
