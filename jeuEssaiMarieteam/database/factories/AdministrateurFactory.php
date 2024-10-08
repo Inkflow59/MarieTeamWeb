@@ -15,7 +15,7 @@ class AdministrateurFactory extends Factory
         return [
             'pseudo' => $this->faker->word(100),
             'emailAdmin' => $this->faker->unique()->safeEmail,
-            'mdp' => Hash::make('password'),
+            'mdp' => hash('sha256', $this->faker->password)
         ];
     }
 }

@@ -19,8 +19,8 @@ class TrajetFactory extends Factory
             'heureArrivee' => $this->faker->time,
             'tarifEnfant' => $this->faker->randomFloat(2, 10, 100),
             'tarifAdulte' => $this->faker->randomFloat(2, 30, 1000),
-            'tarifVoiture' => $this->faker->randomFloat(2, 10, 100),
-            'tarifPoidsLourd' => $this->faker->randomFloat(2, 100, 10000),
+            'tarifVoiture' => $this->faker->randomFloat(2, 100, 1000),
+            'tarifPoidsLourd' => $this->faker->randomFloat(2, 1000, 10000),
             'etat' => $this->faker->randomElement(["A l'heure", "En retard", "Annulé"]),
         ];
     }

@@ -10,6 +10,6 @@ class Bateau extends Model
     use HasFactory;
     protected $table = 'bateau';
     protected $primaryKey = 'matricule';
-    protected $fillable = ['matricule', 'modele', 'marque', 'capaciteHumaine', 'capaciteVehicule'];
+    protected $fillable = ['matricule', 'modele', 'marque', 'capaciteHumaine', 'capaciteVehicules'];
 }
 

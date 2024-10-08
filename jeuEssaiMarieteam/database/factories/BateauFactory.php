@@ -12,11 +12,11 @@ class BateauFactory extends Factory
     public function definition()
     {
         return [
-            'matricule' => strtoupper($this->faker->unique()->word(10)),
+            'matricule' => $this->faker->unique()->regexify('[A-Z0-9]{10}'),
             'modele' => $this->faker->randomElement(['Ferry classique', 'Ferry deluxe', 'Ferry premium']),
             'marque' => $this->faker->company,
-            'capaciteHumaine' => $this->faker->numberBetween(1000, 10000),
-            'capaciteVehicule' => $this->faker->numberBetween(1000, 10000),
+            'capaciteHumaine' => $this->faker->numberBetween(900, 3000),
+            'capaciteVehicules' => $this->faker->numberBetween(100, 300),
         ];
     }
 }

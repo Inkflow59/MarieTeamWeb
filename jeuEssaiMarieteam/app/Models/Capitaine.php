@@ -10,5 +10,5 @@ class Capitaine extends Model
     use HasFactory;
     protected $table = 'capitaine';
     protected $primaryKey = 'idCapitaine';
-    protected $fillable = ['nomCapitaine', 'prenomCapitaine', 'dateAnnivCapi'];
+    protected $fillable = ['nomCapitaine', 'prenomCapitaine', 'dateAnnivCapi', 'identifiant', 'password'];
 }

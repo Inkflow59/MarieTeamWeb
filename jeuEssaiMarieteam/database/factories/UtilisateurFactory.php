@@ -15,9 +15,9 @@ class UtilisateurFactory extends Factory
     {
         return [
             'email' => $this->faker->unique()->safeEmail,
-            'password' => Hash::make('password'),
+            'password' => hash('sha256', $this->faker->password),
             'nomUtilisateur' => $this->faker->lastName,
-            'prenomUtilisateur' => $this->faker->name,
+            'prenomUtilisateur' => $this->faker->firstName,
             'dateAnnivUti' => $this->faker->date,
         ];
     }

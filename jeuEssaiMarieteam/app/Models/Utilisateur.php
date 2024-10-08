@@ -10,6 +10,6 @@ class Utilisateur extends Model
     use HasFactory;
     protected $table = 'utilisateur';
     protected $primaryKey = 'idUtilisateur';
-    protected $fillable = ['nomUtilisateur', 'prenomUtilisateur', 'dateAnnivUtilisateur', 'emailUtilisateur', 'passwordUtilisateur'];
-    protected $hidden = ['passwordUtilisateur'];
+    protected $fillable = ['email', 'password', 'nomUtilisateur', 'prenomUtilisateur', 'dateAnnivUti'];
+    protected $hidden = ['password'];
 }
