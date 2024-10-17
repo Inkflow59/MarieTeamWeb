@@ -3,101 +3,100 @@ CREATE DATABASE MarieTeam;
 USE MarieTeam;
 
 DROP TABLE IF EXISTS Utilisateur ;
-CREATE TABLE Utilisateur (idUtilisateur INT AUTO_INCREMENT NOT NULL,
+CREATE TABLE Utilisateur (idUser INT AUTO_INCREMENT NOT NULL,
+nom VARCHAR(255),
+prenom VARCHAR(255),
 email VARCHAR(255),
 password VARCHAR(255),
-nomUtilisateur VARCHAR(255),
-prenomUtilisateur VARCHAR(255),
-dateAnnivUti DATE,
-updated_at DATETIME,
-created_at DATETIME,
-PRIMARY KEY (idUtilisateur)) ENGINE=InnoDB;
+role ENUM("Utilisateur","Capitaine", "Administrateur"),
+PRIMARY KEY (idUser)) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS Trajet ;
-CREATE TABLE Trajet (idTrajet INT AUTO_INCREMENT NOT NULL,
-villeDepart VARCHAR(255),
-villeArrivee VARCHAR(255),
-date DATE,
-heureDepart TIME,
-heureArrivee TIME,
-tarifEnfant FLOAT,
-tarifAdulte FLOAT,
-tarifVoiture FLOAT,
-tarifPoidsLourd FLOAT,
-etat VARCHAR(255),
-updated_at DATETIME,
-created_at DATETIME,
-PRIMARY KEY (idTrajet)) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS Capitaine ;
-CREATE TABLE Capitaine (idCapitaine INT AUTO_INCREMENT NOT NULL,
-nomCapitaine VARCHAR(255),
-prenomCapitaine VARCHAR(255),
-dateAnnivCapi DATE,
-identifiant VARCHAR(255),
-password VARCHAR(255),
-updated_at DATETIME,
-created_at DATETIME,
-PRIMARY KEY (idCapitaine)) ENGINE=InnoDB;
+DROP TABLE IF EXISTS Liaison ;
+CREATE TABLE Liaison (codeLiaison INT AUTO_INCREMENT NOT NULL,
+portDepart VARCHAR(255),
+portArrivee VARCHAR(255),
+distance FLOAT,
+temps TIME,
+statutLiaison ENUM("A l'heure","En retard","Annulé"),
+PRIMARY KEY (codeLiaison)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Bateau ;
-CREATE TABLE Bateau (matricule VARCHAR(255) NOT NULL,
-modele VARCHAR(255),
-marque VARCHAR(255),
+CREATE TABLE Bateau (idBateau INT AUTO_INCREMENT NOT NULL,
+nom VARCHAR(255),
+longueur FLOAT,
+largeur FLOAT,
+vitesse FLOAT,
+type VARCHAR(255),
+idCap INT,
+idEquipement INT,
+PRIMARY KEY (idBateau)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Periode ;
+CREATE TABLE Periode (idPeriode INT AUTO_INCREMENT NOT NULL,
+dateDebut DATE,
+dateFin DATE,
+PRIMARY KEY (idPeriode)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Equipement ;
+CREATE TABLE Equipement (idEquipement INT AUTO_INCREMENT NOT NULL,
+nomEquipement VARCHAR(255),
+PRIMARY KEY (idEquipement)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Reservation ;
+CREATE TABLE Reservation (idReservation INT AUTO_INCREMENT NOT NULL,
+dateReservation DATE,
+nbPassagers INT,
+nbVehicules INT,
+nbCamions_Reservation INT,
+montant FLOAT,
+statutPaiement ENUM("Refusé","Payé", "En attente"),
+idUser INT,
+idTraversee INT,
+PRIMARY KEY (idReservation)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Tarifs ;
+CREATE TABLE Tarifs (idTarifs INT AUTO_INCREMENT NOT NULL,
+prix FLOAT,
+type VARCHAR(255),
+idPeriode INT,
+codeLiaison INT,
+PRIMARY KEY (idTarifs)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Traversee ;
+CREATE TABLE Traversee (idTraversee INT AUTO_INCREMENT NOT NULL,
+dateDepart DATE,
+heureDepart TIME,
+nbPlacesDisponibles INT,
+idBateau INT,
+codeLiaison INT,
+idCapacite INT,
+PRIMARY KEY (idTraversee)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Capitaine ;
+CREATE TABLE Capitaine (idCap INT AUTO_INCREMENT NOT NULL,
+nomCap VARCHAR(255),
+prenomCap VARCHAR(255),
+idUser INT,
+idBateau INT,
+PRIMARY KEY (idCap)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Capacite ;
+CREATE TABLE Capacite (idCapacite INT AUTO_INCREMENT NOT NULL,
 capaciteHumaine INT,
-capaciteVehicules INT,
-updated_at DATETIME,
-created_at DATETIME,
-PRIMARY KEY (matricule)) ENGINE=InnoDB;
+capaciteVoitures INT,
+capaciteCamions INT,
+idTraversee INT,
+PRIMARY KEY (idCapacite)) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS Administrateur ;
-CREATE TABLE Administrateur (idAdmin INT AUTO_INCREMENT NOT NULL,
-pseudo VARCHAR(255),
-emailAdmin VARCHAR(255),
-mdp VARCHAR(255),
-updated_at DATETIME,
-created_at DATETIME,
-PRIMARY KEY (idAdmin)) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS Reserver ;
-CREATE TABLE Reserver (idUtilisateur INT AUTO_INCREMENT NOT NULL,
-idTrajet INT NOT NULL,
-reference TEXT,
-nbEnfant INT,
-nbAdulte INT,
-nbVoiture INT,
-nbPoidsLourd INT,
-PRIMARY KEY (idUtilisateur,
-idTrajet)) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS Assigner ;
-CREATE TABLE Assigner (idAdmin INT AUTO_INCREMENT NOT NULL,
-idCapitaine INT NOT NULL,
-idTrajet INT NOT NULL,
-PRIMARY KEY (idAdmin,
-idCapitaine,
-idTrajet)) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS Modifier ;
-CREATE TABLE Modifier (idCapitaine INT AUTO_INCREMENT NOT NULL,
-idTrajet INT NOT NULL,
-descriptionEtat VARCHAR(255),
-PRIMARY KEY (idCapitaine,
-idTrajet)) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS Detailler ;
-CREATE TABLE Detailler (idCapitaine INT AUTO_INCREMENT NOT NULL,
-matricule VARCHAR(255) NOT NULL,
-PRIMARY KEY (idCapitaine,
-matricule)) ENGINE=InnoDB;
-
-ALTER TABLE Reserver ADD CONSTRAINT FK_Reserver_idUtilisateur FOREIGN KEY (idUtilisateur) REFERENCES Utilisateur (idUtilisateur);
-
-ALTER TABLE Reserver ADD CONSTRAINT FK_Reserver_idTrajet FOREIGN KEY (idTrajet) REFERENCES Trajet (idTrajet);
-ALTER TABLE Assigner ADD CONSTRAINT FK_Assigner_idAdmin FOREIGN KEY (idAdmin) REFERENCES Administrateur (idAdmin);
-ALTER TABLE Assigner ADD CONSTRAINT FK_Assigner_idCapitaine FOREIGN KEY (idCapitaine) REFERENCES Capitaine (idCapitaine);
-ALTER TABLE Assigner ADD CONSTRAINT FK_Assigner_idTrajet FOREIGN KEY (idTrajet) REFERENCES Trajet (idTrajet);
-ALTER TABLE Modifier ADD CONSTRAINT FK_Modifier_idCapitaine FOREIGN KEY (idCapitaine) REFERENCES Capitaine (idCapitaine);
-ALTER TABLE Modifier ADD CONSTRAINT FK_Modifier_idTrajet FOREIGN KEY (idTrajet) REFERENCES Trajet (idTrajet);
-ALTER TABLE Detailler ADD CONSTRAINT FK_Detailler_idCapitaine FOREIGN KEY (idCapitaine) REFERENCES Capitaine (idCapitaine);
-ALTER TABLE Detailler ADD CONSTRAINT FK_Detailler_matricule FOREIGN KEY (matricule) REFERENCES Bateau (matricule);
+ALTER TABLE Bateau ADD CONSTRAINT FK_Bateau_idCap FOREIGN KEY (idCap) REFERENCES Capitaine (idCap);
+ALTER TABLE Bateau ADD CONSTRAINT FK_Bateau_idEquipement FOREIGN KEY (idEquipement) REFERENCES Equipement (idEquipement);
+ALTER TABLE Reservation ADD CONSTRAINT FK_Reservation_idUser FOREIGN KEY (idUser) REFERENCES Utilisateur (idUser);
+ALTER TABLE Reservation ADD CONSTRAINT FK_Reservation_idTraversee FOREIGN KEY (idTraversee) REFERENCES Traversee (idTraversee);
+ALTER TABLE Tarifs ADD CONSTRAINT FK_Tarifs_idPeriode FOREIGN KEY (idPeriode) REFERENCES Periode (idPeriode);
+ALTER TABLE Tarifs ADD CONSTRAINT FK_Tarifs_codeLiaison FOREIGN KEY (codeLiaison) REFERENCES Liaison (codeLiaison);
+ALTER TABLE Traversee ADD CONSTRAINT FK_Traversee_idBateau FOREIGN KEY (idBateau) REFERENCES Bateau (idBateau);
+ALTER TABLE Traversee ADD CONSTRAINT FK_Traversee_codeLiaison FOREIGN KEY (codeLiaison) REFERENCES Liaison (codeLiaison);
+ALTER TABLE Traversee ADD CONSTRAINT FK_Traversee_idCapacite FOREIGN KEY (idCapacite) REFERENCES Capacite (idCapacite);
+ALTER TABLE Capitaine ADD CONSTRAINT FK_Capitaine_idUser FOREIGN KEY (idUser) REFERENCES Utilisateur (idUser);
+ALTER TABLE Capitaine ADD CONSTRAINT FK_Capitaine_idBateau FOREIGN KEY (idBateau) REFERENCES Bateau (idBateau);
+ALTER TABLE Capacite ADD CONSTRAINT FK_Capacite_idTraversee FOREIGN KEY (idTraversee) REFERENCES Traversee (idTraversee);
