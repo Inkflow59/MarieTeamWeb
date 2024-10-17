@@ -1,15 +1,22 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Bateau extends Model
+class Utilisateur extends Model
 {
     use HasFactory;
-    protected $table = 'bateau';
-    protected $primaryKey = 'matricule';
-    protected $fillable = ['matricule', 'modele', 'marque', 'capaciteHumaine', 'capaciteVehicules'];
-}
 
+    protected $table = 'bateau';
+
+    protected $fillable = [
+        'nom',
+        'longueur',
+        'largeur',
+        'vitesse',
+        'type',
+        'idCap',
+        'idEquipement'
+    ];
+}

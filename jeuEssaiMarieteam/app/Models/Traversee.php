@@ -8,13 +8,15 @@ class Utilisateur extends Model
 {
     use HasFactory;
 
-    protected $table = 'utilisateur';
+    protected $table = 'traversee';
 
     protected $fillable = [
-        'nom',
-        'prenom',
-        'email',
-        'password',
-        'role'
+        'dateDepart',
+        'heureDepart',
+        'dateArrivee',
+        'nbPlacesDisponibles',
+        'idBateau',
+        'codeLiaison',
+        'idCapacite'
     ];
 }
