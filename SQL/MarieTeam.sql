@@ -26,7 +26,7 @@ nom VARCHAR(255),
 longueur FLOAT,
 largeur FLOAT,
 vitesse FLOAT,
-type VARCHAR(255),
+type ENUM("Frêt", "Croisière"),
 idCap INT,
 idEquipement INT,
 PRIMARY KEY (idBateau)) ENGINE=InnoDB;
@@ -57,7 +57,7 @@ PRIMARY KEY (idReservation)) ENGINE=InnoDB;
 DROP TABLE IF EXISTS Tarifs ;
 CREATE TABLE Tarifs (idTarifs INT AUTO_INCREMENT NOT NULL,
 prix FLOAT,
-type VARCHAR(255),
+type ENUM("Passager","Voiture","Camion"),
 idPeriode INT,
 codeLiaison INT,
 PRIMARY KEY (idTarifs)) ENGINE=InnoDB;
