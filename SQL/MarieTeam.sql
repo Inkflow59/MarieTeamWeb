@@ -77,6 +77,7 @@ PRIMARY KEY (dateDeb,
 DROP TABLE IF EXISTS Contenir ;
 CREATE TABLE Contenir (lettre CHAR NOT NULL,
 idBat INT NOT NULL,
+capaciteMax INT,
 PRIMARY KEY (lettre,
  idBat)) ENGINE=InnoDB;
 
