@@ -2,101 +2,95 @@ DROP DATABASE IF EXISTS MarieTeam;
 CREATE DATABASE MarieTeam;
 USE MarieTeam;
 
-DROP TABLE IF EXISTS Utilisateur ;
-CREATE TABLE Utilisateur (idUser INT AUTO_INCREMENT NOT NULL,
-nom VARCHAR(255),
-prenom VARCHAR(255),
-email VARCHAR(255),
-password VARCHAR(255),
-role ENUM("Utilisateur","Capitaine", "Administrateur"),
-PRIMARY KEY (idUser)) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS Liaison ;
-CREATE TABLE Liaison (codeLiaison INT AUTO_INCREMENT NOT NULL,
-portDepart VARCHAR(255),
-portArrivee VARCHAR(255),
-distance FLOAT,
-temps TIME,
-statutLiaison ENUM("A l'heure","En retard","Annulé"),
-PRIMARY KEY (codeLiaison)) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS Bateau ;
-CREATE TABLE Bateau (idBateau INT AUTO_INCREMENT NOT NULL,
-nom VARCHAR(255),
-longueur FLOAT,
-largeur FLOAT,
-vitesse FLOAT,
-type ENUM("Frêt", "Croisière"),
-idCap INT,
-idEquipement INT,
-PRIMARY KEY (idBateau)) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS Periode ;
-CREATE TABLE Periode (idPeriode INT AUTO_INCREMENT NOT NULL,
-dateDebut DATE,
-dateFin DATE,
-PRIMARY KEY (idPeriode)) ENGINE=InnoDB;
-
-DROP TABLE IF EXISTS Equipement ;
-CREATE TABLE Equipement (idEquipement INT AUTO_INCREMENT NOT NULL,
-nomEquipement VARCHAR(255),
-PRIMARY KEY (idEquipement)) ENGINE=InnoDB;
+DROP TABLE IF EXISTS Secteur ;
+CREATE TABLE Secteur (idSecteur INT AUTO_INCREMENT NOT NULL,
+nomSecteur VARCHAR(255),
+PRIMARY KEY (idSecteur)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Reservation ;
-CREATE TABLE Reservation (idReservation INT AUTO_INCREMENT NOT NULL,
-dateReservation DATE,
-nbPassagers INT,
-nbVehicules INT,
-nbCamions_Reservation INT,
-montant FLOAT,
-statutPaiement ENUM("Refusé","Payé", "En attente"),
-idUser INT,
-idTraversee INT,
-PRIMARY KEY (idReservation)) ENGINE=InnoDB;
+CREATE TABLE Reservation (numRes INT NOT NULL,
+nomRes VARCHAR(255),
+adresse VARCHAR(255),
+codePostal VARCHAR(5),
+ville VARCHAR(255),
+numTra INT,
+PRIMARY KEY (numRes)) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS Tarifs ;
-CREATE TABLE Tarifs (idTarifs INT AUTO_INCREMENT NOT NULL,
-prix FLOAT,
-type ENUM("Passager","Voiture","Camion"),
-idPeriode INT,
-codeLiaison INT,
-PRIMARY KEY (idTarifs)) ENGINE=InnoDB;
+DROP TABLE IF EXISTS Periode ;
+CREATE TABLE Periode (dateDeb DATE AUTO_INCREMENT NOT NULL,
+dateFin DATE,
+PRIMARY KEY (dateDeb)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Categorie ;
+CREATE TABLE Categorie (lettre CHAR AUTO_INCREMENT NOT NULL,
+libelleCat VARCHAR(255),
+PRIMARY KEY (lettre)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Liaison ;
+CREATE TABLE Liaison (code INT AUTO_INCREMENT NOT NULL,
+distance FLOAT,
+idSecteur INT,
+idPort_Depart INT,
+idPort_Arrivee INT,
+PRIMARY KEY (code)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Port ;
+CREATE TABLE Port (idPort INT AUTO_INCREMENT NOT NULL,
+nomPort VARCHAR(255),
+PRIMARY KEY (idPort)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Type ;
+CREATE TABLE Type (idType INT AUTO_INCREMENT NOT NULL,
+libelleType VARCHAR(255),
+lettre CHAR,
+PRIMARY KEY (idType)) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS Traversee ;
-CREATE TABLE Traversee (idTraversee INT AUTO_INCREMENT NOT NULL,
-dateDepart DATE,
-heureDepart TIME,
-nbPlacesDisponibles INT,
-idBateau INT,
-codeLiaison INT,
-idCapacite INT,
-PRIMARY KEY (idTraversee)) ENGINE=InnoDB;
+CREATE TABLE Traversee (numTra INT AUTO_INCREMENT NOT NULL,
+date DATE,
+heure TIME,
+idBat INT,
+code INT,
+PRIMARY KEY (numTra)) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS Capitaine ;
-CREATE TABLE Capitaine (idCap INT AUTO_INCREMENT NOT NULL,
-nomCap VARCHAR(255),
-prenomCap VARCHAR(255),
-idUser INT,
-idBateau INT,
-PRIMARY KEY (idCap)) ENGINE=InnoDB;
+DROP TABLE IF EXISTS Bateau ;
+CREATE TABLE Bateau (idBat INT AUTO_INCREMENT NOT NULL,
+nomBat VARCHAR(255),
+PRIMARY KEY (idBat)) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS Capacite ;
-CREATE TABLE Capacite (idCapacite INT AUTO_INCREMENT NOT NULL,
-capaciteHumaine INT,
-capaciteVoitures INT,
-capaciteCamions INT,
-idTraversee INT,
-PRIMARY KEY (idCapacite)) ENGINE=InnoDB;
+DROP TABLE IF EXISTS Enregistrer ;
+CREATE TABLE Enregistrer (idType INT AUTO_INCREMENT NOT NULL,
+numRes INT NOT NULL,
+quantite INT,
+PRIMARY KEY (idType,
+ numRes)) ENGINE=InnoDB;
 
-ALTER TABLE Bateau ADD CONSTRAINT FK_Bateau_idCap FOREIGN KEY (idCap) REFERENCES Capitaine (idCap);
-ALTER TABLE Bateau ADD CONSTRAINT FK_Bateau_idEquipement FOREIGN KEY (idEquipement) REFERENCES Equipement (idEquipement);
-ALTER TABLE Reservation ADD CONSTRAINT FK_Reservation_idUser FOREIGN KEY (idUser) REFERENCES Utilisateur (idUser);
-ALTER TABLE Reservation ADD CONSTRAINT FK_Reservation_idTraversee FOREIGN KEY (idTraversee) REFERENCES Traversee (idTraversee);
-ALTER TABLE Tarifs ADD CONSTRAINT FK_Tarifs_idPeriode FOREIGN KEY (idPeriode) REFERENCES Periode (idPeriode);
-ALTER TABLE Tarifs ADD CONSTRAINT FK_Tarifs_codeLiaison FOREIGN KEY (codeLiaison) REFERENCES Liaison (codeLiaison);
-ALTER TABLE Traversee ADD CONSTRAINT FK_Traversee_idBateau FOREIGN KEY (idBateau) REFERENCES Bateau (idBateau);
-ALTER TABLE Traversee ADD CONSTRAINT FK_Traversee_codeLiaison FOREIGN KEY (codeLiaison) REFERENCES Liaison (codeLiaison);
-ALTER TABLE Traversee ADD CONSTRAINT FK_Traversee_idCapacite FOREIGN KEY (idCapacite) REFERENCES Capacite (idCapacite);
-ALTER TABLE Capitaine ADD CONSTRAINT FK_Capitaine_idUser FOREIGN KEY (idUser) REFERENCES Utilisateur (idUser);
-ALTER TABLE Capitaine ADD CONSTRAINT FK_Capitaine_idBateau FOREIGN KEY (idBateau) REFERENCES Bateau (idBateau);
-ALTER TABLE Capacite ADD CONSTRAINT FK_Capacite_idTraversee FOREIGN KEY (idTraversee) REFERENCES Traversee (idTraversee);
+DROP TABLE IF EXISTS Tarifer ;
+CREATE TABLE Tarifer (dateDeb DATE AUTO_INCREMENT NOT NULL,
+idType INT NOT NULL,
+code INT NOT NULL,
+tarif FLOAT,
+PRIMARY KEY (dateDeb,
+ idType,
+ code)) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Contenir ;
+CREATE TABLE Contenir (lettre CHAR AUTO_INCREMENT NOT NULL,
+idBat INT NOT NULL,
+PRIMARY KEY (lettre,
+ idBat)) ENGINE=InnoDB;
+
+ALTER TABLE Reservation ADD CONSTRAINT FK_Reservation_numTra FOREIGN KEY (numTra) REFERENCES Traversee (numTra);
+ALTER TABLE Liaison ADD CONSTRAINT FK_Liaison_idSecteur FOREIGN KEY (idSecteur) REFERENCES Secteur (idSecteur);
+ALTER TABLE Liaison ADD CONSTRAINT FK_Liaison_idPort_Depart FOREIGN KEY (idPort_Depart) REFERENCES Port (idPort);
+ALTER TABLE Liaison ADD CONSTRAINT FK_Liaison_idPort_Arrivee FOREIGN KEY (idPort_Arrivee) REFERENCES Port (idPort);
+ALTER TABLE Type ADD CONSTRAINT FK_Type_lettre FOREIGN KEY (lettre) REFERENCES Categorie (lettre);
+ALTER TABLE Traversee ADD CONSTRAINT FK_Traversee_idBat FOREIGN KEY (idBat) REFERENCES Bateau (idBat);
+ALTER TABLE Traversee ADD CONSTRAINT FK_Traversee_code FOREIGN KEY (code) REFERENCES Liaison (code);
+ALTER TABLE Enregistrer ADD CONSTRAINT FK_Enregistrer_idType FOREIGN KEY (idType) REFERENCES Type (idType);
+ALTER TABLE Enregistrer ADD CONSTRAINT FK_Enregistrer_numRes FOREIGN KEY (numRes) REFERENCES Reservation (numRes);
+ALTER TABLE Tarifer ADD CONSTRAINT FK_Tarifer_dateDeb FOREIGN KEY (dateDeb) REFERENCES Periode (dateDeb);
+ALTER TABLE Tarifer ADD CONSTRAINT FK_Tarifer_idType FOREIGN KEY (idType) REFERENCES Type (idType);
+ALTER TABLE Tarifer ADD CONSTRAINT FK_Tarifer_code FOREIGN KEY (code) REFERENCES Liaison (code);
+ALTER TABLE Contenir ADD CONSTRAINT FK_Contenir_lettre FOREIGN KEY (lettre) REFERENCES Categorie (lettre);
+ALTER TABLE Contenir ADD CONSTRAINT FK_Contenir_idBat FOREIGN KEY (idBat) REFERENCES Bateau (idBat);
