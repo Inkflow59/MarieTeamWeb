@@ -104,7 +104,23 @@ function changementSecteur($codeLiaison, $idNouvSecteur) {
     $sql = "UPDATE liaison SET idSecteur = '$idNouvSecteur' WHERE code = '$codeLiaison'"; //Préparation de la requête
     $result = $db->query($sql); //Exécution de la requête
 
-    if( $result) {
+    if($result) {
+        return true; //On retourne 'true' si la liaison a bien été mise à jour
+    }
+    return false; //On retourne 'false" si la liaison n'a pas été modifiée
+}
+
+function modifierDistance($codeLiaison, $nouvDist) {
+    global $db; //Utilisation de la variable globale (connexion à la BDD)
+
+    if($nouvDist < 0) {
+        return false; //La distance ne peut pas être négatove (on ne veut pas d'un bateau qui recule)
+    }
+
+    $sql = "UPDATE liaison SET distance = $nouvDist WHERE code = $codeLiaison"; //Préparation de la requête
+    $result = $db->query($sql); //On exécute la requête
+
+    if($result) {
         return true; //On retourne 'true' si la liaison a bien été mise à jour
     }
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
