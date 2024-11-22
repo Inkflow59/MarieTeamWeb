@@ -147,5 +147,3 @@ Récupère le tarif d'une traversée pour un type de billet donné.
 ```php
 function getTarifByType($numTra, $idType) { ... }
 ```
-
-Chaque fonction est bien documentée avec son rôle, ses paramètres et ce qu'elle retourne. Cela permet à toute personne utilisant ce fichier PHP de comprendre rapidement son fonctionnement et de l'intégrer dans un projet.
