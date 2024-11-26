@@ -114,7 +114,7 @@ function modifierDistance($codeLiaison, $nouvDist) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
     if($nouvDist < 0) {
-        return false; //La distance ne peut pas être négatove (on ne veut pas d'un bateau qui recule)
+        return false; //La distance ne peut pas être négative (on ne veut pas d'un bateau qui recule)
     }
 
     $sql = "UPDATE liaison SET distance = $nouvDist WHERE code = $codeLiaison"; //Préparation de la requête
@@ -124,4 +124,11 @@ function modifierDistance($codeLiaison, $nouvDist) {
         return true; //On retourne 'true' si la liaison a bien été mise à jour
     }
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
+}
+
+function beneficeGeneres() {
+    global $db; //Utilisation de la variable globale (connexion à la BDD)
+
+    //TODO
+    $sql = "";
 }
