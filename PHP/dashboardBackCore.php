@@ -28,6 +28,7 @@ function connexionAdmin($email, $password) {
     }
     return false; // Échec de la connexion
 }
+
 function ajoutLiaison($distance, $idSecteur, $idDepart, $idArrivee, $tempsLiaison) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
@@ -115,7 +116,7 @@ function modifArriveeLiaison($codeLiaison, $idPort) {
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
 }
 
-function changementSecteur($codeLiaison, $idNouvSecteur) {
+function modifSecteur($codeLiaison, $idNouvSecteur) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
     if($idNouvSecteur > 4) {
@@ -138,7 +139,7 @@ function changementSecteur($codeLiaison, $idNouvSecteur) {
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
 }
 
-function modifierDistance($codeLiaison, $nouvDist) {
+function modifDistance($codeLiaison, $nouvDist) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
     if($nouvDist < 0) {
@@ -221,15 +222,11 @@ function getAllTraversees() {
     global $db; // Variable de connexion à la base de données
 
     $sql = "SELECT * FROM `traversees`"; // Requête SQL
-
     $result = $db->query($sql); // Exécution de la requête SQL
 
     if ($result) { // Vérification de la validité de la requête SQL
         $rows = $result->fetchAll(PDO::FETCH_ASSOC); // Récupération des données
         return $rows; // Retourne le tableau des données
     }
-
     return []; // Retourne un tableau vide en cas d'erreur
-}
-    $result = $db->query($sql); // Exécution de la requête SQL
 }
