@@ -1,5 +1,33 @@
 <?php
 $db = new mysqli('localhost', 'root', '', 'marieteam');
+
+function connexionAdmin($email, $password) {
+    global $db; // Utilisation de la variable globale (connexion à la BDD)
+
+    // Démarrer la session si ce n'est pas déjà fait
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Préparation de la requête pour récupérer l'utilisateur par email
+    $sql = "SELECT * FROM admin WHERE email = ?";
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Vérification si l'utilisateur existe
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+
+        // Vérification du mot de passe
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['idAdmin'] = $user['idAdmin']; // Stocker l'idAdmin dans la session
+            return true; // Connexion réussie
+        }
+    }
+    return false; // Échec de la connexion
+}
 function ajoutLiaison($distance, $idSecteur, $idDepart, $idArrivee, $tempsLiaison) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
@@ -126,9 +154,82 @@ function modifierDistance($codeLiaison, $nouvDist) {
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
 }
 
-function beneficeGeneres() {
-    global $db; //Utilisation de la variable globale (connexion à la BDD)
+function beneficesGeneres() {
+    global $db; // Utilisation de la variable globale (connexion à la BDD)
 
-    //TODO
-    $sql = "";
+    // Préparation de la requête pour calculer le montant total des réservations
+    $sql = "
+        SELECT SUM(tarif * e.quantite) AS totalBenefices,
+            AVG(tarif * e.quantite) AS moyenneBenefices
+        FROM reservation r
+        JOIN enregistrer e ON r.numRes = e.numRes
+        JOIN tarifer t ON e.idType = t.idType
+    ";
+
+    $result = $db->query($sql); // Exécution de la requête
+
+    if ($result) {
+        $row = $result->fetch_assoc(); // Récupération du résultat
+        return [
+            'totalBenefices'=> $row['totalBenefices'] ? $row['totalBenefices'] : 0,
+            'moyenneBenefices'=> $row['moyenneBenefices'] ? $row['moyenneBenefices'] : 0
+        ]; // Retourne le total ou 0 si aucun bénéfice
+    }
+
+    return 0; // Retourne 0 en cas d'erreur
+}
+
+function getAllReservations() {
+    global $db; // Utilisation de la variable globale (connexion à la BDD)
+
+    // Préparation de la requête pour récupérer le nombre total de réservations et le nombre de places par type
+    $sql = "
+        SELECT 
+            COUNT(r.numRes) AS nbReservationsTotal,
+            SUM(CASE WHEN t.libelleType = 'Adulte' THEN e.quantite ELSE 0 END) AS nbPlacesAdulte,
+            SUM(CASE WHEN t.libelleType = 'Enfant' THEN e.quantite ELSE 0 END) AS nbPlacesEnfant,
+            SUM(CASE WHEN t.libelleType = 'Senior' THEN e.quantite ELSE 0 END) AS nbPlacesSenior,
+            SUM(CASE WHEN t.libelleType = 'Voiture' THEN e.quantite ELSE 0 END) AS nbPlacesVoiture,
+            SUM(CASE WHEN t.libelleType = 'Moto' THEN e.quantite ELSE 0 END) AS nbPlacesMoto,
+            SUM(CASE WHEN t.libelleType = 'Camion' THEN e.quantite ELSE 0 END) AS nbPlacesCamion,
+            SUM(CASE WHEN t.libelleType = 'Camping-car' THEN e.quantite ELSE 0 END) AS nbPlacesCampingCar
+        FROM reservation r
+        LEFT JOIN enregistrer e ON r.numRes = e.numRes
+        LEFT JOIN type t ON e.idType = t.idType
+    ";
+
+    $result = $db->query($sql); // Exécution de la requête
+
+    if ($result) {
+        $row = $result->fetch_assoc(); // Récupération du résultat
+        return [
+            'nbReservationsTotal' => $row['nbReservationsTotal'] ? $row['nbReservationsTotal'] : 0,
+            'nbPlacesAdulte' => $row['nbPlacesAdulte'] ? $row['nbPlacesAdulte'] : 0,
+            'nbPlacesEnfant' => $row['nbPlacesEnfant'] ? $row['nbPlacesEnfant'] : 0,
+            'nbPlacesSenior' => $row['nbPlacesSenior'] ? $row['nbPlacesSenior'] : 0,
+            'nbPlacesVoiture' => $row['nbPlacesVoiture'] ? $row['nbPlacesVoiture'] : 0,
+            'nbPlacesMoto' => $row['nbPlacesMoto'] ? $row['nbPlacesMoto'] : 0,
+            'nbPlacesCamion' => $row['nbPlacesCamion'] ? $row['nbPlacesCamion'] : 0,
+            'nbPlacesCampingCar' => $row['nbPlacesCampingCar'] ? $row['nbPlacesCampingCar'] : 0,
+        ]; // Retourne le tableau avec les données
+    }
+
+    return []; // Retourne un tableau vide en cas d'erreur
+}
+
+function getAllTraversees() {
+    global $db; // Variable de connexion à la base de données
+
+    $sql = "SELECT * FROM `traversees`"; // Requête SQL
+
+    $result = $db->query($sql); // Exécution de la requête SQL
+
+    if ($result) { // Vérification de la validité de la requête SQL
+        $rows = $result->fetchAll(PDO::FETCH_ASSOC); // Récupération des données
+        return $rows; // Retourne le tableau des données
+    }
+
+    return []; // Retourne un tableau vide en cas d'erreur
+}
+    $result = $db->query($sql); // Exécution de la requête SQL
 }

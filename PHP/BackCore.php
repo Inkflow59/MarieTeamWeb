@@ -242,8 +242,11 @@ function consulterReservation($numRes) {
         
     } else {
         // Fermer la requête
-        $stmt->close();
-
+        // Vérifier si la préparation de la requête a réussi
+        if ($stmt) {
+            // Fermer la requête
+            $stmt->close();
+        }
         // En cas d'erreur lors de la préparation de la requête
         return false;
     }

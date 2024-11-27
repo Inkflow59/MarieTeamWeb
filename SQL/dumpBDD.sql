@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le : jeu. 21 nov. 2024 à 10:50
--- Version du serveur : 10.4.24-MariaDB
--- Version de PHP : 7.4.29
+-- Hôte : 127.0.0.1:3306
+-- Généré le : mer. 27 nov. 2024 à 17:37
+-- Version du serveur : 9.1.0
+-- Version de PHP : 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,13 +24,31 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+CREATE TABLE IF NOT EXISTS `admin` (
+  `idAdmin` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) DEFAULT NULL,
+  `prenom` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`idAdmin`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `bateau`
 --
 
-CREATE TABLE `bateau` (
-  `idBat` int(11) NOT NULL,
-  `nomBat` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `bateau`;
+CREATE TABLE IF NOT EXISTS `bateau` (
+  `idBat` int NOT NULL AUTO_INCREMENT,
+  `nomBat` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idBat`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `bateau`
@@ -64,10 +82,12 @@ INSERT INTO `bateau` (`idBat`, `nomBat`) VALUES
 -- Structure de la table `categorie`
 --
 
-CREATE TABLE `categorie` (
+DROP TABLE IF EXISTS `categorie`;
+CREATE TABLE IF NOT EXISTS `categorie` (
   `lettre` char(1) NOT NULL,
-  `libelleCat` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `libelleCat` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`lettre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `categorie`
@@ -83,11 +103,13 @@ INSERT INTO `categorie` (`lettre`, `libelleCat`) VALUES
 -- Structure de la table `contenir`
 --
 
-CREATE TABLE `contenir` (
+DROP TABLE IF EXISTS `contenir`;
+CREATE TABLE IF NOT EXISTS `contenir` (
   `lettre` char(1) NOT NULL,
-  `idBat` int(11) NOT NULL,
-  `capaciteMax` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `idBat` int NOT NULL,
+  `capaciteMax` int DEFAULT NULL,
+  PRIMARY KEY (`lettre`,`idBat`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `contenir`
@@ -135,11 +157,14 @@ INSERT INTO `contenir` (`lettre`, `idBat`, `capaciteMax`) VALUES
 -- Structure de la table `enregistrer`
 --
 
-CREATE TABLE `enregistrer` (
-  `idType` int(11) NOT NULL,
-  `numRes` int(11) NOT NULL,
-  `quantite` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `enregistrer`;
+CREATE TABLE IF NOT EXISTS `enregistrer` (
+  `idType` int NOT NULL,
+  `numRes` int NOT NULL,
+  `quantite` int DEFAULT NULL,
+  PRIMARY KEY (`idType`,`numRes`),
+  KEY `FK_Enregistrer_numRes` (`numRes`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -147,14 +172,19 @@ CREATE TABLE `enregistrer` (
 -- Structure de la table `liaison`
 --
 
-CREATE TABLE `liaison` (
-  `code` int(11) NOT NULL,
+DROP TABLE IF EXISTS `liaison`;
+CREATE TABLE IF NOT EXISTS `liaison` (
+  `code` int NOT NULL AUTO_INCREMENT,
   `distance` float DEFAULT NULL,
-  `idSecteur` int(11) DEFAULT NULL,
-  `idPort_Depart` int(11) DEFAULT NULL,
-  `idPort_Arrivee` int(11) DEFAULT NULL,
-  `tempsLiaison` time DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `idSecteur` int DEFAULT NULL,
+  `idPort_Depart` int DEFAULT NULL,
+  `idPort_Arrivee` int DEFAULT NULL,
+  `tempsLiaison` time DEFAULT NULL,
+  PRIMARY KEY (`code`),
+  KEY `FK_Liaison_idSecteur` (`idSecteur`),
+  KEY `FK_Liaison_idPort_Depart` (`idPort_Depart`),
+  KEY `FK_Liaison_idPort_Arrivee` (`idPort_Arrivee`)
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `liaison`
@@ -294,10 +324,12 @@ INSERT INTO `liaison` (`code`, `distance`, `idSecteur`, `idPort_Depart`, `idPort
 -- Structure de la table `periode`
 --
 
-CREATE TABLE `periode` (
+DROP TABLE IF EXISTS `periode`;
+CREATE TABLE IF NOT EXISTS `periode` (
   `dateDeb` date NOT NULL,
-  `dateFin` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `dateFin` date DEFAULT NULL,
+  PRIMARY KEY (`dateDeb`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `periode`
@@ -314,10 +346,12 @@ INSERT INTO `periode` (`dateDeb`, `dateFin`) VALUES
 -- Structure de la table `port`
 --
 
-CREATE TABLE `port` (
-  `idPort` int(11) NOT NULL,
-  `nomPort` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `port`;
+CREATE TABLE IF NOT EXISTS `port` (
+  `idPort` int NOT NULL AUTO_INCREMENT,
+  `nomPort` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idPort`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `port`
@@ -371,18 +405,22 @@ INSERT INTO `port` (`idPort`, `nomPort`) VALUES
 -- Structure de la table `reservation`
 --
 
-CREATE TABLE `reservation` (
-  `numRes` int(11) NOT NULL,
+DROP TABLE IF EXISTS `reservation`;
+CREATE TABLE IF NOT EXISTS `reservation` (
+  `numRes` int NOT NULL,
   `nomRes` varchar(255) DEFAULT NULL,
   `adresse` varchar(255) DEFAULT NULL,
   `codePostal` varchar(5) DEFAULT NULL,
   `ville` varchar(255) DEFAULT NULL,
-  `numTra` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `numTra` int DEFAULT NULL,
+  PRIMARY KEY (`numRes`),
+  KEY `FK_Reservation_numTra` (`numTra`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déclencheurs `reservation`
 --
+DROP TRIGGER IF EXISTS `PlusDePlace`;
 DELIMITER $$
 CREATE TRIGGER `PlusDePlace` BEFORE INSERT ON `reservation` FOR EACH ROW BEGIN
     DECLARE capaciteBateau INT;
@@ -405,7 +443,7 @@ CREATE TRIGGER `PlusDePlace` BEFORE INSERT ON `reservation` FOR EACH ROW BEGIN
     -- Vérifier si la capacité est dépassée
     IF (nombreReservations >= capaciteBateau) THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Il n''y a plus de places disponibles sur le bateau sélectionné.';
+        SET MESSAGE_TEXT = 'Il n'y a plus de places disponibles sur le bateau sélectionné.';
     END IF;
 END
 $$
@@ -417,10 +455,12 @@ DELIMITER ;
 -- Structure de la table `secteur`
 --
 
-CREATE TABLE `secteur` (
-  `idSecteur` int(11) NOT NULL,
-  `nomSecteur` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `secteur`;
+CREATE TABLE IF NOT EXISTS `secteur` (
+  `idSecteur` int NOT NULL AUTO_INCREMENT,
+  `nomSecteur` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idSecteur`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `secteur`
@@ -438,12 +478,16 @@ INSERT INTO `secteur` (`idSecteur`, `nomSecteur`) VALUES
 -- Structure de la table `tarifer`
 --
 
-CREATE TABLE `tarifer` (
+DROP TABLE IF EXISTS `tarifer`;
+CREATE TABLE IF NOT EXISTS `tarifer` (
   `dateDeb` date NOT NULL,
-  `idType` int(11) NOT NULL,
-  `code` int(11) NOT NULL,
-  `tarif` float DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `idType` int NOT NULL,
+  `code` int NOT NULL,
+  `tarif` float DEFAULT NULL,
+  PRIMARY KEY (`dateDeb`,`idType`,`code`),
+  KEY `FK_Tarifer_idType` (`idType`),
+  KEY `FK_Tarifer_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `tarifer`
@@ -3104,13 +3148,17 @@ INSERT INTO `tarifer` (`dateDeb`, `idType`, `code`, `tarif`) VALUES
 -- Structure de la table `traversee`
 --
 
-CREATE TABLE `traversee` (
-  `numTra` int(11) NOT NULL,
+DROP TABLE IF EXISTS `traversee`;
+CREATE TABLE IF NOT EXISTS `traversee` (
+  `numTra` int NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT NULL,
   `heure` time DEFAULT NULL,
-  `idBat` int(11) DEFAULT NULL,
-  `code` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `idBat` int DEFAULT NULL,
+  `code` int DEFAULT NULL,
+  PRIMARY KEY (`numTra`),
+  KEY `FK_Traversee_idBat` (`idBat`),
+  KEY `FK_Traversee_code` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `traversee`
@@ -3171,45 +3219,49 @@ INSERT INTO `traversee` (`numTra`, `date`, `heure`, `idBat`, `code`) VALUES
 --
 -- Déclencheurs `traversee`
 --
+DROP TRIGGER IF EXISTS `DateMinimum`;
 DELIMITER $$
 CREATE TRIGGER `DateMinimum` BEFORE INSERT ON `traversee` FOR EACH ROW BEGIN
 IF (NEW.date < CURRENT_DATE) THEN
 	SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'La date de départ ne peut pas être antérieure à aujourd''hui.';
+    SET MESSAGE_TEXT = 'La date de départ ne peut pas être antérieure à aujourd'hui.';
 END IF;
 END
 $$
 DELIMITER ;
+DROP TRIGGER IF EXISTS `DateMinimumUpdate`;
 DELIMITER $$
 CREATE TRIGGER `DateMinimumUpdate` BEFORE UPDATE ON `traversee` FOR EACH ROW BEGIN
 IF (NEW.date < CURRENT_DATE) THEN
 	SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'La date de départ ne peut pas être antérieure à aujourd''hui.';
+    SET MESSAGE_TEXT = 'La date de départ ne peut pas être antérieure à aujourd'hui.';
 END IF;
 END
 $$
 DELIMITER ;
+DROP TRIGGER IF EXISTS `MemeJourCondition`;
 DELIMITER $$
 CREATE TRIGGER `MemeJourCondition` BEFORE INSERT ON `traversee` FOR EACH ROW BEGIN
 IF (NEW.date = CURRENT_DATE) THEN
 	IF(NEW.heure < CURRENT_TIME) THEN
     	SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'L''heure de départ ne peut pas être inférieure à l''heure actuelle si le départ a lieu aujourd''hui';
+        SET MESSAGE_TEXT = 'L'heure de départ ne peut pas être inférieure à l'heure actuelle si le départ a lieu aujourd'hui';
     END IF;
 END IF;
 END
 $$
 DELIMITER ;
+DROP TRIGGER IF EXISTS `MemeJourConditionUpdate`;
 DELIMITER $$
 CREATE TRIGGER `MemeJourConditionUpdate` BEFORE UPDATE ON `traversee` FOR EACH ROW BEGIN
 IF (NEW.date = CURRENT_DATE) THEN
 	IF(NEW.heure < CURRENT_TIME) THEN
     	SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'L''heure de départ ne peut pas être inférieure à l''heure actuelle si le départ a lieu aujourd''hui';
+        SET MESSAGE_TEXT = 'L'heure de départ ne peut pas être inférieure à l'heure actuelle si le départ a lieu aujourd'hui';
     END IF;
     IF (OLD.heure < CURRENT_TIME) THEN
     	SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'L''heure de départ ne peut pas être inférieure à l''heure actuelle si le départ a lieu aujourd''hui';
+        SET MESSAGE_TEXT = 'L'heure de départ ne peut pas être inférieure à l'heure actuelle si le départ a lieu aujourd'hui';
     END IF;
 END IF;
 END
@@ -3222,11 +3274,14 @@ DELIMITER ;
 -- Structure de la table `type`
 --
 
-CREATE TABLE `type` (
-  `idType` int(11) NOT NULL,
+DROP TABLE IF EXISTS `type`;
+CREATE TABLE IF NOT EXISTS `type` (
+  `idType` int NOT NULL AUTO_INCREMENT,
   `libelleType` varchar(255) DEFAULT NULL,
-  `lettre` char(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `lettre` char(1) DEFAULT NULL,
+  PRIMARY KEY (`idType`),
+  KEY `FK_Type_lettre` (`lettre`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `type`
@@ -3240,132 +3295,6 @@ INSERT INTO `type` (`idType`, `libelleType`, `lettre`) VALUES
 (5, 'Moto', 'V'),
 (6, 'Camion', 'V'),
 (7, 'Camping-car', 'V');
-
---
--- Index pour les tables déchargées
---
-
---
--- Index pour la table `bateau`
---
-ALTER TABLE `bateau`
-  ADD PRIMARY KEY (`idBat`);
-
---
--- Index pour la table `categorie`
---
-ALTER TABLE `categorie`
-  ADD PRIMARY KEY (`lettre`);
-
---
--- Index pour la table `contenir`
---
-ALTER TABLE `contenir`
-  ADD PRIMARY KEY (`lettre`,`idBat`);
-
---
--- Index pour la table `enregistrer`
---
-ALTER TABLE `enregistrer`
-  ADD PRIMARY KEY (`idType`,`numRes`),
-  ADD KEY `FK_Enregistrer_numRes` (`numRes`);
-
---
--- Index pour la table `liaison`
---
-ALTER TABLE `liaison`
-  ADD PRIMARY KEY (`code`),
-  ADD KEY `FK_Liaison_idSecteur` (`idSecteur`),
-  ADD KEY `FK_Liaison_idPort_Depart` (`idPort_Depart`),
-  ADD KEY `FK_Liaison_idPort_Arrivee` (`idPort_Arrivee`);
-
---
--- Index pour la table `periode`
---
-ALTER TABLE `periode`
-  ADD PRIMARY KEY (`dateDeb`);
-
---
--- Index pour la table `port`
---
-ALTER TABLE `port`
-  ADD PRIMARY KEY (`idPort`);
-
---
--- Index pour la table `reservation`
---
-ALTER TABLE `reservation`
-  ADD PRIMARY KEY (`numRes`),
-  ADD KEY `FK_Reservation_numTra` (`numTra`);
-
---
--- Index pour la table `secteur`
---
-ALTER TABLE `secteur`
-  ADD PRIMARY KEY (`idSecteur`);
-
---
--- Index pour la table `tarifer`
---
-ALTER TABLE `tarifer`
-  ADD PRIMARY KEY (`dateDeb`,`idType`,`code`),
-  ADD KEY `FK_Tarifer_idType` (`idType`),
-  ADD KEY `FK_Tarifer_code` (`code`);
-
---
--- Index pour la table `traversee`
---
-ALTER TABLE `traversee`
-  ADD PRIMARY KEY (`numTra`),
-  ADD KEY `FK_Traversee_idBat` (`idBat`),
-  ADD KEY `FK_Traversee_code` (`code`);
-
---
--- Index pour la table `type`
---
-ALTER TABLE `type`
-  ADD PRIMARY KEY (`idType`),
-  ADD KEY `FK_Type_lettre` (`lettre`);
-
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `bateau`
---
-ALTER TABLE `bateau`
-  MODIFY `idBat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT pour la table `liaison`
---
-ALTER TABLE `liaison`
-  MODIFY `code` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
-
---
--- AUTO_INCREMENT pour la table `port`
---
-ALTER TABLE `port`
-  MODIFY `idPort` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
-
---
--- AUTO_INCREMENT pour la table `secteur`
---
-ALTER TABLE `secteur`
-  MODIFY `idSecteur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT pour la table `traversee`
---
-ALTER TABLE `traversee`
-  MODIFY `numTra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
-
---
--- AUTO_INCREMENT pour la table `type`
---
-ALTER TABLE `type`
-  MODIFY `idType` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Contraintes pour les tables déchargées
