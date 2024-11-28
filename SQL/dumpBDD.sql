@@ -40,8 +40,8 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`idAdmin`, `nom`, `prenom`, `email`, `password`) VALUES
-(1, 'FAUCQUENOY', 'Esteban', 'estebanfcq@gmail.com', '$2y$10$obn3uxGX14fvYfYeg6giR.XlvTEQolbpQoVQYQebwCVhXB5./8vYm'),
-(2, 'CUCHEROSSET', 'Tom', 'tomcucherosset@hotmail.fr', '$2y$10$wC4oh0Gd/SMtKq6JYb4YguOXuEG7ffwUAjwa2LCpHtogvCfaOZz9.');
+(1, 'FAUCQUENOY', 'Esteban', 'estebanfcq@gmail.com', '$2y$10$obn3uxGX14fvYfYeg6giR.XlvTEQolbpQoVQYQebwCVhXB5./8vYm'), -- MdP : Osu59
+(2, 'CUCHEROSSET', 'Tom', 'tomcucherosset@hotmail.fr', '$2y$10$wC4oh0Gd/SMtKq6JYb4YguOXuEG7ffwUAjwa2LCpHtogvCfaOZz9.'); -- MdP : Toto59116
 
 -- --------------------------------------------------------
 
