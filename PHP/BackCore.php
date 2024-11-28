@@ -2,30 +2,48 @@
 $db = new mysqli('localhost', 'root', '', 'marieteam');
 
 function getTraverses() {
-    // Accéder à la variable globale $db pour la connexion
     global $db;
 
-    // Calculer la date de demain
     $demain = date('Y-m-d', strtotime('+1 day'));
 
-    // Préparer la requête SQL pour récupérer les traversées dont la date est >= demain
-    $sql = "SELECT * FROM traversée WHERE date >= ? ORDER BY date ASC";
+    $sql = "SELECT 
+        t.numTra,
+        t.date,
+        t.heure,
+        t.code,
+        t.idBat,
+        b.nomBat,
+        p1.nomPort AS port_depart,
+        p2.nomPort AS port_arrivee
+    FROM traversée t
+    JOIN liaison l ON t.code = l.code
+    JOIN port p1 ON l.idPort_Depart = p1.idPort
+    JOIN port p2 ON l.idPort_Arrivee = p2.idPort
+    JOIN bateau b ON t.idBat = b.idBat
+    WHERE t.date >= ?
+    ORDER BY t.date ASC, t.heure ASC";
 
-    // Préparer et exécuter la requête
     $stmt = $db->prepare($sql);
-    $stmt->bind_param("s", $demain); // Binding de la date de demain
+    $stmt->bind_param("s", $demain);
     $stmt->execute();
-
-    // Récupérer les résultats
     $result = $stmt->get_result();
 
-    // Vérifier si des traversées ont été trouvées
     $traverses = [];
     while ($row = $result->fetch_assoc()) {
-        $traverses[] = $row;
+        $traverse = [
+            'numTra' => $row['numTra'],
+            'date' => $row['date'],
+            'heure' => $row['heure'],
+            'code' => $row['code'],
+            'idBat' => $row['idBat'],
+            'nomBat' => $row['nomBat'],
+            'port_depart' => $row['port_depart'],
+            'port_arrivee' => $row['port_arrivee']
+        ];
+
+        $traverses[] = $traverse;
     }
 
-    // Retourner les traversées trouvées
     return $traverses;
 }
 
