@@ -1,7 +1,7 @@
 <?php
 $db = new mysqli('localhost', 'root', '', 'marieteam');
 
-function getTraverses() {
+function getTraversees() {
     global $db;
 
     $demain = date('Y-m-d', strtotime('+1 day'));
@@ -15,7 +15,7 @@ function getTraverses() {
         b.nomBat,
         p1.nomPort AS port_depart,
         p2.nomPort AS port_arrivee
-    FROM traversée t
+    FROM traversee t
     JOIN liaison l ON t.code = l.code
     JOIN port p1 ON l.idPort_Depart = p1.idPort
     JOIN port p2 ON l.idPort_Arrivee = p2.idPort
