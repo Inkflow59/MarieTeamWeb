@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`idAdmin`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `bateau` (
   `idBat` int NOT NULL AUTO_INCREMENT,
   `nomBat` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idBat`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `bateau`
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `categorie` (
   `lettre` char(1) NOT NULL,
   `libelleCat` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`lettre`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `categorie`
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `contenir` (
   `idBat` int NOT NULL,
   `capaciteMax` int DEFAULT NULL,
   PRIMARY KEY (`lettre`,`idBat`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `contenir`
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `enregistrer` (
   `quantite` int DEFAULT NULL,
   PRIMARY KEY (`idType`,`numRes`),
   KEY `FK_Enregistrer_numRes` (`numRes`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -184,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `liaison` (
   KEY `FK_Liaison_idSecteur` (`idSecteur`),
   KEY `FK_Liaison_idPort_Depart` (`idPort_Depart`),
   KEY `FK_Liaison_idPort_Arrivee` (`idPort_Arrivee`)
-) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `liaison`
@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS `periode` (
   `dateDeb` date NOT NULL,
   `dateFin` date DEFAULT NULL,
   PRIMARY KEY (`dateDeb`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `periode`
@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS `port` (
   `idPort` int NOT NULL AUTO_INCREMENT,
   `nomPort` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idPort`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `port`
@@ -415,7 +415,7 @@ CREATE TABLE IF NOT EXISTS `reservation` (
   `numTra` int DEFAULT NULL,
   PRIMARY KEY (`numRes`),
   KEY `FK_Reservation_numTra` (`numTra`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déclencheurs `reservation`
@@ -460,7 +460,7 @@ CREATE TABLE IF NOT EXISTS `secteur` (
   `idSecteur` int NOT NULL AUTO_INCREMENT,
   `nomSecteur` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`idSecteur`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `secteur`
@@ -487,7 +487,7 @@ CREATE TABLE IF NOT EXISTS `tarifer` (
   PRIMARY KEY (`dateDeb`,`idType`,`code`),
   KEY `FK_Tarifer_idType` (`idType`),
   KEY `FK_Tarifer_code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `tarifer`
@@ -3158,7 +3158,7 @@ CREATE TABLE IF NOT EXISTS `traversee` (
   PRIMARY KEY (`numTra`),
   KEY `FK_Traversee_idBat` (`idBat`),
   KEY `FK_Traversee_code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `traversee`
@@ -3281,7 +3281,7 @@ CREATE TABLE IF NOT EXISTS `type` (
   `lettre` char(1) DEFAULT NULL,
   PRIMARY KEY (`idType`),
   KEY `FK_Type_lettre` (`lettre`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `type`
