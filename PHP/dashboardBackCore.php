@@ -156,9 +156,9 @@ function modifDistance($codeLiaison, $nouvDist) {
 }
 
 function beneficesGeneres() {
-    global $db; // Utilisation de la variable globale (connexion à la BDD)
+    global $db; //Utilisation de la variable globale (connexion à la BDD)
 
-    // Préparation de la requête pour calculer le montant total des réservations
+    //Préparation de la requête pour calculer le montant total des réservations
     $sql = "
         SELECT SUM(tarif * e.quantite) AS totalBenefices,
             AVG(tarif * e.quantite) AS moyenneBenefices
@@ -167,23 +167,23 @@ function beneficesGeneres() {
         JOIN tarifer t ON e.idType = t.idType
     ";
 
-    $result = $db->query($sql); // Exécution de la requête
+    $result = $db->query($sql); //Exécution de la requête
 
     if ($result) {
-        $row = $result->fetch_assoc(); // Récupération du résultat
+        $row = $result->fetch_assoc(); //Récupération du résultat
         return [
             'totalBenefices'=> $row['totalBenefices'] ? $row['totalBenefices'] : 0,
             'moyenneBenefices'=> $row['moyenneBenefices'] ? $row['moyenneBenefices'] : 0
-        ]; // Retourne le total ou 0 si aucun bénéfice
+        ]; //Retourne le total ou 0 si aucun bénéfice
     }
 
-    return 0; // Retourne 0 en cas d'erreur
+    return 0; //Retourne 0 en cas d'erreur
 }
 
 function getAllReservations() {
-    global $db; // Utilisation de la variable globale (connexion à la BDD)
+    global $db; //Utilisation de la variable globale (connexion à la BDD)
 
-    // Préparation de la requête pour récupérer le nombre total de réservations et le nombre de places par type
+    //Préparation de la requête pour récupérer le nombre total de réservations et le nombre de places par type
     $sql = "
         SELECT 
             COUNT(r.numRes) AS nbReservationsTotal,
@@ -199,10 +199,10 @@ function getAllReservations() {
         LEFT JOIN type t ON e.idType = t.idType
     ";
 
-    $result = $db->query($sql); // Exécution de la requête
+    $result = $db->query($sql); //Exécution de la requête
 
     if ($result) {
-        $row = $result->fetch_assoc(); // Récupération du résultat
+        $row = $result->fetch_assoc(); //Récupération du résultat
         return [
             'nbReservationsTotal' => $row['nbReservationsTotal'] ? $row['nbReservationsTotal'] : 0,
             'nbPlacesAdulte' => $row['nbPlacesAdulte'] ? $row['nbPlacesAdulte'] : 0,
@@ -212,24 +212,24 @@ function getAllReservations() {
             'nbPlacesMoto' => $row['nbPlacesMoto'] ? $row['nbPlacesMoto'] : 0,
             'nbPlacesCamion' => $row['nbPlacesCamion'] ? $row['nbPlacesCamion'] : 0,
             'nbPlacesCampingCar' => $row['nbPlacesCampingCar'] ? $row['nbPlacesCampingCar'] : 0,
-        ]; // Retourne le tableau avec les données
+        ]; //Retourne le tableau avec les données
     }
 
-    return []; // Retourne un tableau vide en cas d'erreur
+    return []; //Retourne un tableau vide en cas d'erreur
 }
 
 function getAllTraversees() {
-    global $db; // Variable de connexion à la base de données
+    global $db; //Variable de connexion à la base de données
 
-    $sql = "SELECT * FROM `traversees`"; // Requête SQL
-    $result = $db->query($sql); // Exécution de la requête SQL
+    $sql = "SELECT * FROM `traversees`"; //Requête SQL
+    $result = $db->query($sql); //Exécution de la requête SQL
 
-    if ($result) { // Vérification de la validité de la requête SQL
-        $rows = []; // Initialisation du tableau pour stocker les données
-        while ($row = $result->fetch_assoc()) { // Récupération des données ligne par ligne
-            $rows[] = $row; // Ajout de chaque ligne au tableau
+    if ($result) { //Vérification de la validité de la requête SQL
+        $rows = []; //Initialisation du tableau pour stocker les données
+        while ($row = $result->fetch_assoc()) { //Récupération des données ligne par ligne
+            $rows[] = $row; //Ajout de chaque ligne au tableau
         }
-        return $rows; // Retourne le tableau des données
+        return $rows; //Retourne le tableau des données
     }
-    return []; // Retourne un tableau vide en cas d'erreur
+    return []; //Retourne un tableau vide en cas d'erreur
 }
