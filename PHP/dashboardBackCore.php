@@ -225,7 +225,10 @@ function getAllTraversees() {
     $result = $db->query($sql); // Exécution de la requête SQL
 
     if ($result) { // Vérification de la validité de la requête SQL
-        $rows = $result->fetchAll(PDO::FETCH_ASSOC); // Récupération des données
+        $rows = []; // Initialisation du tableau pour stocker les données
+        while ($row = $result->fetch_assoc()) { // Récupération des données ligne par ligne
+            $rows[] = $row; // Ajout de chaque ligne au tableau
+        }
         return $rows; // Retourne le tableau des données
     }
     return []; // Retourne un tableau vide en cas d'erreur
