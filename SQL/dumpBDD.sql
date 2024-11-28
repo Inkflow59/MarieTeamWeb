@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 28 nov. 2024 à 09:09
+-- Généré le : jeu. 28 nov. 2024 à 09:29
 -- Version du serveur : 10.4.24-MariaDB
 -- Version de PHP : 7.4.29
 
@@ -34,6 +34,14 @@ CREATE TABLE `admin` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `admin`
+--
+
+INSERT INTO `admin` (`idAdmin`, `nom`, `prenom`, `email`, `password`) VALUES
+(1, 'FAUCQUENOY', 'Esteban', 'estebanfcq@gmail.com', '$2y$10$obn3uxGX14fvYfYeg6giR.XlvTEQolbpQoVQYQebwCVhXB5./8vYm'),
+(2, 'CUCHEROSSET', 'Tom', 'tomcucherosset@hotmail.fr', '$2y$10$wC4oh0Gd/SMtKq6JYb4YguOXuEG7ffwUAjwa2LCpHtogvCfaOZz9.');
 
 -- --------------------------------------------------------
 
@@ -3355,7 +3363,7 @@ ALTER TABLE `type`
 -- AUTO_INCREMENT pour la table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `idAdmin` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idAdmin` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `bateau`
