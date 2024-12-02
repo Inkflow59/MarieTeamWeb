@@ -277,7 +277,7 @@ function getHeureArrivee($numTra) {
     // Récupérer les informations de la traversée, y compris l'heure de départ et le temps de liaison
     $sql_traversee = "
         SELECT t.heure, l.tempsLiaison 
-        FROM traversée t
+        FROM traversee t
         JOIN liaison l ON t.code = l.code
         WHERE t.numTra = ?
     ";
