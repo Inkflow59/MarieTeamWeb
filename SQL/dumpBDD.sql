@@ -3465,7 +3465,7 @@ CREATE DEFINER=`root`@`localhost` EVENT `NettoyerTraversees` ON SCHEDULE EVERY 3
     WHERE `date` < CURRENT_DATE;
 END$$
 
-CREATE DEFINER=`root`@`localhost` EVENT `CreerTraversees` ON SCHEDULE EVERY 30 MINUTE STARTS '2024-11-28 08:58:02' ON COMPLETION PRESERVE ENABLE DO BEGIN
+CREATE DEFINER=`root`@`localhost` EVENT `CreerTraversees` ON SCHEDULE EVERY 5 MINUTE STARTS '2024-11-28 08:58:02' ON COMPLETION PRESERVE ENABLE DO BEGIN
     -- Insertion d'une nouvelle traversée avec des valeurs aléatoires
     INSERT INTO `traversee` (`date`, `heure`, `idBat`, `code`)
     VALUES (
