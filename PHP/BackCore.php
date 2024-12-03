@@ -313,7 +313,7 @@ function getHeureArrivee($numTra) {
     return null;
 }
 
-function barreRecherche($nomSecteur) {
+function barreRecherche($nomSecteur, $date, $villeDepart) {
     global $db; // Rend la variable $db globale accessible dans la fonction
 
     // Requête pour récupérer l'idSecteur à partir du nomSecteur
@@ -335,39 +335,49 @@ function barreRecherche($nomSecteur) {
         $row = $result->fetch_assoc();
         $idSecteur = $row['idSecteur'];
 
-        // Requête SQL pour récupérer les traversées selon l'idSecteur
-        $sql_traversee = "
-            SELECT 
-                t.numTra,
-                t.date,
-                t.heure,
-                b.nomBat,
-                l.distance,
-                p1.nomPort AS port_depart,
-                p2.nomPort AS port_arrivee
-            FROM 
-                traversee t
-            INNER JOIN 
-                liaison l ON t.code = l.code
-            INNER JOIN 
-                secteur s ON l.idSecteur = s.idSecteur
-            INNER JOIN 
-                bateau b ON t.idBat = b.idBat
-            INNER JOIN 
-                port p1 ON l.idPort_Depart = p1.idPort
-            INNER JOIN 
-                port p2 ON l.idPort_Arrivee = p2.idPort
-            WHERE 
-                s.idSecteur = ?
-            ORDER BY 
-                t.date, t.heure;
-        ";
+        // Initialiser une variable pour le nombre de tentatives
+        $tentatives = 0;
+        $maxTentatives = 30; // Limite de tentatives (par exemple, 30 jours)
+        
+        do {
+            // Requête SQL pour récupérer les traversées selon l'idSecteur, la date et le port de départ
+            $sql_traversee = "
+                SELECT 
+                    t.numTra,
+                    t.date,
+                    t.heure,
+                    b.nomBat,
+                    l.distance,
+                    p1.nomPort AS port_depart,
+                    p2.nomPort AS port_arrivee
+                FROM 
+                    traversee t
+                INNER JOIN 
+                    liaison l ON t.code = l.code
+                INNER JOIN 
+                    secteur s ON l.idSecteur = s.idSecteur
+                INNER JOIN 
+                    bateau b ON t.idBat = b.idBat
+                INNER JOIN 
+                    port p1 ON l.idPort_Depart = p1.idPort
+                INNER JOIN 
+                    port p2 ON l.idPort_Arrivee = p2.idPort
+                WHERE 
+                    s.idSecteur = ? AND t.date = ? AND p1.nomPort = ?
+                ORDER BY 
+                    t.date, t.heure;
+            ";
 
-        // Préparer la requête pour récupérer les traversées
-        $stmt = $db->prepare($sql_traversee);
-        $stmt->bind_param("i", $idSecteur); // "i" pour indiquer que c'est un entier (idSecteur)
-        $stmt->execute();
-        $result = $stmt->get_result();
+            // Préparer la requête pour récupérer les traversées
+            $stmt = $db->prepare($sql_traversee);
+            $stmt->bind_param("sss", $idSecteur, $date, $villeDepart); // "sss" pour indiquer que ce sont des chaînes
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            // Incrémenter la date pour la prochaine tentative
+            $date = date('Y-m-d', strtotime($date . ' +1 day'));
+            $tentatives++;
+        } while ($result->num_rows === 0 && $tentatives < $maxTentatives); // Continue jusqu'à ce qu'un voyage soit trouvé ou que le nombre de tentatives soit atteint
 
         // Vérification de l'existence des résultats
         if ($result->num_rows > 0) {
