@@ -377,7 +377,7 @@ function barreRecherche($nomSecteur, $date, $villeDepart) {
             // Incrémenter la date pour la prochaine tentative
             $date = date('Y-m-d', strtotime($date . ' +1 day'));
             $tentatives++;
-        } while ($result->num_rows === 0 && $tentatives < $maxTentatives); // Continue jusqu'à ce qu'un voyage soit trouvé ou que le nombre de tentatives soit atteint
+        }   while ($result->num_rows === 0 && $tentatives < $maxTentatives); // Continue jusqu'à ce qu'un voyage soit trouvé ou que le nombre de tentatives soit atteint
 
         // Vérification de l'existence des résultats
         if ($result->num_rows > 0) {
@@ -390,7 +390,7 @@ function barreRecherche($nomSecteur, $date, $villeDepart) {
         } else {
             return null; // Aucun résultat trouvé pour l'idSecteur
         }
-    } else {
+    }   else {
         // Si le nomSecteur ne correspond à aucun secteur, retourner null
         return null;
     }
