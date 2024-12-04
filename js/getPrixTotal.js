@@ -19,8 +19,10 @@ function getPrixTotal() {
 
     // Mettre à jour l'affichage du prix total
     const affichagePrixTotal = document.getElementById('prixTotal');
+    const prixTotalHidden = document.getElementById('prixTotalHidden'); // Récupérer le champ caché
     if (affichagePrixTotal) {
         affichagePrixTotal.textContent = total.toFixed(2) + ' €';
+        prixTotalHidden.value = total.toFixed(2); // Mettre à jour le champ caché
     }
 
     return total;

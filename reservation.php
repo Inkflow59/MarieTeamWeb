@@ -45,7 +45,7 @@
     <div class="section">
       <label for="provenance">D'où venez-vous ?</label>
       <select id="provenance" name="provenance">
-        <option value="">Sélectionnez un secteur</option>
+        <option value="">--Secteur--</option>
         <option value="Méditerrannée">Méditerrannée</option>
         <option value="Atlantique">Atlantique</option>
         <option value="Manche">Manche</option>

@@ -79,6 +79,22 @@ if ($numTra) {
         <div class="case">
             <div class="space">
                 <div class="espace1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="49" height="56" viewBox="0 0 49 56" fill="none">
+                        <path d="M12.9756 19.8892C13.6359 26.7257 18.0576 31.2408 24.3276 31.2408C30.5974 31.2408 35.0186 26.7255 35.6792 19.8892L36.6153 12.503C37.196 5.24625 31.2744 0 24.3276 0C17.3806 0 11.459 5.24625 12.0393 12.503L12.9756 19.8892Z" fill="black" />
+                        <path d="M48.6142 44.7979L48.166 41.9444C47.7907 39.5518 46.2869 37.4863 44.126 36.3943L34.6956 31.6255C34.4004 31.4763 34.16 31.2512 33.9586 31C31.2285 33.8866 27.9117 35.5844 24.3316 35.5844C20.7517 35.5844 17.4344 33.8866 14.7044 31C14.503 31.2512 14.2626 31.4763 13.9674 31.6255L4.53713 36.3943C2.37595 37.4863 0.872438 39.5518 0.497086 41.9444L0.048727 44.7979C-0.111 45.8165 0.0998208 47.3113 1.01224 48.0586C2.23216 49.0563 6.73861 55.2781 24.3316 55.2781C41.9244 55.2781 46.4306 49.0563 47.6505 48.0586C48.5633 47.3113 48.7739 45.8165 48.6142 44.7979Z" fill="black" />
+                    </svg>
+                    <p class="type">Senior</p>
+                </div>
+                <div class="prix">
+                    <p class="type"><?php echo isset($prixList[3]) ? $prixList[3] . ' €' : 'Prix non disponible'; ?></p>
+                    <input type="number" min="0" value="0" class="quantite" />
+                </div>
+            </div>
+        </div>
+
+        <div class="case">
+            <div class="space">
+                <div class="espace1">
                     <div class="svg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M11.25 3.75L6.25001 18.75H0V30H3.75V56.25H11.25V48.75H48.75V56.25H56.25V30H60V18.75H53.7499L48.75 3.75H11.25ZM15 33.75C12.929 33.75 11.25 35.4289 11.25 37.5C11.25 39.5711 12.929 41.25 15 41.25C17.0711 41.25 18.75 39.5711 18.75 37.5C18.75 35.4289 17.0711 33.75 15 33.75ZM43.3444 11.25H16.6557L11.6557 26.25H48.3442L43.3444 11.25ZM45 33.75C42.9289 33.75 41.25 35.4289 41.25 37.5C41.25 39.5711 42.9289 41.25 45 41.25C47.0711 41.25 48.75 39.5711 48.75 37.5C48.75 35.4289 47.0711 33.75 45 33.75Z" fill="black"/>
@@ -87,7 +103,24 @@ if ($numTra) {
                     <p class="type">Voiture</p>
                 </div>
                 <div class="prix">
-                    <p class="type"><?php echo isset($prixList[3]) ? $prixList[3] . ' €' : 'Prix non disponible'; ?></p>
+                    <p class="type"><?php echo isset($prixList[4]) ? $prixList[4] . ' €' : 'Prix non disponible'; ?></p>
+                    <input type="number" min="0" value="0" class="quantite" />
+                </div>
+            </div>
+        </div>
+
+        <div class="case">
+            <div class="space">
+                <div class="espace1">
+                    <div class="svg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.25 3.75L6.25001 18.75H0V30H3.75V56.25H11.25V48.75H48.75V56.25H56.25V30H60V18.75H53.7499L48.75 3.75H11.25ZM15 33.75C12.929 33.75 11.25 35.4289 11.25 37.5C11.25 39.5711 12.929 41.25 15 41.25C17.0711 41.25 18.75 39.5711 18.75 37.5C18.75 35.4289 17.0711 33.75 15 33.75ZM43.3444 11.25H16.6557L11.6557 26.25H48.3442L43.3444 11.25ZM45 33.75C42.9289 33.75 41.25 35.4289 41.25 37.5C41.25 39.5711 42.9289 41.25 45 41.25C47.0711 41.25 48.75 39.5711 48.75 37.5C48.75 35.4289 47.0711 33.75 45 33.75Z" fill="black"/>
+                        </svg>
+                    </div>
+                    <p class="type">Moto</p>
+                </div>
+                <div class="prix">
+                    <p class="type"><?php echo isset($prixList[5]) ? $prixList[5] . ' €' : 'Prix non disponible'; ?></p>
                     <input type="number" min="0" value="0" class="quantite" />
                 </div>
             </div>
@@ -102,7 +135,22 @@ if ($numTra) {
                     <p class="type">Poids lourd</p>
                 </div>
                 <div class="prix">
-                    <p class="type"><?php echo isset($prixList[4]) ? $prixList[4] . ' €' : 'Prix non disponible'; ?></p>
+                    <p class="type"><?php echo isset($prixList[6]) ? $prixList[6] . ' €' : 'Prix non disponible'; ?></p>
+                    <input type="number" min="0" value="0" class="quantite" />
+                </div>
+            </div>
+        </div>
+
+        <div class="case">
+            <div class="space">
+                <div class="espace1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M41.25 7.5H0V48.75H7.5C7.5 52.8923 10.8579 56.25 15 56.25C19.1421 56.25 22.5 52.8923 22.5 48.75H37.5C37.5 52.8923 40.8577 56.25 45 56.25C49.1423 56.25 52.5 52.8923 52.5 48.75H60V30C60 23.7868 54.9634 18.75 48.75 18.75H41.25V7.5ZM41.25 26.25V33.75H52.5V26.25H41.25Z" fill="black"/>
+                    </svg>
+                    <p class="type">Camping-car</p>
+                </div>
+                <div class="prix">
+                    <p class="type"><?php echo isset($prixList[7]) ? $prixList[7] . ' €' : 'Prix non disponible'; ?></p>
                     <input type="number" min="0" value="0" class="quantite" />
                 </div>
             </div>
@@ -116,9 +164,11 @@ if ($numTra) {
                 </div>
                 <div class="prix">
                     <input type="button" class="payer" value="Payer">
+                    <input type="hidden" id="prixTotalHidden" name="prixTotal" value="0">
                 </div>
             </div>
         </div>
     </div>
+    <script src="js/getPrixTotal.js"></script>
 </body>
 </html>
