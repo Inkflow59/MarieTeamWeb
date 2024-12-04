@@ -120,6 +120,7 @@ $pageActuelle = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $offset = ($pageActuelle - 1) * $trajetsParPage;
 
 // Récupération des trajets
+$traversees = []; // Initialiser $traversees à un tableau vide
 if (!isset($_GET["provenance"])) {
     $traversees = getTraversees($trajetsParPage, $offset);
     $totalTrajets = getNombreTotalTraversees();
@@ -132,12 +133,25 @@ if (!isset($_GET["provenance"])) {
         $trajetsParPage, 
         $offset
     );
-    $totalTrajets = getNombreTotalRecherche(
-        $_GET["provenance"], 
-        $_GET["arrival_date"], 
-        $_GET["depart"], 
-        $_GET["arrive"]
-    );
+
+    // Vérifiez si la fonction retourne un message d'erreur
+    if (is_string($traversees)) {
+        echo "<p>$traversees</p>"; // Affichez le message d'erreur
+        $traversees = []; // Réinitialisez $traversees pour éviter les warnings
+    } else {
+        $totalTrajets = getNombreTotalRecherche(
+            $_GET["provenance"], 
+            $_GET["arrival_date"], 
+            $_GET["depart"], 
+            $_GET["arrive"]
+        );
+    }
+}
+
+// Assurez-vous que $traversees est un tableau
+if (!is_array($traversees)) {
+    echo "<p class='error-message'>Aucun trajet trouvé pour les critères spécifiés.</p>"; // Message d'erreur si aucun trajet n'est trouvé
+    $traversees = []; // Réinitialisez à un tableau vide si ce n'est pas un tableau
 }
 
 // Fonction pour générer le HTML d’un trajet
@@ -182,7 +196,13 @@ echo "<div class='pagination'>";
 
 // Bouton précédent
 if ($pageActuelle > 1) {
+    echo "<a href='?page=1' class='pagination-nav'>Première</a> ";
     echo "<a href='?page=".($pageActuelle-1)."' class='pagination-nav'>Précédent</a> ";
+}
+
+// Ajout des boutons -5 et +5
+if ($pageActuelle > 5) {
+    echo "<a href='?page=".($pageActuelle-5)."' class='pagination-nav'>-5</a> ";
 }
 
 // Affichage des 3 pages
@@ -191,6 +211,16 @@ for ($i = max(1, min($pageActuelle - 1, $totalPages - 2));
      $i++) {
     $activeClass = ($i === $pageActuelle) ? "active" : "";
     echo "<a href='?page=$i' class='$activeClass'>$i</a> ";
+}
+
+// Ajout d'un lien vers la dernière page
+if ($totalPages > 3) {
+    echo "<a href='?page=$totalPages' class='pagination-nav'>Dernière</a> ";
+}
+
+// Ajout du bouton +5 à droite
+if ($pageActuelle + 5 <= $totalPages) {
+    echo "<a href='?page=".($pageActuelle+5)."' class='pagination-nav'>+5</a> ";
 }
 
 // Bouton suivant

@@ -607,4 +607,25 @@
           flex-direction: column;
         }
 
+        .error-message {
+            color: red; /* Couleur rouge */
+            font-size: 2rem; /* Taille de police grande */
+            text-align: center; /* Centrer le texte */
+            margin: 20px 0; /* Marge pour espacer le message */
+        }
+      
+
+
+        .center{
+          display: flex;
+          justify-content: center;
+        }
+
+        .trajets{
+          margin-top: 1rem;
+          display: inline-flex;
+          gap: 3rem;
+          flex-direction: column;
+        }
+
       

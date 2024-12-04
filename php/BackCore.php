@@ -404,7 +404,7 @@ function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee, $limit 
             }
             return $traversees;
         } else {
-            return null; // Aucun résultat trouvé pour l'idSecteur
+            return "Aucun trajet trouvé pour les critères spécifiés."; // Message si aucun résultat trouvé
         }
     }   else {
         // Si le nomSecteur ne correspond à aucun secteur, retourner null
