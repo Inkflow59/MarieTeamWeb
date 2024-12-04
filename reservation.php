@@ -23,7 +23,7 @@
         <a href="index.html">
           <li>Accueil</li>
         </a>
-        <a href="reservation.html">
+        <a href="reservation.php">
           <li>Reservation</li>
         </a>
         <a href="#">

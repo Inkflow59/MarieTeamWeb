@@ -14,3 +14,5 @@
 *.zsh text eol=lf
 *.fish text eol=lf
 *.csh text eol=lf
+
+*.sql linguist-language=SQL linguist-detectable
