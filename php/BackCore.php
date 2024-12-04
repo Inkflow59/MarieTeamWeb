@@ -1,7 +1,7 @@
 <?php
 $db = new mysqli('localhost', 'root', '', 'marieteam');
 
-function getTraversees() {
+function getTraversees($limit = 25, $offset = 0) {
     global $db;
 
     $demain = date('Y-m-d', strtotime('+1 day'));
@@ -21,16 +21,17 @@ function getTraversees() {
     JOIN port p2 ON l.idPort_Arrivee = p2.idPort
     JOIN bateau b ON t.idBat = b.idBat
     WHERE t.date >= ?
-    ORDER BY t.date ASC, t.heure ASC";
+    ORDER BY t.date ASC, t.heure ASC
+    LIMIT ? OFFSET ?";
 
     $stmt = $db->prepare($sql);
-    $stmt->bind_param("s", $demain);
+    $stmt->bind_param("sii", $demain, $limit, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
 
     $traverses = [];
     while ($row = $result->fetch_assoc()) {
-        $traverse = [
+        $traverses[] = [
             'numTra' => $row['numTra'],
             'date' => $row['date'],
             'heure' => $row['heure'],
@@ -40,13 +41,25 @@ function getTraversees() {
             'port_depart' => $row['port_depart'],
             'port_arrivee' => $row['port_arrivee']
         ];
-
-        $traverses[] = $traverse;
     }
 
     return $traverses;
 }
 
+function getNombreTotalTraversees() {
+    global $db;
+    
+    $demain = date('Y-m-d', strtotime('+1 day'));
+    
+    $sql = "SELECT COUNT(*) as total FROM traversee WHERE date >= ?";
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("s", $demain);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    return $row['total'];
+}
 
 function estPlein($traversee) {
     global $db; // Rend la variable $db globale accessible dans la fonction
@@ -313,9 +326,9 @@ function getHeureArrivee($numTra) {
     return null;
 }
 
-function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee) {
-    global $db; // Rend la variable $db globale accessible dans la fonction
-
+function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee, $limit = 25, $offset = 0) {
+    global $db;
+    
     // Requête pour récupérer l'idSecteur à partir du nomSecteur
     $sql_idSecteur = "
         SELECT idSecteur 
@@ -368,12 +381,12 @@ function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee) {
                     AND p1.nomPort = ?
                     AND p2.nomPort = ?
                 ORDER BY 
-                    t.date, t.heure;
-            ";
+                    t.date, t.heure
+                LIMIT ? OFFSET ?";
 
             // Préparer la requête pour récupérer les traversées
             $stmt = $db->prepare($sql_traversee);
-            $stmt->bind_param("isss", $idSecteur, $date, $villeDepart, $villeArrivee); // "ssss" pour indiquer que ce sont des chaînes
+            $stmt->bind_param("isssii", $idSecteur, $date, $villeDepart, $villeArrivee, $limit, $offset);
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -397,6 +410,29 @@ function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee) {
         // Si le nomSecteur ne correspond à aucun secteur, retourner null
         return null;
     }
+}
+
+function getNombreTotalRecherche($nomSecteur, $date, $villeDepart, $villeArrivee) {
+    global $db;
+    
+    $sql = "SELECT COUNT(*) as total 
+            FROM traversee t
+            INNER JOIN liaison l ON t.code = l.code
+            INNER JOIN secteur s ON l.idSecteur = s.idSecteur
+            INNER JOIN port p1 ON l.idPort_Depart = p1.idPort
+            INNER JOIN port p2 ON l.idPort_Arrivee = p2.idPort
+            WHERE s.nomSecteur = ? 
+            AND t.date = ? 
+            AND p1.nomPort = ?
+            AND p2.nomPort = ?";
+            
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("ssss", $nomSecteur, $date, $villeDepart, $villeArrivee);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    return $row['total'];
 }
 
 function getTarifByType($numTra, $idType) {

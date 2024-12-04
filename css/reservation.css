@@ -307,4 +307,304 @@
           flex-direction: column;
         }
 
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            padding: 8px 12px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #333;
+        }
+
+        .pagination a.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination a.pagination-nav {
+            background-color: #f8f9fa;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #f1f1f1;
+        }
+      
+
+
+        .center{
+          display: flex;
+          justify-content: center;
+        }
+
+        .trajets{
+          margin-top: 1rem;
+          display: inline-flex;
+          gap: 3rem;
+          flex-direction: column;
+        }
+
+        .trajet-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 16px auto;
+            max-width: 800px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .trajet-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .trajet-date {
+            background: #f8f9fa;
+            padding: 8px 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .trajet-date .date {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .trajet-content {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            gap: 24px;
+        }
+
+        .trajet-icon {
+            color: #0066cc;
+            padding: 12px;
+            border-radius: 50%;
+            background: #f0f7ff;
+        }
+
+        .trajet-details {
+            flex: 1;
+        }
+
+        .trajet-times {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .departure, .arrival {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .time {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .city {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .journey-line {
+            flex: 1;
+            position: relative;
+            height: 2px;
+            background: #e0e0e0;
+            margin: 0 12px;
+        }
+
+        .duration {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f8f9fa;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .book-button {
+            background: #0066cc;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+
+        .book-button:hover {
+            background: #0052a3;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .trajet-content {
+                flex-direction: column;
+                padding: 16px;
+                gap: 16px;
+            }
+
+            .trajet-times {
+                width: 100%;
+            }
+
+            .book-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+      
+
+
+        .center{
+          display: flex;
+          justify-content: center;
+        }
+
+        .trajets{
+          margin-top: 1rem;
+          display: inline-flex;
+          gap: 3rem;
+          flex-direction: column;
+        }
+
+        /* Conteneur principal des trajets */
+        .trajets-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .trajets-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .trajets-header h2 {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .trajet-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin: 16px 0;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .trajet-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .trajet-date {
+            background: #f0f7ff;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .trajet-date .date {
+            color: #0066cc;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .trajet-content {
+            padding: 24px;
+        }
+
+        /* Mise à jour des styles existants */
+        .trajet-times {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .book-button {
+            background: #0066cc;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .book-button:hover {
+            background: #0052a3;
+            transform: translateY(-1px);
+        }
+
+        /* Style pour la pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 32px;
+            padding: 16px;
+        }
+
+        .pagination a {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .pagination a.active {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+
+        .pagination a:hover:not(.active) {
+            background: #f8f9fa;
+            color: #0066cc;
+        }
+      
+
+
+        .center{
+          display: flex;
+          justify-content: center;
+        }
+
+        .trajets{
+          margin-top: 1rem;
+          display: inline-flex;
+          gap: 3rem;
+          flex-direction: column;
+        }
+
       

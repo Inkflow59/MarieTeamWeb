@@ -110,70 +110,96 @@ include "php/BackCore.php";
     </button>
   </form>
   <?php
-  if(!isset($_GET["provenance"])) {
-    $traversees = getTraversees();
-    foreach($traversees as $t){
-      echo "<div class='trajets'>
-  
-      <div class='center'>
-      <div class='rect'>
-        <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
-          <path
-            d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53'
-            stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' />
-        </svg>
-        <hr class='separation' />
-  
-        <div class='horaire'>
-        <div class='horizontale'>
-        <div class='verticale'>
-          <p style='font-weight: 600;'>".substr($t['heure'],0, 5)."</p>
-          <p style='font-style: italic;'>".$t["port_depart"]."</p>
-        </div>
-          <p class='separations'>-------</p>
-          <div class='verticale'>
-          <p style='font-weight: 600;'>".getHeureArrivee($t['numTra'])."</p>
-          <p style='font-style: italic;'>".$t["port_arrivee"]."</p>
-          </div>
-        </div>
-      </div>
-        <button>Suivant</button>
-      </div>
-    </div>";
-    }
-  } else {
-    $traversees = barreRecherche($_GET["provenance"], $_GET["arrival_date"], $_GET["depart"], $_GET["arrivee"]);
-    foreach($traversees as $t){
-    echo "<div class='trajets'>
+// Nombre de trajets par page
+$trajetsParPage = 25;
 
-    <div class='center'>
-    <div class='rect'>
-      <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
-        <path
-          d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53'
-          stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' />
-      </svg>
-      <hr class='separation' />
+// Détermine la page actuelle
+$pageActuelle = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 
-      <div class='horaire'>
-      <div class='horizontale'>
-      <div class='verticale'>
-        <p style='font-weight: 600;'>".substr($t['heure'],0, 5)."</p>
-        <p style='font-style: italic;'>".$t["port_depart"]."</p>
-      </div>
-        <p class='separations'>-------</p>
-        <div class='verticale'>
-        <p style='font-weight: 600;'>".getHeureArrivee($t['numTra'])."</p>
-        <p style='font-style: italic;'>".$t["port_arrivee"]."</p>
-        </div>
-      </div>
-    </div>
-      <button>Suivant</button>
-    </div>
-  </div>";
-  }
+// Calculer l'offset pour la pagination
+$offset = ($pageActuelle - 1) * $trajetsParPage;
+
+// Récupération des trajets
+if (!isset($_GET["provenance"])) {
+    $traversees = getTraversees($trajetsParPage, $offset);
+    $totalTrajets = getNombreTotalTraversees();
+} else {
+    $traversees = barreRecherche(
+        $_GET["provenance"], 
+        $_GET["arrival_date"], 
+        $_GET["depart"], 
+        $_GET["arrive"], 
+        $trajetsParPage, 
+        $offset
+    );
+    $totalTrajets = getNombreTotalRecherche(
+        $_GET["provenance"], 
+        $_GET["arrival_date"], 
+        $_GET["depart"], 
+        $_GET["arrive"]
+    );
 }
-  ?>
+
+// Fonction pour générer le HTML d’un trajet
+function genererHTMLTrajet($t) {
+    return "
+    <div class='trajets'>
+        <div class='center'>
+            <div class='rect'>
+                <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
+                    <path
+                        d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53'
+                        stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' />
+                </svg>
+                <hr class='separation' />
+                <div class='horaire'>
+                    <div class='horizontale'>
+                        <div class='verticale'>
+                            <p style='font-weight: 600;'>".substr($t['heure'], 0, 5)."</p>
+                            <p style='font-style: italic;'>".$t["port_depart"]."</p>
+                        </div>
+                        <p class='separations'>-------</p>
+                        <div class='verticale'>
+                            <p style='font-weight: 600;'>".getHeureArrivee($t['numTra'])."</p>
+                            <p style='font-style: italic;'>".$t["port_arrivee"]."</p>
+                        </div>
+                    </div>
+                </div>
+                <button>Suivant</button>
+            </div>
+        </div>
+    </div>";
+}
+
+// Affichage des trajets
+foreach ($traversees as $t) {
+    echo genererHTMLTrajet($t);
+}
+
+// Pagination
+$totalPages = ceil($totalTrajets / $trajetsParPage);
+echo "<div class='pagination'>";
+
+// Bouton précédent
+if ($pageActuelle > 1) {
+    echo "<a href='?page=".($pageActuelle-1)."' class='pagination-nav'>Précédent</a> ";
+}
+
+// Affichage des 3 pages
+for ($i = max(1, min($pageActuelle - 1, $totalPages - 2)); 
+     $i <= min($totalPages, max(3, $pageActuelle + 1)); 
+     $i++) {
+    $activeClass = ($i === $pageActuelle) ? "active" : "";
+    echo "<a href='?page=$i' class='$activeClass'>$i</a> ";
+}
+
+// Bouton suivant
+if ($pageActuelle < $totalPages) {
+    echo "<a href='?page=".($pageActuelle+1)."' class='pagination-nav'>Suivant</a>";
+}
+echo "</div>";
+?>
+
 
   <script src="js/localisation.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
