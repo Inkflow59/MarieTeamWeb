@@ -38,9 +38,8 @@
   </head>
 
   <?php
-include "php/BackCore.php";
-
-?>
+  include "php/BackCore.php";
+  ?>
   <form method="GET" class="search-bar">
     <!-- Provenance Section -->
     <div class="section">
@@ -65,7 +64,7 @@ include "php/BackCore.php";
         <?php
         $port = getPorts();
         for($i=0; $i<count($port); $i++) {
-          echo "<option value=".$port[$i].">".$port[$i]."</option>";
+          echo "<option value='".urlencode($port[$i])."'>".$port[$i]."</option>";
         }
         ?>
       </select>
@@ -81,10 +80,11 @@ include "php/BackCore.php";
         <?php
         $port = getPorts();
         for($i=0; $i<count($port); $i++) {
-          echo "<option value=".$port[$i].">".$port[$i]."</option>";
+          echo "<option value='".urlencode($port[$i])."'>".$port[$i]."</option>";
         }
         ?>
-      </select>    </div>
+      </select>
+    </div>
 
     <div class="divider"></div>
 
@@ -99,9 +99,9 @@ include "php/BackCore.php";
               d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
           </svg>
         </div>
-        <input datepicker id="arrival_date" name="arrival_date" type="text"
+        <input id="arrival_date" name="arrival_date" type="date"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Select date" required>
+          placeholder="Sélectionnez une date" required>
       </div>
     </div>
 
@@ -121,15 +121,16 @@ $offset = ($pageActuelle - 1) * $trajetsParPage;
 
 // Récupération des trajets
 $traversees = []; // Initialiser $traversees à un tableau vide
+$totalTrajets = 0; // Initialiser $totalTrajets à 0 pour éviter l'erreur
 if (!isset($_GET["provenance"])) {
     $traversees = getTraversees($trajetsParPage, $offset);
     $totalTrajets = getNombreTotalTraversees();
 } else {
     $traversees = barreRecherche(
-        $_GET["provenance"], 
-        $_GET["arrival_date"], 
-        $_GET["depart"], 
-        $_GET["arrive"], 
+        urldecode($_GET["provenance"]), 
+        urldecode($_GET["arrival_date"]), 
+        urldecode($_GET["depart"]), 
+        urldecode($_GET["arrive"]), 
         $trajetsParPage, 
         $offset
     );
@@ -179,7 +180,10 @@ function genererHTMLTrajet($t) {
                         </div>
                     </div>
                 </div>
-                <button>Suivant</button>
+                <form method='POST' action='php/BackCore.php'>
+                    <input type='hidden' name='numTra' value='".$t['numTra']."'>
+                    <button type='submit' formaction='selection.php'>Suivant</button>
+                </form>
             </div>
         </div>
     </div>";

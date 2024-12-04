@@ -338,7 +338,7 @@ function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee, $limit 
 
     // Préparer et exécuter la requête pour obtenir l'idSecteur
     $stmt = $db->prepare($sql_idSecteur);
-    $stmt->bind_param("s", $nomSecteur); // "s" pour indiquer que c'est une chaîne
+    $stmt->bind_param("s", $nomSecteur);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -402,11 +402,11 @@ function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee, $limit 
             while ($row = $result->fetch_assoc()) {
                 $traversees[] = $row;
             }
-            return $traversees;
+            return $traversees; // Retourner les traversées trouvées
         } else {
-            return "Aucun trajet trouvé pour les critères spécifiés."; // Message si aucun résultat trouvé
+            return null; // Aucun résultat trouvé
         }
-    }   else {
+    } else {
         // Si le nomSecteur ne correspond à aucun secteur, retourner null
         return null;
     }
@@ -479,7 +479,7 @@ function getTarifByType($numTra, $idType) {
 function getPorts(){
     global $db;
 
-    $sql = "SELECT nomPort FROM port";
+    $sql = "SELECT nomPort FROM port ORDER BY nomPort ASC";
     $stmt = $db->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -493,4 +493,37 @@ function getPorts(){
     } else {
         return null;
     }
+}
+
+function getTarifsByNumTra($numTra) {
+    global $db; // Rendre la variable $db globale accessible dans la fonction
+
+    // Requête SQL pour récupérer les tarifs basés sur le numTra
+    $sql = "
+        SELECT idType, tarif 
+        FROM tarifer 
+        WHERE code = (SELECT code FROM traversee WHERE numTra = ?)
+    ";
+
+    // Préparer la requête
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("i", $numTra); // Lier le paramètre numTra
+
+    // Exécution de la requête
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Stocker les tarifs dans un tableau
+    $tarifs = [];
+    while ($row = $result->fetch_assoc()) {
+        $tarifs[$row['idType']] = $row['tarif'];
+    }
+
+    return $tarifs; // Retourner le tableau des tarifs
+}
+
+//Pour stocker le numéro de la traversée lorsque l'utilisateur clique sur le bouton "Suivant"
+session_start(); // Assurez-vous que la session est démarrée
+if (isset($_POST['numTra'])) {
+    $_SESSION['numTra'] = $_POST['numTra']; // Stocke le numéro de traversée en session
 }
