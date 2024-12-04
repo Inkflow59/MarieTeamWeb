@@ -129,10 +129,5 @@ include "php/BackCore.php";
 
   <script src="js/localisation.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
-  <script>var secteur = document.getElementById("provenance");
-    document.cookie(secteur);
-  </script>
-
 </body>
-
 </html>
