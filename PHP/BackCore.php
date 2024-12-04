@@ -313,7 +313,7 @@ function getHeureArrivee($numTra) {
     return null;
 }
 
-function barreRecherche($nomSecteur, $date, $villeDepart) {
+function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee) {
     global $db; // Rend la variable $db globale accessible dans la fonction
 
     // Requête pour récupérer l'idSecteur à partir du nomSecteur
@@ -340,7 +340,7 @@ function barreRecherche($nomSecteur, $date, $villeDepart) {
         $maxTentatives = 30; // Limite de tentatives (par exemple, 30 jours)
         
         do {
-            // Requête SQL pour récupérer les traversées selon l'idSecteur, la date et le port de départ
+            // Requête SQL pour récupérer les traversées selon l'idSecteur, la date et les ports
             $sql_traversee = "
                 SELECT 
                     t.numTra,
@@ -363,21 +363,24 @@ function barreRecherche($nomSecteur, $date, $villeDepart) {
                 INNER JOIN 
                     port p2 ON l.idPort_Arrivee = p2.idPort
                 WHERE 
-                    s.idSecteur = ? AND t.date = ? AND p1.nomPort = ?
+                    s.idSecteur = ? 
+                    AND t.date = ? 
+                    AND p1.nomPort = ?
+                    AND p2.nomPort = ?
                 ORDER BY 
                     t.date, t.heure;
             ";
 
             // Préparer la requête pour récupérer les traversées
             $stmt = $db->prepare($sql_traversee);
-            $stmt->bind_param("sss", $idSecteur, $date, $villeDepart); // "sss" pour indiquer que ce sont des chaînes
+            $stmt->bind_param("isss", $idSecteur, $date, $villeDepart, $villeArrivee); // "ssss" pour indiquer que ce sont des chaînes
             $stmt->execute();
             $result = $stmt->get_result();
 
             // Incrémenter la date pour la prochaine tentative
             $date = date('Y-m-d', strtotime($date . ' +1 day'));
             $tentatives++;
-        }   while ($result->num_rows === 0 && $tentatives < $maxTentatives); // Continue jusqu'à ce qu'un voyage soit trouvé ou que le nombre de tentatives soit atteint
+        } while ($result->num_rows === 0 && $tentatives < $maxTentatives);
 
         // Vérification de l'existence des résultats
         if ($result->num_rows > 0) {
