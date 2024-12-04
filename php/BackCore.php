@@ -439,3 +439,22 @@ function getTarifByType($numTra, $idType) {
         return null; // Aucun tarif disponible pour cette traversée et ce type
     }
 }
+
+function getPorts(){
+    global $db;
+
+    $sql = "SELECT nomPort FROM port";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $ports = [];
+        while($row = $result->fetch_assoc()) {
+            $ports[] = $row['nomPort'];
+        }
+        return $ports;
+    } else {
+        return null;
+    }
+}

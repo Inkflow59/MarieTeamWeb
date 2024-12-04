@@ -39,8 +39,8 @@
 
   <?php
 include "php/BackCore.php";
-?>
 
+?>
   <form method="GET" class="search-bar">
     <!-- Provenance Section -->
     <div class="section">
@@ -59,8 +59,16 @@ include "php/BackCore.php";
     <div class="divider"></div>
 
     <div class="section">
-      <label for="destination">Départ</label>
-      <input type="text" id="destination" name="destination" placeholder="Votre Départ" required>
+      <label for="depart">Départ</label>
+      <select name="depart" id="depart">
+        <option value="">--Départ--</option>
+        <?php
+        $port = getPorts();
+        for($i=0; $i<count($port); $i++) {
+          echo "<option value=".$port[$i].">".$port[$i]."</option>";
+        }
+        ?>
+      </select>
     </div>
 
     <div class="divider"></div>
@@ -68,8 +76,15 @@ include "php/BackCore.php";
 
     <div class="section">
       <label for="arrivée">Arrivée</label>
-      <input type="text" id="arrive" name="arrive" placeholder="Votre destination" required>
-    </div>
+      <select name="arrive" id="arrive">
+        <option value="">--Arrivée--</option>
+        <?php
+        $port = getPorts();
+        for($i=0; $i<count($port); $i++) {
+          echo "<option value=".$port[$i].">".$port[$i]."</option>";
+        }
+        ?>
+      </select>    </div>
 
     <div class="divider"></div>
 
@@ -86,7 +101,7 @@ include "php/BackCore.php";
         </div>
         <input datepicker id="arrival_date" name="arrival_date" type="text"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Select date">
+          placeholder="Select date" required>
       </div>
     </div>
 
@@ -95,36 +110,69 @@ include "php/BackCore.php";
     </button>
   </form>
   <?php
-  $traversees = barreRecherche($_GET["provenance"], $_GET["arrival_date"], $_GET["destination"]);
-  foreach($traversees as $t){
+  if(!isset($_GET["provenance"])) {
+    $traversees = getTraversees();
+    foreach($traversees as $t){
+      echo "<div class='trajets'>
+  
+      <div class='center'>
+      <div class='rect'>
+        <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
+          <path
+            d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53'
+            stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' />
+        </svg>
+        <hr class='separation' />
+  
+        <div class='horaire'>
+        <div class='horizontale'>
+        <div class='verticale'>
+          <p style='font-weight: 600;'>".substr($t['heure'],0, 5)."</p>
+          <p style='font-style: italic;'>".$t["port_depart"]."</p>
+        </div>
+          <p class='separations'>-------</p>
+          <div class='verticale'>
+          <p style='font-weight: 600;'>".getHeureArrivee($t['numTra'])."</p>
+          <p style='font-style: italic;'>".$t["port_arrivee"]."</p>
+          </div>
+        </div>
+      </div>
+        <button>Suivant</button>
+      </div>
+    </div>";
+    }
+  } else {
+    $traversees = barreRecherche($_GET["provenance"], $_GET["arrival_date"], $_GET["depart"], $_GET["arrivee"]);
+    foreach($traversees as $t){
     echo "<div class='trajets'>
 
-  <div class='center'>
-  <div class='rect'>
-    <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
-      <path
-        d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53'
-        stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' />
-    </svg>
-    <hr class='separation' />
+    <div class='center'>
+    <div class='rect'>
+      <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
+        <path
+          d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53'
+          stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' />
+      </svg>
+      <hr class='separation' />
 
-    <div class='horaire'>
-    <div class='horizontale'>
-    <div class='verticale'>
-      <p style='font-weight: 600;'>".substr($t['heure'],0, 5)."</p>
-      <p style='font-style: italic;'>".$t["port_depart"]."</p>
-    </div>
-      <p class='separations'>-------</p>
+      <div class='horaire'>
+      <div class='horizontale'>
       <div class='verticale'>
-      <p style='font-weight: 600;'>".getHeureArrivee($t['numTra'])."</p>
-      <p style='font-style: italic;'>".$t["port_arrivee"]."</p>
+        <p style='font-weight: 600;'>".substr($t['heure'],0, 5)."</p>
+        <p style='font-style: italic;'>".$t["port_depart"]."</p>
+      </div>
+        <p class='separations'>-------</p>
+        <div class='verticale'>
+        <p style='font-weight: 600;'>".getHeureArrivee($t['numTra'])."</p>
+        <p style='font-style: italic;'>".$t["port_arrivee"]."</p>
+        </div>
       </div>
     </div>
-  </div>
-    <button>Suivant</button>
-  </div>
-</div>";
+      <button>Suivant</button>
+    </div>
+  </div>";
   }
+}
   ?>
 
   <script src="js/localisation.js"></script>
