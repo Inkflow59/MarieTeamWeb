@@ -116,6 +116,12 @@ $trajetsParPage = 25;
 // Détermine la page actuelle
 $pageActuelle = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 
+// Réinitialiser la page à 1 si une recherche est effectuée
+if (isset($_GET["provenance"]) || isset($_GET["arrival_date"]) || 
+    isset($_GET["depart"]) || isset($_GET["arrive"])) {
+    $pageActuelle = 1;
+}
+
 // Calculer l'offset pour la pagination
 $offset = ($pageActuelle - 1) * $trajetsParPage;
 
@@ -198,15 +204,24 @@ foreach ($traversees as $t) {
 $totalPages = ceil($totalTrajets / $trajetsParPage);
 echo "<div class='pagination'>";
 
-// Bouton précédent
+// Construction des paramètres de recherche pour les liens de pagination
+$searchParams = '';
+if (isset($_GET["provenance"])) {
+    $searchParams .= '&provenance=' . urlencode($_GET["provenance"]);
+    $searchParams .= '&arrival_date=' . urlencode($_GET["arrival_date"]);
+    $searchParams .= '&depart=' . urlencode($_GET["depart"]);
+    $searchParams .= '&arrive=' . urlencode($_GET["arrive"]);
+}
+
+// Modification des liens de pagination
 if ($pageActuelle > 1) {
-    echo "<a href='?page=1' class='pagination-nav'>Première</a> ";
-    echo "<a href='?page=".($pageActuelle-1)."' class='pagination-nav'>Précédent</a> ";
+    echo "<a href='?page=1".$searchParams."' class='pagination-nav'>Première</a> ";
+    echo "<a href='?page=".($pageActuelle-1).$searchParams."' class='pagination-nav'>Précédent</a> ";
 }
 
 // Ajout des boutons -5 et +5
 if ($pageActuelle > 5) {
-    echo "<a href='?page=".($pageActuelle-5)."' class='pagination-nav'>-5</a> ";
+    echo "<a href='?page=".($pageActuelle-5).$searchParams."' class='pagination-nav'>-5</a> ";
 }
 
 // Affichage des 3 pages
@@ -214,22 +229,22 @@ for ($i = max(1, min($pageActuelle - 1, $totalPages - 2));
      $i <= min($totalPages, max(3, $pageActuelle + 1)); 
      $i++) {
     $activeClass = ($i === $pageActuelle) ? "active" : "";
-    echo "<a href='?page=$i' class='$activeClass'>$i</a> ";
+    echo "<a href='?page=$i".$searchParams."' class='$activeClass'>$i</a> ";
 }
 
-// Ajout d'un lien vers la derni��re page
+// Ajout d'un lien vers la dernière page
 if ($totalPages > 3) {
-    echo "<a href='?page=$totalPages' class='pagination-nav'>Dernière</a> ";
+    echo "<a href='?page=$totalPages".$searchParams."' class='pagination-nav'>Dernière</a> ";
 }
 
 // Ajout du bouton +5 à droite
 if ($pageActuelle + 5 <= $totalPages) {
-    echo "<a href='?page=".($pageActuelle+5)."' class='pagination-nav'>+5</a> ";
+    echo "<a href='?page=".($pageActuelle+5).$searchParams."' class='pagination-nav'>+5</a> ";
 }
 
 // Bouton suivant
 if ($pageActuelle < $totalPages) {
-    echo "<a href='?page=".($pageActuelle+1)."' class='pagination-nav'>Suivant</a>";
+    echo "<a href='?page=".($pageActuelle+1).$searchParams."' class='pagination-nav'>Suivant</a>";
 }
 echo "</div>";
 ?>
