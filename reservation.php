@@ -180,9 +180,9 @@ function genererHTMLTrajet($t) {
                         </div>
                     </div>
                 </div>
-                <form method='POST' action='php/BackCore.php'>
+                <form method='POST' action='selection.php' onsubmit='showLoading(event)'>
                     <input type='hidden' name='numTra' value='".$t['numTra']."'>
-                    <button type='submit' formaction='selection.php'>Suivant</button>
+                    <button type='submit'>Suivant</button>
                 </form>
             </div>
         </div>
@@ -217,7 +217,7 @@ for ($i = max(1, min($pageActuelle - 1, $totalPages - 2));
     echo "<a href='?page=$i' class='$activeClass'>$i</a> ";
 }
 
-// Ajout d'un lien vers la dernière page
+// Ajout d'un lien vers la derni��re page
 if ($totalPages > 3) {
     echo "<a href='?page=$totalPages' class='pagination-nav'>Dernière</a> ";
 }
@@ -237,5 +237,25 @@ echo "</div>";
 
   <script src="js/localisation.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+  <div class="loading-overlay">
+    <img src="img/chargement.gif" alt="Chargement..." class="loading-gif">
+  </div>
+  <script>
+  function showLoading(event) {
+    event.preventDefault();
+    const form = event.target;
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    
+    loadingOverlay.classList.add('active');
+    
+    // Stockons les données du formulaire
+    const formData = new FormData(form);
+    
+    setTimeout(() => {
+        // Soumettons le formulaire en POST après le délai
+        form.submit();
+    }, 4000);
+  }
+  </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 include("php/BackCore.php");
-// Récupérer le numTra depuis la requête POST
-$numTra = isset($_POST['numTra']) ? $_POST['numTra'] : null;
+// Récupérer le numTra depuis la requête POST ou GET
+$numTra = isset($_POST['numTra']) ? $_POST['numTra'] : (isset($_GET['numTra']) ? $_GET['numTra'] : null);
 
 // Vérifier si numTra est valide et récupérer les prix
 if ($numTra) {
@@ -10,6 +10,9 @@ if ($numTra) {
 } else {
     // Gérer le cas où numTra n'est pas valide
     $prixList = [];
+    // Rediriger vers la page de réservation si aucun numTra n'est fourni
+    header('Location: reservation.php');
+    exit();
 }
 ?>
 
