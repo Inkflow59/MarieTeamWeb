@@ -17,7 +17,7 @@ if ($numTra) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
@@ -166,12 +166,130 @@ if ($numTra) {
                     <p class="type" id="prixTotal">0.00 €</p>
                 </div>
                 <div class="prix">
-                    <input type="button" class="payer" value="Payer">
                     <input type="hidden" id="prixTotalHidden" name="prixTotal" value="0">
                 </div>
             </div>
         </div>
+
+        <!-- Formulaire pour les informations de réservation -->
+        <div id="reservationForm">
+            <h3>Informations de réservation</h3>
+            <form id="formData">
+                <label for="nom">Nom de famille:</label>
+                <input type="text" id="nom" name="nom" required>
+                
+                <label for="adresse">Adresse:</label>
+                <input type="text" id="adresse" name="adresse" required>
+                
+                <label for="codePostal">Code Postal:</label>
+                <input type="text" id="codePostal" name="codePostal" required>
+                
+                <label for="ville">Ville:</label>
+                <input type="text" id="ville" name="ville" required>
+                <input type="button" value="Payer" onclick="submitAndPay()">
+            </form>
+        </div>
     </div>
     <script src="js/getPrixTotal.js"></script>
+    <script>
+    function openForm() {
+        document.getElementById('reservationForm').style.display = 'block';
+    }
+
+    function submitAndPay() {
+        const nom = document.getElementById('nom').value;
+        const adresse = document.getElementById('adresse').value;
+        const codePostal = document.getElementById('codePostal').value;
+        const ville = document.getElementById('ville').value;
+
+        // Vérification des informations de réservation
+        if (!nom || !adresse || !codePostal || !ville) {
+            alert("Veuillez remplir tous les champs avant de continuer.");
+            return; // Empêche la redirection si les champs ne sont pas remplis
+        }
+
+        // Vérification des quantités de billets
+        const quantites = Array.from(document.querySelectorAll('.quantite')).map(input => parseInt(input.value) || 0);
+        const totalQuantites = quantites.reduce((acc, curr) => acc + curr, 0);
+        if (totalQuantites === 0) {
+            alert("Veuillez sélectionner au moins un billet avant de continuer.");
+            return; // Empêche la redirection si aucun billet n'est sélectionné
+        }
+
+        // Calculer le prix total
+        const prixTotal = quantites.reduce((total, quantite, index) => {
+            const prix = parseFloat(document.querySelectorAll('.prix .type')[index].textContent.replace(' €', '')) || 0;
+            return total + (prix * quantite);
+        }, 0);
+
+        // Enregistrer le prix total dans un cookie
+        document.cookie = "prixTotal=" + prixTotal.toFixed(2) + "; path=/"; // Stocke le prix total dans un cookie
+
+        const numTra = <?php echo json_encode($numTra); ?>; // Récupérer numTra en PHP
+        const numRes = 1; // Définir numRes ici, par exemple, en tant que valeur fixe ou à partir d'un autre champ
+
+        // Enregistrer les données dans le sessionStorage
+        sessionStorage.setItem('reservationData', JSON.stringify({
+            nom,
+            adresse,
+            codePostal,
+            ville,
+            quantites,
+            prixTotal,
+            numTra
+        }));
+
+        // Rediriger vers la page de paiement
+        window.location.href = 'paiement.php'; // Redirection vers paiement.php
+    }
+    </script>
 </body>
+
+<style>
+    #reservationForm {
+        background-color: #f9f9f9; /* Couleur de fond douce */
+        border: 1px solid #ccc; /* Bordure légère */
+        border-radius: 8px; /* Coins arrondis */
+        padding: 20px; /* Espacement interne */
+        margin-top: 20px; /* Espacement au-dessus du formulaire */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+    }
+
+    #reservationForm h3 {
+        margin-bottom: 15px; /* Espacement en bas du titre */
+        font-size: 1.5em; /* Taille de police du titre */
+        color: #333; /* Couleur du texte */
+    }
+
+    #reservationForm label {
+        display: block; /* Affichage en bloc pour les étiquettes */
+        margin-bottom: 5px; /* Espacement en bas des étiquettes */
+        font-weight: bold; /* Texte en gras */
+    }
+
+    #reservationForm input[type="text"],
+    #reservationForm input[type="number"] {
+        width: 100%; /* Largeur complète */
+        padding: 10px; /* Espacement interne */
+        margin-bottom: 15px; /* Espacement en bas des champs */
+        border: 1px solid #ccc; /* Bordure légère */
+        border-radius: 4px; /* Coins arrondis */
+        font-size: 1em; /* Taille de police */
+    }
+
+    #reservationForm input[type="button"] {
+        background-color: #007bff; /* Couleur de fond du bouton */
+        color: white; /* Couleur du texte */
+        border: none; /* Pas de bordure */
+        border-radius: 4px; /* Coins arrondis */
+        padding: 10px 15px; /* Espacement interne */
+        cursor: pointer; /* Curseur en main */
+        font-size: 1em; /* Taille de police */
+        transition: background-color 0.3s; /* Transition pour l'effet de survol */
+    }
+
+    #reservationForm input[type="button"]:hover {
+        background-color: #0056b3; /* Couleur de fond au survol */
+    }
+</style>
 </html>

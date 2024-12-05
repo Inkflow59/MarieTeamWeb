@@ -1,14 +1,16 @@
+<?php include("php/BackCore.php"); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/payement.css">
     <link rel="stylesheet" href="css/bootstrap.css">
     <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet'>
     <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-    <title>payement</title>
+    <title>Paiement</title>
 </head>
 <body>
     <header>
@@ -33,23 +35,6 @@
             <span>Payment Method</span>
             <div class="card">
               <div class="accordion" id="accordionExample">
-                <div class="card">
-                  <div class="card-header p-0" id="headingTwo">
-                    <h2 class="mb-0">
-                      <button class="btn btn-light btn-block text-left collapsed p-3 rounded-0 border-bottom-custom" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        <div class="d-flex align-items-center justify-content-between">
-                          <span>Paypal</span>
-                          <img src="img/7kQEsHU.png" width="30"> 
-                        </div>
-                      </button>
-                    </h2>
-                  </div>
-                  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <input type="text" class="form-control" placeholder="Paypal email">
-                    </div>
-                  </div>
-                </div>
                 <div class="card">
                   <div class="card-header p-0">
                     <h2 class="mb-0">
@@ -106,7 +91,7 @@
                     <a href="#" class="billing">Save 20% with annual billing</a>
                   </div>
                   <div class="mt-1">
-                    <sup class="super-price">NULL €</sup>
+                    <sup class="super-price" id="totalPrice">NULL €</sup>
                   </div>
                 </div>
                 <hr class="mt-0 line">
@@ -126,13 +111,13 @@
                     <span>Montant total à payer</span>
                     <small></small>
                   </div>
-                  <span>NULL€</span>
+                  <span id="totalWithTax">NULL€</span>
                 </div>
                 <div class="p-3">
-                <button class="btn btn-primary btn-block free-button">Payement</button> 
-               <div class="text-center">
-                 <a href="#">Nos conditions d'utilisations</a>
-               </div> 
+                    <button class="btn btn-primary btn-block free-button" id="paymentButton">Paiement</button> 
+                    <div class="text-center">
+                        <a href="#">Nos conditions d'utilisations</a>
+                    </div> 
                 </div>
               </div>
           </div>  
@@ -140,5 +125,26 @@
     </div>
 
     <script src="js/carte.js"></script>
+    <script>
+        // Récupérer les données de sessionStorage
+        const reservationData = JSON.parse(sessionStorage.getItem('reservationData'));
+        const prixTotal = parseFloat(reservationData.prixTotal) || 0; // Assurez-vous que prixTotal est défini
+        const tva = 0.20; // 20% de TVA
+        const totalAvecTaxe = prixTotal + (prixTotal * tva);
+
+        // Mettre à jour les éléments avec les valeurs calculées
+        document.getElementById('totalPrice').textContent = prixTotal.toFixed(2) + ' €';
+        document.getElementById('totalWithTax').textContent = totalAvecTaxe.toFixed(2) + ' €';
+
+        document.getElementById('paymentButton').addEventListener('click', function() {
+            // Récupérer les données de sessionStorage
+            const reservationData = JSON.parse(sessionStorage.getItem('reservationData'));
+            const numTra = reservationData.numTra; // Assurez-vous que numTra est stocké dans sessionStorage
+            const prixTotal = parseFloat(reservationData.prixTotal) || 0; // Assurez-vous que prixTotal est défini
+
+            // Rediriger vers reserver.php avec les données nécessaires
+            window.location.href = `php/reserver.php?numTra=${numTra}&prixTotal=${prixTotal}`;
+        });
+    </script>
 </body>
 </html>

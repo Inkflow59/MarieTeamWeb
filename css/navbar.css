@@ -5,7 +5,7 @@
 body{
     display: flex;
     overflow-x: hidden;
-    background-color: #172234;
+    background-color: #333;
     text-align: center;
     flex-direction: column;
 }

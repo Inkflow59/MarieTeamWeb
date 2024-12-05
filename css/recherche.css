@@ -1,0 +1,44 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #333;
+}
+
+.recherche{
+    display: inline-flex;
+    width: 58.0625rem;
+    flex-direction: column;
+    gap: 4.5625rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.titre{
+    color: #FFF;
+    text-align: center;
+    font-family: "Mea Culpa";
+    font-size: 6rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.ecrire{
+    border-radius: 1.0625rem;
+    background: #FFF;
+    width: 49.25rem;
+    height: 2.625rem;
+}
+
+.envoyer{
+    display: flex;
+width: 20.0625rem;
+height: 3.5rem;
+padding: 0.875rem 6.6875rem;
+justify-content: center;
+align-items: center;
+gap: 0.625rem;
+border-radius: 1.5rem;
+background: #FFF;
+}
