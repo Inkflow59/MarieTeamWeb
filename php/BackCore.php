@@ -1,6 +1,24 @@
 <?php
+/**
+ * Fichier de fonctions principales pour la gestion des traversées et réservations
+ * 
+ * Ce fichier contient toutes les fonctions nécessaires pour gérer les traversées,
+ * les réservations et les recherches de trajets pour MarieTeam.
+ * 
+ * @package MarieTeam
+ * @subpackage Core
+ */
+
+/** @var mysqli $db Connexion à la base de données */
 $db = new mysqli('localhost', 'root', '', 'marieteam');
 
+/**
+ * Récupère la liste des traversées futures
+ * 
+ * @param int $limit Nombre maximum de résultats à retourner
+ * @param int $offset Position de départ pour la pagination
+ * @return array Liste des traversées avec leurs détails
+ */
 function getTraversees($limit = 25, $offset = 0) {
     global $db;
 
@@ -46,6 +64,11 @@ function getTraversees($limit = 25, $offset = 0) {
     return $traverses;
 }
 
+/**
+ * Compte le nombre total de traversées futures
+ * 
+ * @return int Nombre total de traversées
+ */
 function getNombreTotalTraversees() {
     global $db;
     
@@ -61,6 +84,12 @@ function getNombreTotalTraversees() {
     return $row['total'];
 }
 
+/**
+ * Vérifie si une traversée est complète
+ * 
+ * @param array $traversee Données de la traversée à vérifier
+ * @return bool True si la traversée est pleine, False sinon
+ */
 function estPlein($traversee) {
     global $db; // Rend la variable $db globale accessible dans la fonction
 
@@ -101,6 +130,12 @@ function estPlein($traversee) {
     return false; // Si aucune catégorie n'est pleine, on retourne "false"
 }
 
+/**
+ * Récupère les places disponibles par catégorie pour une traversée
+ * 
+ * @param array $traversee Données de la traversée
+ * @return array Tableau des places disponibles par catégorie
+ */
 function getPlacesDisponiblesParCategorie($traversee) {
     global $db; // Rend la variable $db globale accessible dans la fonction
     
@@ -142,6 +177,12 @@ function getPlacesDisponiblesParCategorie($traversee) {
     return $placesDisponibles; // Retourne les données sous forme de tableau
 }
 
+/**
+ * Récupère les traversées d'un secteur spécifique
+ * 
+ * @param int $idSecteur Identifiant du secteur
+ * @return array|null Liste des traversées du secteur ou null si aucune trouvée
+ */
 function getTraversesBySecteur($idSecteur) {
     global $db; // Rend la variable $db globale accessible dans la fonction
 
@@ -189,6 +230,18 @@ function getTraversesBySecteur($idSecteur) {
     }
 }
 
+/**
+ * Effectue une réservation pour une traversée
+ * 
+ * @param int $numRes Numéro de réservation
+ * @param string $nomRes Nom du réservant
+ * @param string $adresse Adresse du réservant
+ * @param string $codePostal Code postal du réservant
+ * @param string $ville Ville du réservant
+ * @param int $numTra Numéro de la traversée
+ * @param array $typesQuantites Tableau associatif des types et quantités de billets
+ * @return bool True si la réservation est réussie, False sinon
+ */
 function reserverTrajet($numRes, $nomRes, $adresse, $codePostal, $ville, $numTra, $typesQuantites) {
     // Accéder à la variable globale $db pour la connexion
     global $db;
@@ -233,6 +286,12 @@ function reserverTrajet($numRes, $nomRes, $adresse, $codePostal, $ville, $numTra
     }
 }
 
+/**
+ * Consulte les détails d'une réservation
+ * 
+ * @param int $numRes Numéro de réservation
+ * @return array|false Détails de la réservation ou false si non trouvée
+ */
 function consulterReservation($numRes) {
     // Accéder à la variable globale $db pour la connexion
     global $db;
@@ -283,6 +342,12 @@ function consulterReservation($numRes) {
     }
 }
 
+/**
+ * Calcule l'heure d'arrivée d'une traversée
+ * 
+ * @param int $numTra Numéro de la traversée
+ * @return string|null Heure d'arrivée au format HH:MM ou null si erreur
+ */
 function getHeureArrivee($numTra) {
     // Accéder à la variable globale $db pour la connexion
     global $db;
@@ -326,6 +391,17 @@ function getHeureArrivee($numTra) {
     return null;
 }
 
+/**
+ * Recherche des traversées selon des critères spécifiques
+ * 
+ * @param string $nomSecteur Nom du secteur
+ * @param string $date Date de la traversée (format Y-m-d)
+ * @param string $villeDepart Ville de départ
+ * @param string $villeArrivee Ville d'arrivée
+ * @param int $limit Nombre maximum de résultats
+ * @param int $offset Position de départ pour la pagination
+ * @return array|null Liste des traversées trouvées ou null si aucune
+ */
 function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee, $limit = 25, $offset = 0) {
     global $db;
     
@@ -412,6 +488,15 @@ function barreRecherche($nomSecteur, $date, $villeDepart, $villeArrivee, $limit 
     }
 }
 
+/**
+ * Compte le nombre total de résultats d'une recherche
+ * 
+ * @param string $nomSecteur Nom du secteur
+ * @param string $date Date de la traversée
+ * @param string $villeDepart Ville de départ
+ * @param string $villeArrivee Ville d'arrivée
+ * @return int Nombre total de traversées correspondant aux critères
+ */
 function getNombreTotalRecherche($nomSecteur, $date, $villeDepart, $villeArrivee) {
     global $db;
     
@@ -435,6 +520,13 @@ function getNombreTotalRecherche($nomSecteur, $date, $villeDepart, $villeArrivee
     return $row['total'];
 }
 
+/**
+ * Récupère le tarif pour un type spécifique sur une traversée
+ * 
+ * @param int $numTra Numéro de la traversée
+ * @param int $idType Identifiant du type de billet
+ * @return float|null Tarif trouvé ou null si non trouvé
+ */
 function getTarifByType($numTra, $idType) {
     global $db; // Rendre la variable $db globale accessible dans la fonction
 
@@ -476,6 +568,11 @@ function getTarifByType($numTra, $idType) {
     }
 }
 
+/**
+ * Récupère la liste des ports disponibles
+ * 
+ * @return array|null Liste des noms de ports ou null si aucun port trouvé
+ */
 function getPorts(){
     global $db;
 
@@ -495,6 +592,12 @@ function getPorts(){
     }
 }
 
+/**
+ * Récupère les tarifs pour une traversée donnée
+ * 
+ * @param int $numTra Numéro de la traversée
+ * @return array Tableau associatif des tarifs par type de passager/véhicule
+ */
 function getTarifsByNumTra($numTra) {
     global $db; // Rendre la variable $db globale accessible dans la fonction
 

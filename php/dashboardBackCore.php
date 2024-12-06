@@ -1,6 +1,24 @@
 <?php
+/**
+ * Fichier de fonctions principales pour le tableau de bord administrateur
+ * 
+ * Ce fichier contient toutes les fonctions nécessaires pour gérer les opérations
+ * administratives de MarieTeam, notamment la gestion des liaisons et des statistiques.
+ * 
+ * @package MarieTeam
+ * @subpackage Admin
+ */
+
+/** @var mysqli $db Connexion à la base de données */
 $db = new mysqli('localhost', 'root', '', 'marieteam');
 
+/**
+ * Vérifie les identifiants de connexion d'un administrateur
+ * 
+ * @param string $email Email de l'administrateur
+ * @param string $password Mot de passe de l'administrateur
+ * @return bool True si la connexion est réussie, False sinon
+ */
 function connexionAdmin($email, $password) {
     global $db; // Utilisation de la variable globale (connexion à la BDD)
 
@@ -29,6 +47,16 @@ function connexionAdmin($email, $password) {
     return false; // Échec de la connexion
 }
 
+/**
+ * Ajoute une nouvelle liaison maritime
+ * 
+ * @param float $distance Distance de la liaison en miles nautiques
+ * @param int $idSecteur Identifiant du secteur
+ * @param int $idDepart Identifiant du port de départ
+ * @param int $idArrivee Identifiant du port d'arrivée
+ * @param string $tempsLiaison Temps de trajet au format HH:MM:SS
+ * @return bool True si l'ajout est réussi, False sinon
+ */
 function ajoutLiaison($distance, $idSecteur, $idDepart, $idArrivee, $tempsLiaison) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
@@ -40,6 +68,13 @@ function ajoutLiaison($distance, $idSecteur, $idDepart, $idArrivee, $tempsLiaiso
     return false; //On retourne 'false' si la liaison n'a pas été ajoutée
 }
 
+/**
+ * Modifie le temps de trajet d'une liaison
+ * 
+ * @param string $codeLiaison Code unique de la liaison
+ * @param string $nouvTemps Nouveau temps de trajet au format HH:MM:SS
+ * @return bool True si la modification est réussie, False sinon
+ */
 function modifTempsLiaison($codeLiaison, $nouvTemps) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
@@ -52,6 +87,13 @@ function modifTempsLiaison($codeLiaison, $nouvTemps) {
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
 }
 
+/**
+ * Modifie le port de départ d'une liaison
+ * 
+ * @param string $codeLiaison Code unique de la liaison
+ * @param int $idPort Identifiant du nouveau port de départ
+ * @return bool True si la modification est réussie, False si erreur ou conflit
+ */
 function modifDepartLiaison($codeLiaison, $idPort) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
@@ -84,6 +126,13 @@ function modifDepartLiaison($codeLiaison, $idPort) {
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
 }
 
+/**
+ * Modifie le port d'arrivée d'une liaison
+ * 
+ * @param string $codeLiaison Code unique de la liaison
+ * @param int $idPort Identifiant du nouveau port d'arrivée
+ * @return bool True si la modification est réussie, False si erreur ou conflit
+ */
 function modifArriveeLiaison($codeLiaison, $idPort) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
@@ -116,6 +165,13 @@ function modifArriveeLiaison($codeLiaison, $idPort) {
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
 }
 
+/**
+ * Modifie le secteur d'une liaison
+ * 
+ * @param string $codeLiaison Code unique de la liaison
+ * @param int $idNouvSecteur Identifiant du nouveau secteur (entre 1 et 4)
+ * @return bool True si la modification est réussie, False si erreur ou conflit
+ */
 function modifSecteur($codeLiaison, $idNouvSecteur) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
@@ -139,6 +195,13 @@ function modifSecteur($codeLiaison, $idNouvSecteur) {
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
 }
 
+/**
+ * Modifie la distance d'une liaison
+ * 
+ * @param string $codeLiaison Code unique de la liaison
+ * @param float $nouvDist Nouvelle distance en miles nautiques (doit être positive)
+ * @return bool True si la modification est réussie, False si erreur
+ */
 function modifDistance($codeLiaison, $nouvDist) {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
@@ -155,6 +218,11 @@ function modifDistance($codeLiaison, $nouvDist) {
     return false; //On retourne 'false" si la liaison n'a pas été modifiée
 }
 
+/**
+ * Calcule les bénéfices générés par les réservations
+ * 
+ * @return array{totalBenefices: float, moyenneBenefices: float}|int Tableau contenant le total et la moyenne des bénéfices, ou 0 en cas d'erreur
+ */
 function beneficesGeneres() {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
@@ -180,6 +248,11 @@ function beneficesGeneres() {
     return 0; //Retourne 0 en cas d'erreur
 }
 
+/**
+ * Récupère toutes les statistiques des réservations
+ * 
+ * @return array Tableau contenant les statistiques détaillées des réservations
+ */
 function getAllReservations() {
     global $db; //Utilisation de la variable globale (connexion à la BDD)
 
