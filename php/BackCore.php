@@ -244,6 +244,16 @@ function getTraversesBySecteur($idSecteur) {
  */
 function reserverTrajet($numRes, $nomRes, $adresse, $codePostal, $ville, $numTra, $typesQuantites) {
     global $db;
+    
+    // Log des paramètres reçus
+    error_log("Paramètres reçus dans reserverTrajet:");
+    error_log("numRes: $numRes");
+    error_log("nomRes: $nomRes");
+    error_log("adresse: $adresse");
+    error_log("codePostal: $codePostal");
+    error_log("ville: $ville");
+    error_log("numTra: $numTra");
+    error_log("typesQuantites: " . print_r($typesQuantites, true));
 
     // Commencer une transaction
     $db->begin_transaction();

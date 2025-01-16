@@ -75,7 +75,7 @@
                           </div> 
                         </div>
                       </div>
-                      <span class="text-muted certificate-text"><i class="fa fa-lock"></i> Your transaction est sécurisé avec ssl certificate</span>
+                      <span class="text-muted certificate-text"><i class="fa fa-lock"></i> Your transaction est sécurisé avec le certificat SSL</span>
                     </div>
                   </div>
                 </div>
@@ -128,8 +128,8 @@
     <script>
         // Récupérer les données de sessionStorage
         const reservationData = JSON.parse(sessionStorage.getItem('reservationData'));
-        const prixTotal = parseFloat(reservationData.prixTotal) || 0; // Assurez-vous que prixTotal est défini
-        const tva = 0.20; // 20% de TVA
+        const prixTotal = parseFloat(reservationData.prixTotal) || 0;
+        const tva = 0.20;
         const totalAvecTaxe = prixTotal + (prixTotal * tva);
 
         // Mettre à jour les éléments avec les valeurs calculées
@@ -137,14 +137,24 @@
         document.getElementById('totalWithTax').textContent = totalAvecTaxe.toFixed(2) + ' €';
 
         document.getElementById('paymentButton').addEventListener('click', function() {
-            // Récupérer les données de sessionStorage
             const reservationData = JSON.parse(sessionStorage.getItem('reservationData'));
-            const numTra = reservationData.numTra; // Assurez-vous que numTra est stocké dans sessionStorage
-            const prixTotal = parseFloat(reservationData.prixTotal) || 0; // Assurez-vous que prixTotal est défini
+            
+            // Créer un formulaire temporaire
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'php/reserver.php';
 
-            // Rediriger vers reserver.php avec les données nécessaires
-            window.location.href = `php/reserver.php?numTra=${numTra}&prixTotal=${prixTotal}`;
+            // Ajouter les données en tant que champ caché
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'reservationData';
+            input.value = JSON.stringify(reservationData);
+            form.appendChild(input);
+
+            // Ajouter le formulaire au document et le soumettre
+            document.body.appendChild(form);
+            form.submit();
         });
     </script>
 </body>
-</html>hhh
+</html>

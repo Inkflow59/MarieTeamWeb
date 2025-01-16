@@ -1,44 +1,78 @@
 <?php
 include("BackCore.php");
 
-// Récupérer les données JSON envoyées
-$data = json_decode(file_get_contents('php://input'), true);
+// Activation des erreurs PHP pour le débogage
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// Vérifiez si les données sont valides
-if (is_null($data)) {
-    echo json_encode(['success' => false, 'message' => 'Données JSON invalides.']);
+session_start();
+
+// Récupérer les données
+$data = isset($_POST['reservationData']) ? json_decode($_POST['reservationData'], true) : null;
+
+// Log des données décodées
+error_log("Données décodées: " . print_r($data, true));
+
+// Vérification du décodage JSON
+if (json_last_error() !== JSON_ERROR_NONE) {
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur de décodage JSON: ' . json_last_error_msg()
+    ]);
     exit();
 }
 
-// Récupérer les valeurs depuis les données envoyées
-$numTra = $data['numTra'] ?? null;
-$prixTotal = $data['prixTotal'] ?? null;
-$nomRes = $data['nomRes'] ?? null; // Récupérer le nom de l'utilisateur
-$adresse = $data['adresse'] ?? null; // Récupérer l'adresse de l'utilisateur
-$codePostal = $data['codePostal'] ?? null; // Récupérer le code postal
-$ville = $data['ville'] ?? null; // Récupérer la ville
-$quantites = $data['quantites'] ?? []; // Récupérer les quantités
-$idTypeArray = [1, 2, 3, 4, 5, 6, 7]; // Exemple d'idType correspondant à chaque index
+// Vérification des données requises
+$requiredFields = ['nom', 'adresse', 'codePostal', 'ville', 'numTra', 'quantites'];
+$missingFields = [];
 
-// Vérifiez que toutes les valeurs nécessaires sont présentes
-if (is_null($numTra) || is_null($prixTotal) || is_null($nomRes) || is_null($adresse) || is_null($codePostal) || is_null($ville)) {
-    echo json_encode(['success' => false, 'message' => 'Données manquantes.']);
-    exit();
-}
-
-// Préparer les types et quantités pour la réservation
-$typesQuantites = [];
-foreach ($quantites as $index => $quantite) {
-    if ($quantite > 0) {
-        $typesQuantites[$idTypeArray[$index]] = $quantite; // Associer l'idType à la quantité
+foreach ($requiredFields as $field) {
+    if (!isset($data[$field]) || empty($data[$field])) {
+        $missingFields[] = $field;
     }
 }
 
-// Appeler la fonction de réservation
-$reservationSuccess = reserverTrajet($numRes, $nomRes, $adresse, $codePostal, $ville, $numTra, $typesQuantites);
+if (!empty($missingFields)) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Champs manquants: ' . implode(', ', $missingFields)
+    ]);
+    exit();
+}
 
-if ($reservationSuccess) {
-    echo json_encode(['success' => true]);
-} else {
-    echo json_encode(['success' => false, 'message' => 'Échec de la réservation.']);
+// Génération du numéro de réservation
+$numRes = time() . rand(1000, 9999);
+
+// Préparation des données pour la réservation
+$typesQuantites = [];
+foreach ($data['quantites'] as $index => $quantite) {
+    if ($quantite > 0) {
+        $typesQuantites[$index] = $quantite;
+    }
+}
+
+try {
+    // Tentative de réservation
+    $reservationSuccess = reserverTrajet(
+        $numRes,
+        $data['nom'],
+        $data['adresse'],
+        $data['codePostal'],
+        $data['ville'],
+        $data['numTra'],
+        $typesQuantites
+    );
+
+    if ($reservationSuccess) {
+        $_SESSION['lastReservationNumber'] = $numRes;
+        header("Location: ../confirmation.php?numRes=" . $numRes);
+        exit();
+    } else {
+        header("Location: ../paiement.php?error=reservation_failed");
+        exit();
+    }
+} catch (Exception $e) {
+    error_log("Erreur lors de la réservation: " . $e->getMessage());
+    header("Location: ../paiement.php?error=exception&message=" . urlencode($e->getMessage()));
+    exit();
 }
