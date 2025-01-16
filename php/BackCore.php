@@ -242,90 +242,65 @@ function getTraversesBySecteur($idSecteur) {
  * @param array $typesQuantites Tableau associatif des types et quantités de billets
  * @return bool True si la réservation est réussie, False sinon
  */
-function reserverTrajet($numRes, $nomRes, $adresse, $codePostal, $ville, $numTra, $typesQuantites) {
+function reserverTrajet($numRes, $nom, $adresse, $codePostal, $ville, $numTra, $typesQuantites) {
     global $db;
     
-    // Log des paramètres reçus
-    error_log("Paramètres reçus dans reserverTrajet:");
-    error_log("numRes: $numRes");
-    error_log("nomRes: $nomRes");
-    error_log("adresse: $adresse");
-    error_log("codePostal: $codePostal");
-    error_log("ville: $ville");
-    error_log("numTra: $numTra");
-    error_log("typesQuantites: " . print_r($typesQuantites, true));
-
-    // Commencer une transaction
-    $db->begin_transaction();
-
     try {
-        // 1. Vérifier si la traversée existe et n'est pas déjà passée
-        $sql_check_traversee = "SELECT date, heure FROM traversee WHERE numTra = ? AND CONCAT(date, ' ', heure) > NOW()";
-        $stmt_check = $db->prepare($sql_check_traversee);
-        $stmt_check->bind_param("i", $numTra);
-        $stmt_check->execute();
-        $result_check = $stmt_check->get_result();
+        // Vérification de la validité du numéro de traversée
+        $stmt = $db->prepare("SELECT numTra FROM traversee WHERE numTra = ?");
+        if (!$stmt) {
+            throw new Exception("Erreur de préparation de la requête: " . $db->error);
+        }
         
-        if ($result_check->num_rows === 0) {
-            throw new Exception("Traversée invalide ou déjà passée");
+        $stmt->bind_param("i", $numTra);
+        if (!$stmt->execute()) {
+            throw new Exception("Erreur lors de la vérification de la traversée: " . $stmt->error);
+        }
+        
+        $result = $stmt->get_result();
+        if ($result->num_rows === 0) {
+            throw new Exception("La traversée spécifiée n'existe pas");
         }
 
-        // 2. Vérifier les places disponibles pour chaque type
-        foreach ($typesQuantites as $idType => $quantite) {
-            $sql_check_places = "
-                SELECT 
-                    ct.capaciteMax - COALESCE(SUM(e.quantite), 0) as places_dispo
-                FROM traversee tr
-                JOIN liaison l ON tr.code = l.code
-                JOIN type t ON t.lettre = (SELECT lettre FROM type WHERE idType = ?)
-                JOIN contenir ct ON ct.lettre = t.lettre AND ct.idBat = tr.idBat
-                LEFT JOIN reservation r ON r.numTra = tr.numTra
-                LEFT JOIN enregistrer e ON e.numRes = r.numRes AND e.idType = t.idType
-                WHERE tr.numTra = ?
-                GROUP BY ct.capaciteMax";
-            
-            $stmt_places = $db->prepare($sql_check_places);
-            $stmt_places->bind_param("ii", $idType, $numTra);
-            $stmt_places->execute();
-            $result_places = $stmt_places->get_result();
-            $places = $result_places->fetch_assoc();
-            
-            if (!$places || $places['places_dispo'] < $quantite) {
-                throw new Exception("Places insuffisantes pour le type $idType");
+        // Début de la transaction
+        $db->begin_transaction();
+
+        try {
+            // Insertion de la réservation
+            $stmt = $db->prepare("INSERT INTO reservation (numRes, nom, adresse, codePostal, ville, numTra) VALUES (?, ?, ?, ?, ?, ?)");
+            if (!$stmt) {
+                throw new Exception("Erreur de préparation de l'insertion de réservation: " . $db->error);
             }
-        }
-
-        // 3. Insérer la réservation
-        $sql_reservation = "
-            INSERT INTO reservation (numRes, nomRes, adresse, codePostal, ville, numTra)
-            VALUES (?, ?, ?, ?, ?, ?)";
-        
-        $stmt_reservation = $db->prepare($sql_reservation);
-        $stmt_reservation->bind_param("issssi", $numRes, $nomRes, $adresse, $codePostal, $ville, $numTra);
-        $stmt_reservation->execute();
-
-        // 4. Insérer les détails de la réservation
-        $sql_enregistrer = "
-            INSERT INTO enregistrer (idType, numRes, quantite)
-            VALUES (?, ?, ?)";
-        
-        $stmt_enregistrer = $db->prepare($sql_enregistrer);
-        foreach ($typesQuantites as $idType => $quantite) {
-            if ($quantite > 0) {
-                $stmt_enregistrer->bind_param("iii", $idType, $numRes, $quantite);
-                $stmt_enregistrer->execute();
+            
+            $stmt->bind_param("sssssi", $numRes, $nom, $adresse, $codePostal, $ville, $numTra);
+            if (!$stmt->execute()) {
+                throw new Exception("Erreur lors de l'insertion de la réservation: " . $stmt->error);
             }
+
+            // Insertion des quantités
+            foreach ($typesQuantites as $idType => $quantite) {
+                $stmt = $db->prepare("INSERT INTO enregistrer (numRes, idType, quantite) VALUES (?, ?, ?)");
+                if (!$stmt) {
+                    throw new Exception("Erreur de préparation de l'insertion des quantités: " . $db->error);
+                }
+                
+                $stmt->bind_param("sii", $numRes, $idType, $quantite);
+                if (!$stmt->execute()) {
+                    throw new Exception("Erreur lors de l'insertion des quantités: " . $stmt->error);
+                }
+            }
+
+            // Si tout s'est bien passé, on valide la transaction
+            $db->commit();
+            return true;
+
+        } catch (Exception $e) {
+            // En cas d'erreur, on annule la transaction
+            $db->rollback();
+            throw $e;
         }
-
-        // Valider la transaction
-        $db->commit();
-        return true;
-
     } catch (Exception $e) {
-        // En cas d'erreur, annuler la transaction
-        $db->rollback();
-        error_log("Erreur lors de la réservation : " . $e->getMessage());
-        return false;
+        throw new Exception("Erreur lors de la réservation: " . $e->getMessage());
     }
 }
 
