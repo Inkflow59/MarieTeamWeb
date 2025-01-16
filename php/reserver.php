@@ -78,7 +78,7 @@ try {
         $_SESSION['lastReservationNumber'] = $numRes;
         
         // Redirection vers la page de confirmation
-        header("Location: ../confirmation.php?numRes=" . $numRes);
+        header("Location: ../confirmation.html?numRes=" . $numRes);
         exit();
     } else {
         error_log("Échec de la réservation sans exception");
