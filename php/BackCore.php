@@ -243,46 +243,79 @@ function getTraversesBySecteur($idSecteur) {
  * @return bool True si la réservation est réussie, False sinon
  */
 function reserverTrajet($numRes, $nomRes, $adresse, $codePostal, $ville, $numTra, $typesQuantites) {
-    // Accéder à la variable globale $db pour la connexion
     global $db;
 
-    // Commencer une transaction pour assurer la cohérence des données
+    // Commencer une transaction
     $db->begin_transaction();
 
     try {
-        // Insérer une nouvelle réservation dans la table reservation
+        // 1. Vérifier si la traversée existe et n'est pas déjà passée
+        $sql_check_traversee = "SELECT date, heure FROM traversee WHERE numTra = ? AND CONCAT(date, ' ', heure) > NOW()";
+        $stmt_check = $db->prepare($sql_check_traversee);
+        $stmt_check->bind_param("i", $numTra);
+        $stmt_check->execute();
+        $result_check = $stmt_check->get_result();
+        
+        if ($result_check->num_rows === 0) {
+            throw new Exception("Traversée invalide ou déjà passée");
+        }
+
+        // 2. Vérifier les places disponibles pour chaque type
+        foreach ($typesQuantites as $idType => $quantite) {
+            $sql_check_places = "
+                SELECT 
+                    ct.capaciteMax - COALESCE(SUM(e.quantite), 0) as places_dispo
+                FROM traversee tr
+                JOIN liaison l ON tr.code = l.code
+                JOIN type t ON t.lettre = (SELECT lettre FROM type WHERE idType = ?)
+                JOIN contenir ct ON ct.lettre = t.lettre AND ct.idBat = tr.idBat
+                LEFT JOIN reservation r ON r.numTra = tr.numTra
+                LEFT JOIN enregistrer e ON e.numRes = r.numRes AND e.idType = t.idType
+                WHERE tr.numTra = ?
+                GROUP BY ct.capaciteMax";
+            
+            $stmt_places = $db->prepare($sql_check_places);
+            $stmt_places->bind_param("ii", $idType, $numTra);
+            $stmt_places->execute();
+            $result_places = $stmt_places->get_result();
+            $places = $result_places->fetch_assoc();
+            
+            if (!$places || $places['places_dispo'] < $quantite) {
+                throw new Exception("Places insuffisantes pour le type $idType");
+            }
+        }
+
+        // 3. Insérer la réservation
         $sql_reservation = "
             INSERT INTO reservation (numRes, nomRes, adresse, codePostal, ville, numTra)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ";
-
+            VALUES (?, ?, ?, ?, ?, ?)";
+        
         $stmt_reservation = $db->prepare($sql_reservation);
         $stmt_reservation->bind_param("issssi", $numRes, $nomRes, $adresse, $codePostal, $ville, $numTra);
         $stmt_reservation->execute();
 
-        // Insérer chaque type de billet et la quantité correspondante dans la table enregistrer
+        // 4. Insérer les détails de la réservation
         $sql_enregistrer = "
             INSERT INTO enregistrer (idType, numRes, quantite)
-            VALUES (?, ?, ?)
-        ";
-
+            VALUES (?, ?, ?)";
+        
         $stmt_enregistrer = $db->prepare($sql_enregistrer);
-
-        // Boucle à travers chaque type de billet et sa quantité
-        foreach ($typesQuantites as $type => $quantite) {
-            // `type` est l'idType du billet et `quantite` est la quantité de ce type
-            $stmt_enregistrer->bind_param("iii", $type, $numRes, $quantite);
-            $stmt_enregistrer->execute();
+        foreach ($typesQuantites as $idType => $quantite) {
+            if ($quantite > 0) {
+                $stmt_enregistrer->bind_param("iii", $idType, $numRes, $quantite);
+                $stmt_enregistrer->execute();
+            }
         }
 
         // Valider la transaction
         $db->commit();
-        return true; // Réservation réussie
+        return true;
 
     } catch (Exception $e) {
         // En cas d'erreur, annuler la transaction
         $db->rollback();
-        return false; // Réservation échouée
+        error_log("Erreur lors de la réservation : " . $e->getMessage());
+        return false;
     }
 }
 

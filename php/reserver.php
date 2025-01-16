@@ -42,4 +42,3 @@ if ($reservationSuccess) {
 } else {
     echo json_encode(['success' => false, 'message' => 'Échec de la réservation.']);
 }
-?>
