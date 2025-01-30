@@ -22,7 +22,7 @@
             <ul class="nav-menu">
                 <li class="nav-item"><a href="index.php" class="nav-link">Accueil</a></li>
                 <li class="nav-item"><a href="reservation.php" class="nav-link">Reservation</a></li>
-                <li class="nav-item"><a href="recherche_billet" class="nav-link">Mon billet</a></li>
+                <li class="nav-item"><a href="recherche_billet.php" class="nav-link">Mon billet</a></li>
                 <li class="nav-item"><a href="#" class="nav-link">Support</a></li>
             </ul>
 
