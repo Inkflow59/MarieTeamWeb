@@ -650,6 +650,12 @@ function getTarifsByNumTra($numTra) {
     return $tarifs; // Retourner le tableau des tarifs
 }
 
+/**
+ * Récupère le temps total de traversée
+ * 
+ * @param int $numTra Numéro de la traversée
+ * @return string|null Temps total au format HH:MM ou null si erreur
+ */
 function getTempsTotalTraversee($numTra){
     global $db;
     
@@ -686,6 +692,12 @@ function getTempsTotalTraversee($numTra){
     return null;
 }
 
+/**
+ * Récupère le prix minimum pour une traversée
+ * 
+ * @param int $numTra Numéro de la traversée
+ * @return float|null Prix minimum trouvé ou null si aucun prix
+ */
 function getPrixMinimumPourTraversee($numTra) {
     // Tableau des types de billets (de 1 à 7 selon la structure de la base de données)
     $types = range(1, 7);
@@ -704,15 +716,6 @@ function getPrixMinimumPourTraversee($numTra) {
     return $prixMinimum;
 }
 
-//Pour stocker le numéro de la traversée lorsque l'utilisateur clique sur le bouton "Suivant"
-session_start(); // Assurez-vous que la session est démarrée
-if (isset($_POST['numTra'])) {
-    $_SESSION['numTra'] = $_POST['numTra']; // Stocke le numéro de traversée en session
-}
-
-$places = getPlacesDisponiblesParCategorie(5);
-$places["passagers"];
-
 /**
  * Vérifie si un numéro de réservation existe déjà
  * 
@@ -728,4 +731,59 @@ function checkReservationExists($numRes) {
     $result = $stmt->get_result();
     
     return $result->num_rows > 0;
+}
+
+/**
+ * Récupère toutes les informations d'une traversée
+ * 
+ * @param int $numTra Numéro de la traversée
+ * @return array|null Détails de la traversée ou null si non trouvée
+ */
+function getInfosTraversee($numTra) {
+    global $db;
+
+    // Requête SQL pour récupérer les informations de la traversée
+    $sql = "
+        SELECT 
+            t.numTra,
+            t.date,
+            t.heure,
+            b.nomBat,
+            p1.nomPort AS port_depart,
+            p2.nomPort AS port_arrivee,
+            l.distance,
+            l.tempsLiaison
+        FROM 
+            traversee t
+        JOIN 
+            liaison l ON t.code = l.code
+        JOIN 
+            bateau b ON t.idBat = b.idBat
+        JOIN 
+            port p1 ON l.idPort_Depart = p1.idPort
+        JOIN 
+            port p2 ON l.idPort_Arrivee = p2.idPort
+        WHERE 
+            t.numTra = ?
+    ";
+
+    // Préparer et exécuter la requête
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("i", $numTra);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Vérifier si une traversée correspondante a été trouvée
+    if ($row = $result->fetch_assoc()) {
+        return $row; // Retourner les détails de la traversée
+    }
+
+    // Si aucune traversée n'a été trouvée
+    return null;
+}
+
+//Pour stocker le numéro de la traversée lorsque l'utilisateur clique sur le bouton "Suivant"
+session_start(); // Assurez-vous que la session est démarrée
+if (isset($_POST['numTra'])) {
+    $_SESSION['numTra'] = $_POST['numTra']; // Stocke le numéro de traversée en session
 }

@@ -9,7 +9,8 @@
     <title>Document</title>
 </head>
 <body>
-    <?php include 'module/header.php'; ?>
+    <?php include 'module/header.php';
+    include 'module/footer.php'; ?>
 
     <section class="main">
         <div class="background"></div>

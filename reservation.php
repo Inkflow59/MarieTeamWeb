@@ -17,8 +17,9 @@
 </head>
 
 <body>
-  <?php 
-    include 'module/header.php'
+  <?php
+  include 'module/header.php';
+  include 'module/footer.php';
   ?>
 
   <?php

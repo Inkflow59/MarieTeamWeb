@@ -1,5 +1,8 @@
 <?php include("php/BackCore.php"); ?>
-
+<?php
+include 'module/header.php';
+include 'module/footer.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
