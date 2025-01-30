@@ -686,6 +686,24 @@ function getTempsTotalTraversee($numTra){
     return null;
 }
 
+function getPrixMinimumPourTraversee($numTra) {
+    // Tableau des types de billets (de 1 à 7 selon la structure de la base de données)
+    $types = range(1, 7);
+    $prixMinimum = null;
+    
+    // Parcourir tous les types de billets
+    foreach ($types as $type) {
+        $prix = getTarifByType($numTra, $type);
+        
+        // Si un prix est trouvé et qu'il est inférieur au prix minimum actuel (ou si c'est le premier prix valide)
+        if ($prix !== null && ($prixMinimum === null || $prix < $prixMinimum)) {
+            $prixMinimum = $prix;
+        }
+    }
+    
+    return $prixMinimum;
+}
+
 //Pour stocker le numéro de la traversée lorsque l'utilisateur clique sur le bouton "Suivant"
 session_start(); // Assurez-vous que la session est démarrée
 if (isset($_POST['numTra'])) {
