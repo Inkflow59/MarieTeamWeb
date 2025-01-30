@@ -139,23 +139,22 @@ function estPlein($traversee) {
 function getPlacesDisponiblesParCategorie($traversee) {
     global $db;
     
-    // Requête SQL modifiée pour regrouper par catégorie principale
+    // Requête SQL modifiée pour être plus robuste
     $query = "SELECT 
         c.lettre,
         c.libelleCat,
-        SUM(ct.capaciteMax) as capaciteMax,
+        COALESCE(SUM(ct.capaciteMax), 0) as capaciteMax,
         COALESCE(SUM(e.quantite), 0) as places_occupees,
-        (SUM(ct.capaciteMax) - COALESCE(SUM(e.quantite), 0)) as places_disponibles
+        COALESCE(SUM(ct.capaciteMax) - COALESCE(SUM(e.quantite), 0), 0) as places_disponibles
     FROM traversee t
-    JOIN bateau b ON t.idBat = b.idBat
-    JOIN contenir ct ON b.idBat = ct.idBat
-    JOIN categorie c ON ct.lettre = c.lettre
+    CROSS JOIN categorie c 
+    LEFT JOIN bateau b ON t.idBat = b.idBat
+    LEFT JOIN contenir ct ON b.idBat = ct.idBat AND c.lettre = ct.lettre
     LEFT JOIN type ty ON c.lettre = ty.lettre
     LEFT JOIN enregistrer e ON ty.idType = e.idType
     LEFT JOIN reservation r ON e.numRes = r.numRes AND r.numTra = t.numTra
-    WHERE t.numTra = ?
+    WHERE t.numTra = ? AND c.lettre IN ('P', 'V')
     GROUP BY c.lettre, c.libelleCat
-    HAVING c.lettre IN ('P', 'V')
     ORDER BY c.lettre";
 
     $stmt = $db->prepare($query);
@@ -163,27 +162,21 @@ function getPlacesDisponiblesParCategorie($traversee) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Initialisation des valeurs
+    // Initialisation des valeurs par défaut
     $placesDisponibles = [
         'passagers' => 0,
         'vehicules' => 0
     ];
     
-    // Compteur pour vérifier qu'on a bien les deux catégories
-    $categoriesTrouvees = 0;
-    
     while ($row = $result->fetch_assoc()) {
         if ($row['lettre'] === 'P') {
-            $placesDisponibles['passagers'] = $row['places_disponibles'];
-            $categoriesTrouvees++;
+            $placesDisponibles['passagers'] = max(0, (int)$row['places_disponibles']);
         } else if ($row['lettre'] === 'V') {
-            $placesDisponibles['vehicules'] = $row['places_disponibles'];
-            $categoriesTrouvees++;
+            $placesDisponibles['vehicules'] = max(0, (int)$row['places_disponibles']);
         }
     }
     
-    // On ne retourne les valeurs que si on a trouvé les deux catégories
-    return $categoriesTrouvees === 2 ? $placesDisponibles : null;
+    return $placesDisponibles;
 }
 
 /**
@@ -662,3 +655,6 @@ session_start(); // Assurez-vous que la session est démarrée
 if (isset($_POST['numTra'])) {
     $_SESSION['numTra'] = $_POST['numTra']; // Stocke le numéro de traversée en session
 }
+
+$places = getPlacesDisponiblesParCategorie(5);
+$places["passagers"];
