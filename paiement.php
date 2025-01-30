@@ -75,7 +75,7 @@
                           </div> 
                         </div>
                       </div>
-                      <span class="text-muted certificate-text"><i class="fa fa-lock"></i> Your transaction est sécurisé avec le certificat SSL</span>
+                      <span class="text-muted certificate-text"><i class="fa fa-lock"></i>Votre transaction est sécurisé avec le certificat SSL</span>
                     </div>
                   </div>
                 </div>

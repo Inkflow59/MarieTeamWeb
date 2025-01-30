@@ -650,6 +650,60 @@ function getTarifsByNumTra($numTra) {
     return $tarifs; // Retourner le tableau des tarifs
 }
 
+function getTempsTotalTraversee($numTra){
+    global $db;
+    
+    // Récupérer l'heure de départ et le temps de liaison
+    $sql = "SELECT t.heure as heure_depart, l.tempsLiaison 
+            FROM traversee t
+            JOIN liaison l ON t.code = l.code
+            WHERE t.numTra = ?";
+            
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("i", $numTra);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        $heureDepart = strtotime($row['heure_depart']);
+        $tempsLiaison = $row['tempsLiaison'];
+        
+        // Convertir le temps de liaison en secondes
+        list($heures, $minutes, $secondes) = explode(':', $tempsLiaison);
+        $tempsLiaisonSecondes = ($heures * 3600) + ($minutes * 60) + $secondes;
+        
+        // Calculer l'heure d'arrivée
+        $heureArrivee = $heureDepart + $tempsLiaisonSecondes;
+        
+        // Formater le temps total au format HH:MM
+        $tempsTotalSecondes = $tempsLiaisonSecondes;
+        $heures = floor($tempsTotalSecondes / 3600);
+        $minutes = floor(($tempsTotalSecondes % 3600) / 60);
+        
+        return sprintf("%02dh%02d", $heures, $minutes);
+    }
+    
+    return null;
+}
+
+function getPrixMinimumPourTraversee($numTra) {
+    // Tableau des types de billets (de 1 à 7 selon la structure de la base de données)
+    $types = range(1, 7);
+    $prixMinimum = null;
+    
+    // Parcourir tous les types de billets
+    foreach ($types as $type) {
+        $prix = getTarifByType($numTra, $type);
+        
+        // Si un prix est trouvé et qu'il est inférieur au prix minimum actuel (ou si c'est le premier prix valide)
+        if ($prix !== null && ($prixMinimum === null || $prix < $prixMinimum)) {
+            $prixMinimum = $prix;
+        }
+    }
+    
+    return $prixMinimum;
+}
+
 //Pour stocker le numéro de la traversée lorsque l'utilisateur clique sur le bouton "Suivant"
 session_start(); // Assurez-vous que la session est démarrée
 if (isset($_POST['numTra'])) {
