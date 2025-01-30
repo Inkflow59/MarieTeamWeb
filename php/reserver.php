@@ -1,0 +1,60 @@
+<?php
+include("BackCore.php");
+
+// Vérifier si les données de réservation ont été envoyées
+if (!isset($_POST['reservationData'])) {
+    header('Location: ../reservation.php?error=no_data');
+    exit();
+}
+
+try {
+    // Décoder les données JSON
+    $reservationData = json_decode($_POST['reservationData'], true);
+    
+    if (!$reservationData) {
+        throw new Exception("Données de réservation invalides");
+    }
+
+    // Générer un numéro de réservation unique
+    $numRes = uniqid('RES', true);
+
+    // Extraire les données du tableau
+    $nom = $reservationData['nom'];
+    $adresse = $reservationData['adresse'];
+    $codePostal = $reservationData['codePostal'];
+    $ville = $reservationData['ville'];
+    $numTra = $reservationData['numTra'];
+    $quantites = $reservationData['quantites'];
+
+    // Appeler la fonction reserverTrajet
+    $resultat = reserverTrajet(
+        $numRes,
+        $nom,
+        $adresse,
+        $codePostal,
+        $ville,
+        $numTra,
+        $quantites
+    );
+
+    if ($resultat) {
+        // Stocker le numéro de réservation en session pour l'affichage ultérieur
+        session_start();
+        $_SESSION['derniere_reservation'] = $numRes;
+        
+        // Rediriger vers une page de confirmation
+        header('Location: ../confirmation.html?success=1');
+        exit();
+    } else {
+        throw new Exception("Échec de la réservation");
+    }
+
+} catch (Exception $e) {
+    // Ajouter un log pour le débogage
+    error_log("Erreur lors de la réservation : " . $e->getMessage());
+    
+    // En cas d'erreur, rediriger vers la page de réservation avec un message d'erreur
+    header('Location: ../reservation.php?error=' . urlencode("Erreur lors de la réservation : " . $e->getMessage()));
+    exit();
+}
+?>
