@@ -197,6 +197,9 @@ if ($numTra) {
     }
 
     function submitAndPay() {
+        // Générer un numéro de réservation aléatoire de 10 chiffres
+        const numRes = Math.floor(1000000000 + Math.random() * 9000000000);
+        
         const nom = document.getElementById('nom').value;
         const adresse = document.getElementById('adresse').value;
         const codePostal = document.getElementById('codePostal').value;
@@ -209,27 +212,32 @@ if ($numTra) {
         }
 
         // Vérification des quantités de billets
-        const quantites = Array.from(document.querySelectorAll('.quantite')).map(input => parseInt(input.value) || 0);
-        const totalQuantites = quantites.reduce((acc, curr) => acc + curr, 0);
+        const quantites = {};
+        document.querySelectorAll('.quantite').forEach((input, index) => {
+            quantites[index + 1] = parseInt(input.value) || 0;
+        });
+        
+        const totalQuantites = Object.values(quantites).reduce((acc, curr) => acc + curr, 0);
         if (totalQuantites === 0) {
             alert("Veuillez sélectionner au moins un billet avant de continuer.");
-            return; // Empêche la redirection si aucun billet n'est sélectionné
+            return;
         }
 
         // Calculer le prix total
-        const prixTotal = quantites.reduce((total, quantite, index) => {
-            const prix = parseFloat(document.querySelectorAll('.prix .type')[index].textContent.replace(' €', '')) || 0;
-            return total + (prix * quantite);
-        }, 0);
+        let prixTotal = 0;
+        document.querySelectorAll('.prix .type').forEach((element, index) => {
+            const prix = parseFloat(element.textContent.replace(' €', '')) || 0;
+            prixTotal += prix * quantites[index + 1];
+        });
 
         // Enregistrer le prix total dans un cookie
         document.cookie = "prixTotal=" + prixTotal.toFixed(2) + "; path=/"; // Stocke le prix total dans un cookie
 
         const numTra = <?php echo json_encode($numTra); ?>; // Récupérer numTra en PHP
-        const numRes = 1; // Définir numRes ici, par exemple, en tant que valeur fixe ou à partir d'un autre champ
 
         // Enregistrer les données dans le sessionStorage
         sessionStorage.setItem('reservationData', JSON.stringify({
+            numRes,
             nom,
             adresse,
             codePostal,

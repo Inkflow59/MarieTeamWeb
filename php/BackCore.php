@@ -712,3 +712,20 @@ if (isset($_POST['numTra'])) {
 
 $places = getPlacesDisponiblesParCategorie(5);
 $places["passagers"];
+
+/**
+ * Vérifie si un numéro de réservation existe déjà
+ * 
+ * @param int $numRes Numéro de réservation à vérifier
+ * @return bool True si existe, False sinon
+ */
+function checkReservationExists($numRes) {
+    global $db;
+    
+    $stmt = $db->prepare("SELECT numRes FROM reservation WHERE numRes = ?");
+    $stmt->bind_param("i", $numRes);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    return $result->num_rows > 0;
+}

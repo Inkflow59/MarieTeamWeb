@@ -15,8 +15,29 @@ try {
         throw new Exception("Données de réservation invalides");
     }
 
-    // Générer un numéro de réservation unique
-    $numRes = uniqid('RES', true);
+    // Vérifier que les idType sont valides avant de continuer
+    $quantites = $reservationData['quantites'];
+    foreach ($quantites as $idType => $quantite) {
+        // Vérifier si l'idType existe dans la table type
+        $stmt = $db->prepare("SELECT idType FROM type WHERE idType = ?");
+        if (!$stmt) {
+            throw new Exception("Erreur de préparation de la requête de vérification");
+        }
+        
+        $stmt->bind_param("i", $idType);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            throw new Exception("Type de billet invalide : $idType");
+        }
+    }
+
+    // Générer un numéro de réservation numérique unique
+    $numRes = mt_rand(100000, 999999);
+    while (checkReservationExists($numRes)) {
+        $numRes = mt_rand(100000, 999999);
+    }
 
     // Extraire les données du tableau
     $nom = $reservationData['nom'];
