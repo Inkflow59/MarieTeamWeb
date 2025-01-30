@@ -650,6 +650,42 @@ function getTarifsByNumTra($numTra) {
     return $tarifs; // Retourner le tableau des tarifs
 }
 
+function getTempsTotalTraversee($numTra){
+    global $db;
+    
+    // Récupérer l'heure de départ et le temps de liaison
+    $sql = "SELECT t.heure as heure_depart, l.tempsLiaison 
+            FROM traversee t
+            JOIN liaison l ON t.code = l.code
+            WHERE t.numTra = ?";
+            
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("i", $numTra);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        $heureDepart = strtotime($row['heure_depart']);
+        $tempsLiaison = $row['tempsLiaison'];
+        
+        // Convertir le temps de liaison en secondes
+        list($heures, $minutes, $secondes) = explode(':', $tempsLiaison);
+        $tempsLiaisonSecondes = ($heures * 3600) + ($minutes * 60) + $secondes;
+        
+        // Calculer l'heure d'arrivée
+        $heureArrivee = $heureDepart + $tempsLiaisonSecondes;
+        
+        // Formater le temps total au format HH:MM
+        $tempsTotalSecondes = $tempsLiaisonSecondes;
+        $heures = floor($tempsTotalSecondes / 3600);
+        $minutes = floor(($tempsTotalSecondes % 3600) / 60);
+        
+        return sprintf("%02dh%02d", $heures, $minutes);
+    }
+    
+    return null;
+}
+
 //Pour stocker le numéro de la traversée lorsque l'utilisateur clique sur le bouton "Suivant"
 session_start(); // Assurez-vous que la session est démarrée
 if (isset($_POST['numTra'])) {
