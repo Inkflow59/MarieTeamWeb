@@ -1,0 +1,32 @@
+@media screen and (max-width: 768px) {
+    .horizontale {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cadre {
+        display: none;
+    }
+
+    .btn-experience, .btn-client, .btn-reserve {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .reserve-section {
+        margin-top: 1rem;
+    }
+
+    .reserve-title {
+        font-size: 4rem;
+    }
+
+    .main{
+        height: 100%;
+    }
+
+    .center{
+        gap: 10px;
+        flex-direction: column-reverse;
+    }
+}

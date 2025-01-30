@@ -1,134 +1,174 @@
-.argument{
-  display: inline-flex;
-  flex-direction: column;
-  align-items: start;
-  gap: 1.2rem;
-  font-size: 1.10rem;
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #ffffff; /* Couleur de fond par défaut (clair) */
+    color: #000000; /* Couleur du texte par défaut (noir) */
 }
 
-.bg{
-    position: absolute;
-    background-repeat: no-repeat;
-    width: 120rem;
-    height: 67.375rem;
-    flex-shrink: 0;
-    background: url("../img/Fond.jpg") lightgray 50% / cover no-repeat;
-    filter: blur(3.9000000953674316px);
-    z-index: -20000;
-    margin-top: -1rem;
+.dark-mode {
+    background-color: #121212; /* Couleur de fond sombre */
+    color: #ffffff; /* Couleur du texte clair */
 }
 
-.item2 { 
-  grid-area: menu; }
-.item3 { grid-area: main; }
-.item4 { grid-area: right; }
+.center {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    gap: 10rem;
+}
 
-.grid-container {
+.navbar {
+    background-color: #ffffff; /* Couleur de fond par défaut */
+}
+
+.dark-mode .navbar {
+    background-color: #1e1e1e; /* Couleur de fond de la navbar en mode sombre */
+}
+
+.logo {
+    font-family: 'Mea Culpa', cursive;
+    font-size: 2.5rem;
+    color: #333; /* Couleur par défaut */
+}
+
+.dark-mode .logo {
+    color: #ffffff; /* Couleur en mode sombre */
+}
+
+.main{
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin-top: 7rem;
-  display: grid;
-  grid-template-areas:
-    'menu main main main right right';
-  gap: 150px;
-  padding: 10px;
-  margin-left: 5rem;
+  height: 80%;
+  margin-top: -2rem;
+  background-image: url('../img/fond.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  justify-content: center
+
 }
 
-.grid-container > div {
-  text-align: center;
-  padding: 20px 0;
-  font-size: 30px;
+.verticale2{
+    display: flex;
+    flex-direction: column;
 }
 
 .cadre{
   display: flex;
-  width: 20vw;
-  height: auto;
-  padding: 0.75rem 0.9375rem; 
+  padding: 2.75rem 0.9375rem;
   flex-direction: column;
+  max-width: 20rem;
   justify-content: center;
   align-items: center;
-    gap: 1.375rem;
   border-radius: 2.6875rem;
   border: 3px solid #FFF;
   background: rgba(0, 0, 0, 0.84);
+  text-align: center;
+  z-index: 1;
+  margin-top: 2rem;
+  gap: 30px;
 }
 
-.titre{
-color: #FFF;
-text-align: center;
-font-family: "Mea Culpa";
-font-size: 2.50rem;
-font-style: normal;
-font-weight: 10;
-line-height: normal;
+.btn-experience, .btn-client {
+    background-color: #d4c300; /* Couleur dorée */
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    cursor: not-allowed; /* Change le curseur pour indiquer que ce n'est pas cliquable */
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    pointer-events: none; /* Désactive les événements de clic */
 }
 
-.jaune{
-  border-radius: 1.5rem;
-  background: rgba(255, 233, 106, 0.76);
-  display: flex;
-  padding: 1.05rem;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  font-size: 1.2rem;
-  width: 70%;
-
+.btn-experience:hover, .btn-client:hover {
+    background-color: #b3a600; /* Couleur dorée plus foncée au survol */
 }
 
-.note{
+.rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+
+ul {
+    list-style-type: none; /* Supprime les puces */
+    padding: 0; /* Supprime le padding par défaut */
+    text-align: left; /* Aligne le texte à gauche */
+}
+
+.reserve-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white; /* Couleur du texte */
+    text-align: center;
+    gap: 10px;
+    margin-top: 2rem; /* Ajoute un espace au-dessus de la section de réservation */
+}
+
+.btn-reserve {
+    background-color: #007bff; /* Couleur du bouton de réservation */
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    cursor: pointer; /* Curseur pour indiquer que le bouton est cliquable */
+    font-size: 1.2rem; /* Taille de la police */
+    transition: background-color 0.3s;
+}
+
+.btn-reserve:hover {
+    background-color: #0056b3; /* Couleur plus foncée au survol */
+}
+
+.horizontale{
   display: inline-flex;
-width: 100%;
-height: 10%;
-justify-content: start;
-align-items: center;
-gap: 1.4375rem;
-flex-shrink: 0;
-border-radius: 2rem;
-background: #FFF;
-box-shadow: 20px 14px 40px 0px rgba(0, 0, 0, 0.08);
-
-}
-
-.logo{
-  width: 4rem;
-  height: 4rem;
-  flex-shrink: 0;
-  border-radius: 5rem;
-  border: 4px solid #FFF;
-  background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-  box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.08);
-  margin-left: 1rem;
-}
-
-.verticale{
-  display: inline-flex;
-  flex-direction: column;
-  gap: -14%;
-}
-
-.notes{
-  color: var(--Dark---gray, #6A6A6A);
-  font-family: Manrope;
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 1.25rem; /* 100% */
-  margin-top: -0.20rem;
-}
-
-.test{
-  display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-  flex: 1 0 0;
-  margin-top: 1rem;
+  align-items: center;
+  gap: 300px;
+  flex-wrap: wrap;
+  justify-content: center
+
+
 }
 
-.titres{
+header {
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 768px) {
+    .cadre {
+        max-width: 90%; /* Permet au cadre de s'étendre sur 90% de la largeur de l'écran */
+        padding: 1.5rem; /* Réduire le padding pour les petits écrans */
+    }
+
+    .horizontale {
+        flex-direction: column; /* Change la direction en colonne sur les petits écrans */
+        align-items: center; /* Centre les éléments */
+    }
+
+    .btn-experience, .btn-client, .btn-reserve {
+        width: 100%; /* Les boutons prennent toute la largeur */
+        padding: 1rem; /* Ajuste le padding pour les petits écrans */
+    }
+
+    .reserve-section {
+        margin-top: 1rem; /* Réduit l'espace au-dessus de la section de réservation */
+    }
+}
+
+.reserve-title{
+  font-size: 1.5rem;
   color: #FFF;
   text-shadow: 0px 4px 6.5px #FFF;
   font-family: "Mea Culpa";
@@ -136,33 +176,285 @@ box-shadow: 20px 14px 40px 0px rgba(0, 0, 0, 0.08);
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin-bottom: 2rem;
-  text-align: center;
+  margin: 0;
 }
 
-.boutton{
-  display: inline-flex;
-  height: 1.15rem;
-  width: 80%;
-  padding: 1.6875rem 0.4375rem;
-  justify-content: center;
-  align-items: center;
-  align-self: stretch;
-  border-radius: 1.25rem;
-  border: 2px solid #FFF;
-  background: #353535;
-  color: white;
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../img/fond.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(5px); /* Applique le flou uniquement à l'image de fond */
+    z-index: 0; /* Assurez-vous que le fond est derrière le contenu */
 }
 
-.boutton:hover{
-  transform: scaleZ(10000rem);
+.center {
+    display: flex;
+    flex-direction: row; /* Empile les éléments verticalement */
+    align-items: center; /* Centre les éléments horizontalement */
+    justify-content: center; /* Centre les éléments verticalement */
+    position: relative;
+    z-index: 1; /* Le contenu doit être au-dessus du fond */
+    gap: 10rem; /* Ajoute un espacement entre le cadre et la section de réservation */
+    flex-wrap: wrap;
 }
 
-.reserve {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: -5rem;
+.centre{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 40px;
 }
 
+.titre{
+    font-size: 2rem;
+}
+
+.liste{
+    display: flex;
+    flex-direction: column;
+}
+
+.miniature{
+    width: 23.125rem;
+    height: 12.5rem;
+    border-radius: 0.9375rem;
+    background: #D9D9D9;
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+    text-align: center  ;
+}
+
+.verticale{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+.description{
+    width: 300px;
+}
+
+.row-reverse{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+    text-align: center  ;
+}
+
+.wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 20px;
+}
+.review-card {
+	background-color: #f5f5f5;
+	border-radius: 10px;
+	padding: 20px;
+	width: 300px;
+	box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+}
+.img-area {
+	width: 80px;
+	height: 80px;
+	overflow: hidden;
+	border-radius: 50%;
+	margin-right: 25px;
+}
+.img-area img {
+	width: 100%;
+}
+.header-content {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+.info h4 {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 600;
+}
+.info p {
+	margin: 5px 0 0;
+	font-size: 14px;
+	font-weight: 400;
+	color: #666;
+}
+.single-review p {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.7;
+	color: #333;
+}
+.review-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 10px;
+	font-size: 14px;
+	color: #666;
+}
+.rating {
+	display: flex;
+    flex-direction: row;
+}
+.rating span {
+	color: #000;
+	font-size: 18px;
+}
+.rating span.active {
+	color: #fbc02d;
+}
+@media screen and (max-width: 767px) {
+	.wrapper {
+		flex-direction: column;
+		align-items: center;
+	}
+	.review-card {
+		width: 85%;
+	}
+}
+
+.bg2{
+    background-color: #3b3b3b25;
+    width: 100%;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    padding: 30px;
+
+}
+
+.bg{
+    background-color: #3b3b3b25;
+    width: 100%;
+    margin-bottom: 2rem;
+    padding: 30px;
+
+
+}
+
+/* Styles pour le mode sombre */
+.dark-mode {
+    background-color: #121212; /* Couleur de fond sombre */
+    color: #ffffff; /* Couleur du texte clair */
+}
+
+.dark-mode .navbar {
+    background-color: #1e1e1e; /* Couleur de fond de la navbar sombre */
+}
+
+.dark-mode .cadre {
+    background: rgba(0, 0, 0, 0.84); /* Couleur de fond du cadre sombre */
+}
+
+.dark-mode .reserve-section {
+    color: white; /* Couleur du texte */
+}
+
+.dark-mode .nav-link {
+    color: #ffffff; /* Couleur du texte en mode sombre */
+}
+
+.dark-mode .nav-link:hover {
+    color: #00aaff; /* Couleur au survol en mode sombre */
+}
+
+.title{
+    font-family: Inter;
+font-size: 1.5rem;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+}
+
+.actualites {
+    padding: 2rem;
+    text-align: center;
+}
+
+.titre {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.actualites-slider {
+    display: flex;
+    overflow: hidden; /* Masque les articles qui débordent */
+    position: relative;
+    width: 100%; /* Assurez-vous que le slider prend toute la largeur */
+}
+
+.article {
+    min-width: 300px; /* Largeur minimale pour chaque article */
+    margin: 0 1rem; /* Espacement entre les articles */
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    flex: 0 0 auto; /* Empêche les articles de se réduire */
+}
+
+.article-image {
+    width: 100%;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.article-info {
+    padding: 1rem;
+}
+
+.article-date {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.article-title {
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+}
+
+.article-description {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.slider-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}

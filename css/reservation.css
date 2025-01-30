@@ -46,11 +46,11 @@
 
         /* Bouton de recherche */
         .search-button {
-          background-color: #160053;
+          background-color: #0085a7;
           border: none;
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
+          border-radius: 5%;
+          font-size: 12px;
+
           display: flex;
           align-items: center;
           justify-content: center;

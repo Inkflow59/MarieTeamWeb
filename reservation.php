@@ -3,10 +3,13 @@
 
 <head>
   <meta charset="UTF-8">
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/navbar.css">
+
 
   <link rel="stylesheet" href="css/reservation.css">
 
@@ -14,28 +17,9 @@
 </head>
 
 <body>
-  <header>
-    <nav>
-      <div class="left">
-        <li class="signature">MarieTeam</li>
-      </div>
-      <div class="menu">
-        <a href="index.html">
-          <li>Accueil</li>
-        </a>
-        <a href="reservation.php">
-          <li>Reservation</li>
-        </a>
-        <a href="#">
-          <li>Contact</li>
-        </a>
-        <a href="#">
-          <li>Mon ticket</li>
-        </a>
-      </div>
-    </nav>
-  </header>
-  </head>
+  <?php 
+    include 'module/header.php'
+  ?>
 
   <?php
   include "php/BackCore.php";
@@ -109,6 +93,7 @@
       <p>reserver</p>
     </button>
   </form>
+  
   <?php
 // Nombre de trajets par page
 $trajetsParPage = 25;
@@ -161,38 +146,63 @@ if (!is_array($traversees)) {
     $traversees = []; // Réinitialisez à un tableau vide si ce n'est pas un tableau
 }
 
-// Fonction pour générer le HTML d’un trajet
+// Fonction pour générer le HTML d'un trajet
 function genererHTMLTrajet($t) {
+    $place = getPlacesDisponiblesParCategorie($t['numTra']);
+    $temps = getTempsTotalTraversee($t['numTra']);
+    $prix = getPrixMinimumPourTraversee($t['numTra']);
     return "
-    <div class='trajets'>
-        <div class='center'>
-            <div class='rect'>
-                <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
-                    <path
-                        d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53'
-                        stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' />
-                </svg>
-                <hr class='separation' />
-                <div class='horaire'>
-                    <div class='horizontale'>
-                        <div class='verticale'>
-                            <p style='font-weight: 600;'>".substr($t['heure'], 0, 5)."</p>
-                            <p style='font-style: italic;'>".$t["port_depart"]."</p>
+    <main class='container mx-auto py-8'>
+        <div class='space-y-6'>
+            <div class='bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex'>
+                <div class='flex items-center justify-center w-24 bg-blue-100 dark:bg-blue-900'>
+                    <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
+                        <path d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53' stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/>
+                    </svg>
+                </div>
+                <div class='w-[1px] bg-gray-300 h-auto my-6'></div>
+                <div class='flex-1 p-6'>
+                    <div class='mb-4'>
+                        <h3 class='text-lg font-semibold text-gray-900 dark:text-gray-100'>".$t["port_depart"]." - ".$t["port_arrivee"]."</h3>
+                        <span class='text-sm text-blue-600 font-medium'>À partir de ".$prix."€</span>
+                    </div>
+                    <div class='flex items-center justify-between mb-4'>
+                        <div class='text-center'>
+                            <p class='text-lg font-bold text-gray-800 dark:text-gray-200'>".substr($t['heure'], 0, 5)."</p>
+                            <p class='text-xs text-gray-500'>Port de départ</p>
                         </div>
-                        <p class='separations'>-------</p>
-                        <div class='verticale'>
-                            <p style='font-weight: 600;'>".getHeureArrivee($t['numTra'])."</p>
-                            <p style='font-style: italic;'>".$t["port_arrivee"]."</p>
+                        <div class='flex-1 mx-4 border-t border-gray-300'></div>
+                        <div class='text-center'>
+                            <p class='text-lg font-bold text-gray-800 dark:text-gray-200'>".getHeureArrivee($t['numTra'])."</p>
+                            <p class='text-xs text-gray-500'>Port d'arrivée</p>
+                        </div>
+                    </div>
+                    <div class='flex gap-6 text-xs text-gray-500'>
+                        <div class='flex items-center gap-2'>
+                            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4 text-gray-400' fill='none' stroke='currentColor' stroke-width='2'>
+                                <path d='M12 6v12m6-6H6' />
+                            </svg>
+                            <span>".$temps." de trajet</span>
+                        </div>
+                        <div class='flex items-center gap-2'>
+                            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4 text-gray-400' fill='none' stroke='currentColor' stroke-width='2'>
+                                <path d='M4 6h16M4 12h16M4 18h16' />
+                            </svg>
+                            <span>".$place["passagers"]." places</span>
                         </div>
                     </div>
                 </div>
                 <form method='POST' action='selection.php' onsubmit='showLoading(event)'>
                     <input type='hidden' name='numTra' value='".$t['numTra']."'>
-                    <button type='submit'>Suivant</button>
+                    <div class='p-6 flex items-center justify-center w-64'>
+                        <button class='w-full py-3 px-4 text-sm font-semibold border border-blue-500 rounded-lg'>
+                            Sélectionner cette traversée
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
-    </div>";
+    </main>";
 }
 
 // Affichage des trajets
