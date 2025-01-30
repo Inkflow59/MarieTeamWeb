@@ -66,5 +66,8 @@ include 'module/footer.php';
         }
         ?>
     </div>
+<?php
+include 'module/footer.php';
+?>
 </body>
 </html> 

@@ -1,7 +1,6 @@
 <?php
 include("php/BackCore.php");
 include 'module/header.php';
-include 'module/footer.php';
 // Récupérer le numTra depuis la requête POST ou GET
 $numTra = isset($_POST['numTra']) ? $_POST['numTra'] : (isset($_GET['numTra']) ? $_GET['numTra'] : null);
 
@@ -302,4 +301,7 @@ if ($numTra) {
         background-color: #0056b3; /* Couleur de fond au survol */
     }
 </style>
+<?php
+include 'module/footer.php';
+?>
 </html>

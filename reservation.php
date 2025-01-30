@@ -19,7 +19,6 @@
 <body>
   <?php
   include 'module/header.php';
-  include 'module/footer.php';
   ?>
 
   <?php
@@ -283,5 +282,8 @@ echo "</div>";
     }, 4000);
   }
   </script>
+  <?php
+  include 'module/footer.php';
+  ?>
 </body>
 </html>

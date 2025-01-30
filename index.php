@@ -9,8 +9,7 @@
     <title>Document</title>
 </head>
 <body>
-    <?php include 'module/header.php';
-    include 'module/footer.php'; ?>
+    <?php include 'module/header.php';?>
 
     <section class="main">
         <div class="background"></div>
@@ -236,5 +235,8 @@
             });
         });
     </script>
+<?php
+include 'module/footer.php';
+?>
 </body>
 </html>

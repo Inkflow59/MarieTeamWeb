@@ -1,7 +1,6 @@
 <?php include("php/BackCore.php"); ?>
 <?php
 include 'module/header.php';
-include 'module/footer.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -159,5 +158,8 @@ include 'module/footer.php';
             form.submit();
         });
     </script>
+<?php
+include 'module/footer.php';
+?>
 </body>
 </html>

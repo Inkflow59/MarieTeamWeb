@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <?php
 include 'module/header.php';
-include 'module/footer.php';
 ?>
 <html lang="fr">
 <head>
@@ -21,5 +20,8 @@ include 'module/footer.php';
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Rechercher</button>
         </form>
     </div>
+<?php
+include 'module/footer.php';
+?>
 </body>
 </html> 
