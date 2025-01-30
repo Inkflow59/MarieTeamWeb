@@ -7,8 +7,6 @@
   <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/navbar.css">
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-
 
   <link rel="stylesheet" href="css/reservation.css">
 
@@ -194,77 +192,7 @@ function genererHTMLTrajet($t) {
                 </form>
             </div>
         </div>
-    </div>
-    
-    
-
-    // Autre 
-
-    '<main class='container mx-auto px-4 py-8'>
-        <h2 class='text-2xl font-bold text-gray-800 mb-6'>Traversées disponibles</h2>
-
-        <!-- Vertical List -->
-        <div class='space-y-6'>
-            <!-- Large Card Example -->
-            <div class='bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex'>
-                <!-- Boat Logo Section -->
-                <div class='flex items-center justify-center w-24 bg-blue-100'>
-                    <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
-                        <path d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53' stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/>
-                    </svg>
-                </div>
-
-                <!-- Divider -->
-                <div class='w-[1px] bg-gray-300 h-auto my-6'></div>
-
-                <!-- Card Left Section -->
-                <div class='flex-1 p-6'>
-                    <!-- Header -->
-                    <div class='mb-4'>
-                        <h3 class='text-lg font-semibold text-gray-900'>Marseille - Toulouse</h3>
-                        <span class='text-sm text-blue-600 font-medium'>À partir de 29€</span>
-                    </div>
-
-                    <!-- Timing Section -->
-                    <div class='flex items-center justify-between mb-4'>
-                        <div class='text-center'>
-                            <p class='text-lg font-bold text-gray-800'>12:00</p>
-                            <p class='text-xs text-gray-500'>Port de départ</p>
-                        </div>
-                        <!-- Divider Line -->
-                        <div class='flex-1 mx-4 border-t border-gray-300'></div>
-                        <div class='text-center'>
-                            <p class='text-lg font-bold text-gray-800'>15:30</p>
-                            <p class='text-xs text-gray-500'>Port d'arrivée</p>
-                        </div>
-                    </div>
-
-                    <!-- Journey Details -->
-                    <div class='flex gap-6 text-xs text-gray-500'>
-                        <div class='flex items-center gap-2'>
-                            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4 text-gray-400' fill='none' stroke='currentColor' stroke-width='2'>
-                                <path d='M12 6v12m6-6H6' />
-                            </svg>
-                            <span>3h30 de trajet</span>
-                        </div>
-                        <div class='flex items-center gap-2'>
-                            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4 text-gray-400' fill='none' stroke='currentColor' stroke-width='2'>
-                                <path d='M4 6h16M4 12h16M4 18h16' />
-                            </svg>
-                            <span>150 places</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card Right Section -->
-                <div class='p-6 flex items-center justify-center w-64'>
-                    <button class='w-full py-3 px-4 text-sm font-semibold text-blue-600 border border-blue-500 rounded-lg transition-colors duration-200 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-400'>
-                        Sélectionner cette traversée
-                    </button>
-                </div>
-            </div>"
-    
-    ;
+    </div>";
 }
 
 // Affichage des trajets
