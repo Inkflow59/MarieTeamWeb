@@ -142,18 +142,19 @@ CREATE TRIGGER `PlusDePlace` BEFORE INSERT ON `reservation` FOR EACH ROW BEGIN
     DECLARE nombreReservations INT;
 
     -- Récupérer la capacité maximale du bateau lié à la traversée
-    SELECT contenir.capaciteMax 
+    SELECT SUM(contenir.capaciteMax) 
     INTO capaciteBateau
     FROM contenir
     JOIN bateau ON contenir.idBat = bateau.idBat
     JOIN traversee ON traversee.idBat = bateau.idBat
-    WHERE traversee.numTra = NEW.numTra;
+    WHERE traversee.numTra = NEW.numTra
+    GROUP BY traversee.idBat;
 
     -- Compter le nombre de réservations existantes pour la traversée
     SELECT COUNT(*) 
     INTO nombreReservations
     FROM reservation
-    WHERE reservation.numTra = NEW.numTra;
+    WHERE numTra = NEW.numTra;
 
     -- Vérifier si la capacité est dépassée
     IF (nombreReservations >= capaciteBateau) THEN
@@ -162,7 +163,7 @@ CREATE TRIGGER `PlusDePlace` BEFORE INSERT ON `reservation` FOR EACH ROW BEGIN
     END IF;
 END
 $$
-DELIMITER ;
+DELIMITER;
 
 -- --------------------------------------------------------
 

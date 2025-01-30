@@ -1,101 +1,60 @@
 <?php
 include("BackCore.php");
 
-// Activation des erreurs PHP pour le débogage
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-// Démarrage de la session pour gérer le numéro de réservation
-session_start();
-
-// Récupération des données depuis POST
-$reservationData = isset($_POST['reservationData']) ? json_decode($_POST['reservationData'], true) : null;
-
-// Log des données reçues pour le débogage
-error_log("Données POST reçues : " . print_r($_POST, true));
-error_log("Données décodées : " . print_r($reservationData, true));
-
-// Vérification du décodage JSON
-if (json_last_error() !== JSON_ERROR_NONE) {
-    error_log("Erreur de décodage JSON: " . json_last_error_msg());
-    header("Location: ../paiement.php?error=invalid_data");
-    exit();
-}
-
-// Vérification de la présence des données requises
-if (!$reservationData || 
-    !isset($reservationData['nom']) || 
-    !isset($reservationData['adresse']) || 
-    !isset($reservationData['codePostal']) || 
-    !isset($reservationData['ville']) || 
-    !isset($reservationData['numTra']) || 
-    !isset($reservationData['quantites'])) {
-    error_log("Données de réservation manquantes ou incomplètes");
-    error_log("Données reçues : " . print_r($reservationData, true));
-    header("Location: ../paiement.php?error=missing_data");
-    exit();
-}
-
-// Génération du numéro de réservation unique
-$numRes = time() . rand(1000, 9999);
-
-// Traitement des quantités
-$typesQuantites = [];
-foreach ($reservationData['quantites'] as $typePassager => $quantite) {
-    if (is_numeric($quantite) && $quantite > 0) {
-        $typesQuantites[$typePassager] = intval($quantite);
-    }
-}
-
-// Vérification qu'il y a au moins une quantité valide
-if (empty($typesQuantites)) {
-    error_log("Aucune quantité valide spécifiée");
-    header("Location: ../paiement.php?error=invalid_quantities");
+// Vérifier si les données de réservation ont été envoyées
+if (!isset($_POST['reservationData'])) {
+    header('Location: ../reservation.php?error=no_data');
     exit();
 }
 
 try {
-    // Log des paramètres de réservation
-    error_log("Tentative de réservation :");
-    error_log("numRes: " . $numRes);
-    error_log("nom: " . $reservationData['nom']);
-    error_log("numTra: " . $reservationData['numTra']);
-    error_log("quantités: " . print_r($typesQuantites, true));
+    // Décoder les données JSON
+    $reservationData = json_decode($_POST['reservationData'], true);
+    
+    if (!$reservationData) {
+        throw new Exception("Données de réservation invalides");
+    }
 
-    // Appel de la fonction de réservation
-    $reservationSuccess = reserverTrajet(
+    // Générer un numéro de réservation unique
+    $numRes = uniqid('RES', true);
+
+    // Extraire les données du tableau
+    $nom = $reservationData['nom'];
+    $adresse = $reservationData['adresse'];
+    $codePostal = $reservationData['codePostal'];
+    $ville = $reservationData['ville'];
+    $numTra = $reservationData['numTra'];
+    $quantites = $reservationData['quantites'];
+
+    // Appeler la fonction reserverTrajet
+    $resultat = reserverTrajet(
         $numRes,
-        $reservationData['nom'],
-        $reservationData['adresse'],
-        $reservationData['codePostal'],
-        $reservationData['ville'],
-        $reservationData['numTra'],
-        $typesQuantites
+        $nom,
+        $adresse,
+        $codePostal,
+        $ville,
+        $numTra,
+        $quantites
     );
 
-    if ($reservationSuccess) {
-        // Stockage du numéro de réservation en session
-        $_SESSION['lastReservationNumber'] = $numRes;
+    if ($resultat) {
+        // Stocker le numéro de réservation en session pour l'affichage ultérieur
+        session_start();
+        $_SESSION['derniere_reservation'] = $numRes;
         
-        // Redirection vers la page de confirmation
-        header("Location: ../confirmation.html?numRes=" . $numRes);
+        // Rediriger vers une page de confirmation
+        header('Location: ../confirmation.html?success=1');
         exit();
     } else {
-        error_log("Échec de la réservation sans exception");
-        header("Location: ../paiement.php?error=reservation_failed");
-        exit();
+        throw new Exception("Échec de la réservation");
     }
 
 } catch (Exception $e) {
-    // Log détaillé de l'erreur
-    error_log("Exception lors de la réservation:");
-    error_log("Message: " . $e->getMessage());
-    error_log("Fichier: " . $e->getFile());
-    error_log("Ligne: " . $e->getLine());
-    error_log("Trace: " . $e->getTraceAsString());
-
-    // Redirection avec message d'erreur
-    header("Location: ../paiement.php?error=exception&message=" . 
-           urlencode($e->getMessage() ?: 'Erreur inconnue lors de la réservation'));
+    // Ajouter un log pour le débogage
+    error_log("Erreur lors de la réservation : " . $e->getMessage());
+    
+    // En cas d'erreur, rediriger vers la page de réservation avec un message d'erreur
+    header('Location: ../reservation.php?error=' . urlencode("Erreur lors de la réservation : " . $e->getMessage()));
     exit();
 }
+?>

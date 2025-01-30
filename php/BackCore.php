@@ -133,48 +133,57 @@ function estPlein($traversee) {
 /**
  * Récupère les places disponibles par catégorie pour une traversée
  * 
- * @param array $traversee Données de la traversée
+ * @param int $traversee Numéro de la traversée
  * @return array Tableau des places disponibles par catégorie
  */
 function getPlacesDisponiblesParCategorie($traversee) {
-    global $db; // Rend la variable $db globale accessible dans la fonction
+    global $db;
     
-    // Prépare la requête SQL pour calculer les places disponibles par catégorie
+    // Requête SQL modifiée pour regrouper par catégorie principale
     $query = "SELECT 
-        c.lettre AS categorie,
-        ct.capaciteMax AS capacite_max,
-        IFNULL(SUM(e.quantite), 0) AS quantite_reservee,
-        (ct.capaciteMax - IFNULL(SUM(e.quantite), 0)) AS places_disponibles
-        FROM contenir ct
-        JOIN categorie c ON ct.lettre = c.lettre
-        JOIN bateau b ON ct.idBat = b.idBat
-        LEFT JOIN type t ON c.lettre = t.lettre
-        LEFT JOIN enregistrer e ON t.idType = e.idType
-        LEFT JOIN reservation r ON e.numRes = r.numRes
-        WHERE r.numTra = ?
-        GROUP BY c.lettre, ct.capaciteMax
-        ORDER BY c.lettre";
+        c.lettre,
+        c.libelleCat,
+        SUM(ct.capaciteMax) as capaciteMax,
+        COALESCE(SUM(e.quantite), 0) as places_occupees,
+        (SUM(ct.capaciteMax) - COALESCE(SUM(e.quantite), 0)) as places_disponibles
+    FROM traversee t
+    JOIN bateau b ON t.idBat = b.idBat
+    JOIN contenir ct ON b.idBat = ct.idBat
+    JOIN categorie c ON ct.lettre = c.lettre
+    LEFT JOIN type ty ON c.lettre = ty.lettre
+    LEFT JOIN enregistrer e ON ty.idType = e.idType
+    LEFT JOIN reservation r ON e.numRes = r.numRes AND r.numTra = t.numTra
+    WHERE t.numTra = ?
+    GROUP BY c.lettre, c.libelleCat
+    HAVING c.lettre IN ('P', 'V')
+    ORDER BY c.lettre";
 
-    // Prépare la requête avec le numéro de traversée fourni
     $stmt = $db->prepare($query);
-    $stmt->bind_param('i', $traversee['numTra']); // On lie le paramètre du numéro de trajet
+    $stmt->bind_param('i', $traversee);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Initialise un tableau pour les places disponibles
-    $placesDisponibles = [];
-
-    // Parcourt les résultats pour construire le tableau
+    // Initialisation des valeurs
+    $placesDisponibles = [
+        'passagers' => 0,
+        'vehicules' => 0
+    ];
+    
+    // Compteur pour vérifier qu'on a bien les deux catégories
+    $categoriesTrouvees = 0;
+    
     while ($row = $result->fetch_assoc()) {
-        $placesDisponibles[] = [
-            'categorie' => $row['categorie'],
-            'capacite_max' => $row['capacite_max'],
-            'quantite_reservee' => $row['quantite_reservee'],
-            'places_disponibles' => $row['places_disponibles']
-        ];
+        if ($row['lettre'] === 'P') {
+            $placesDisponibles['passagers'] = $row['places_disponibles'];
+            $categoriesTrouvees++;
+        } else if ($row['lettre'] === 'V') {
+            $placesDisponibles['vehicules'] = $row['places_disponibles'];
+            $categoriesTrouvees++;
+        }
     }
-
-    return $placesDisponibles; // Retourne les données sous forme de tableau
+    
+    // On ne retourne les valeurs que si on a trouvé les deux catégories
+    return $categoriesTrouvees === 2 ? $placesDisponibles : null;
 }
 
 /**
@@ -231,35 +240,36 @@ function getTraversesBySecteur($idSecteur) {
 }
 
 /**
- * Effectue une réservation pour une traversée
+ * Réserve une traversée pour un client
  * 
- * @param int $numRes Numéro de réservation
- * @param string $nomRes Nom du réservant
- * @param string $adresse Adresse du réservant
- * @param string $codePostal Code postal du réservant
- * @param string $ville Ville du réservant
+ * @param string $numRes Numéro de réservation unique
+ * @param string $nom Nom du client
+ * @param string $adresse Adresse du client
+ * @param string $codePostal Code postal du client
+ * @param string $ville Ville du client
  * @param int $numTra Numéro de la traversée
- * @param array $typesQuantites Tableau associatif des types et quantités de billets
+ * @param array $quantites Tableau associatif des quantités par type [idType => quantite]
  * @return bool True si la réservation est réussie, False sinon
  */
-function reserverTrajet($numRes, $nom, $adresse, $codePostal, $ville, $numTra, $typesQuantites) {
+function reserverTrajet($numRes, $nom, $adresse, $codePostal, $ville, $numTra, $quantites) {
     global $db;
-    
+
     try {
-        // Vérification de la validité du numéro de traversée
-        $stmt = $db->prepare("SELECT numTra FROM traversee WHERE numTra = ?");
-        if (!$stmt) {
-            throw new Exception("Erreur de préparation de la requête: " . $db->error);
+        // Vérification des données d'entrée
+        if (!is_array($quantites)) {
+            throw new Exception("Le format des quantités est invalide");
         }
-        
-        $stmt->bind_param("i", $numTra);
-        if (!$stmt->execute()) {
-            throw new Exception("Erreur lors de la vérification de la traversée: " . $stmt->error);
+
+        // Vérification qu'au moins une quantité est supérieure à 0
+        $hasQuantity = false;
+        foreach ($quantites as $quantite) {
+            if ($quantite > 0) {
+                $hasQuantity = true;
+                break;
+            }
         }
-        
-        $result = $stmt->get_result();
-        if ($result->num_rows === 0) {
-            throw new Exception("La traversée spécifiée n'existe pas");
+        if (!$hasQuantity) {
+            throw new Exception("Aucune quantité sélectionnée");
         }
 
         // Début de la transaction
@@ -267,35 +277,37 @@ function reserverTrajet($numRes, $nom, $adresse, $codePostal, $ville, $numTra, $
 
         try {
             // Insertion de la réservation
-            $stmt = $db->prepare("INSERT INTO reservation (numRes, nom, adresse, codePostal, ville, numTra) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt = $db->prepare("INSERT INTO reservation (numRes, nomRes, adresse, codePostal, ville, numTra) VALUES (?, ?, ?, ?, ?, ?)");
             if (!$stmt) {
-                throw new Exception("Erreur de préparation de l'insertion de réservation: " . $db->error);
+                throw new Exception("Erreur de préparation de la requête");
             }
-            
+
             $stmt->bind_param("sssssi", $numRes, $nom, $adresse, $codePostal, $ville, $numTra);
             if (!$stmt->execute()) {
-                throw new Exception("Erreur lors de l'insertion de la réservation: " . $stmt->error);
+                throw new Exception("Erreur lors de l'insertion de la réservation");
             }
 
-            // Insertion des quantités
-            foreach ($typesQuantites as $idType => $quantite) {
-                $stmt = $db->prepare("INSERT INTO enregistrer (numRes, idType, quantite) VALUES (?, ?, ?)");
-                if (!$stmt) {
-                    throw new Exception("Erreur de préparation de l'insertion des quantités: " . $db->error);
-                }
-                
-                $stmt->bind_param("sii", $numRes, $idType, $quantite);
-                if (!$stmt->execute()) {
-                    throw new Exception("Erreur lors de l'insertion des quantités: " . $stmt->error);
+            // Insertion des types et quantités
+            $stmtTypes = $db->prepare("INSERT INTO enregistrer (numRes, idType, quantite) VALUES (?, ?, ?)");
+            if (!$stmtTypes) {
+                throw new Exception("Erreur de préparation de la requête des types");
+            }
+
+            // Parcourir le tableau des quantités et insérer uniquement celles > 0
+            foreach ($quantites as $idType => $quantite) {
+                if ($quantite > 0) {
+                    $stmtTypes->bind_param("sii", $numRes, $idType, $quantite);
+                    if (!$stmtTypes->execute()) {
+                        throw new Exception("Erreur lors de l'insertion du type $idType");
+                    }
                 }
             }
 
-            // Si tout s'est bien passé, on valide la transaction
+            // Validation de la transaction
             $db->commit();
             return true;
 
         } catch (Exception $e) {
-            // En cas d'erreur, on annule la transaction
             $db->rollback();
             throw $e;
         }
@@ -311,53 +323,55 @@ function reserverTrajet($numRes, $nom, $adresse, $codePostal, $ville, $numTra, $
  * @return array|false Détails de la réservation ou false si non trouvée
  */
 function consulterReservation($numRes) {
-    // Accéder à la variable globale $db pour la connexion
     global $db;
 
-    // Requête pour récupérer toutes les informations liées à la réservation
+    // D'abord, récupérer les informations de base de la réservation
     $sql = "
         SELECT 
-            r.numRes, r.nomRes, r.adresse, r.codePostal, r.ville, r.numTra,
-            e.idType, e.quantite, t.libelleType
-        FROM reservation r
-        LEFT JOIN enregistrer e ON r.numRes = e.numRes
-        LEFT JOIN type t ON e.idType = t.idType
-        WHERE r.numRes = ?
+            numRes, nomRes, adresse, codePostal, ville, numTra
+        FROM reservation 
+        WHERE numRes = ?
+        LIMIT 1
     ";
 
-    // Préparer la requête
-    if ($stmt = $db->prepare($sql)) {
-        // Lier les paramètres
-        $stmt->bind_param("i", $numRes);
-        
-        // Exécuter la requête
-        $stmt->execute();
-        
-        // Récupérer les résultats
-        $result = $stmt->get_result();
-        
-        // Vérifier si une réservation existe avec ce numéro
-        if ($result->num_rows > 0) {
-            // Récupérer les données sous forme de tableau associatif
-            $reservation = $result->fetch_assoc();
-            
-            // Retourner toutes les informations de la réservation
-            return $reservation;
-        } else {
-            // Aucun résultat trouvé pour ce numRes
-            return false;
-        }
-        
-    } else {
-        // Fermer la requête
-        // Vérifier si la préparation de la requête a réussi
-        if ($stmt) {
-            // Fermer la requête
-            $stmt->close();
-        }
-        // En cas d'erreur lors de la préparation de la requête
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("s", $numRes);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
         return false;
     }
+
+    $reservation = $result->fetch_assoc();
+
+    // Ensuite, récupérer les types et quantités associés
+    $sql_types = "
+        SELECT 
+            e.idType, 
+            e.quantite, 
+            t.libelleType
+        FROM enregistrer e
+        LEFT JOIN type t ON e.idType = t.idType
+        WHERE e.numRes = ?
+    ";
+
+    $stmt = $db->prepare($sql_types);
+    $stmt->bind_param("s", $numRes);
+    $stmt->execute();
+    $result_types = $stmt->get_result();
+
+    // Ajouter les types et quantités à la réservation
+    $reservation['types'] = [];
+    while ($row = $result_types->fetch_assoc()) {
+        $reservation['types'][] = [
+            'idType' => $row['idType'],
+            'quantite' => $row['quantite'],
+            'libelleType' => $row['libelleType']
+        ];
+    }
+
+    return $reservation;
 }
 
 /**
