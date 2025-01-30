@@ -197,7 +197,6 @@
             </div>
         </section>
     </section>
-    <?php include 'module/footer.php' ?>
     </section>
 
     <script>

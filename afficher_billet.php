@@ -1,6 +1,6 @@
 <?php
+include 'php/BackCore.php';
 include 'module/header.php';
-include 'module/footer.php';
 
 // Début de la structure HTML
 ?>

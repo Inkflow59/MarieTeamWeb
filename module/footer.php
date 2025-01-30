@@ -19,7 +19,7 @@
           </svg>
           MarieTeam    
       </a>
-      <p class="my-6 text-gray-500 dark:text-gray-400">Notre seul objecitf est de vous rendre heureux sur nos navire</p>
+      <p class="my-6 text-gray-500 dark:text-gray-400">Notre seul objecitf est de vous rendre heureux sur nos navires</p>
       <ul class="flex flex-wrap justify-center items-center mb-6 text-gray-900 dark:text-white">
       <div style="display: inline-flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
           <li>
