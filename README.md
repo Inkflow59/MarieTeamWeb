@@ -147,3 +147,102 @@ Récupère le tarif d'une traversée pour un type de billet donné.
 ```php
 function getTarifByType($numTra, $idType) { ... }
 ```
+
+## Fonction `getPorts`
+
+Récupère la liste de tous les ports disponibles dans la base de données.
+
+### Détails
+
+- **Requête** : Sélectionne tous les noms de ports triés par ordre alphabétique.
+- **Paramètres** : Aucun
+- **Retour** : Un tableau des noms de ports ou `null` si aucun port n'est trouvé.
+
+```php
+function getPorts() { ... }
+```
+
+## Fonction `getTarifsByNumTra`
+
+Récupère tous les tarifs associés à une traversée donnée.
+
+### Détails
+
+- **Requête** : Sélectionne tous les tarifs pour chaque type de billet d'une traversée.
+- **Paramètres** :
+    - `$numTra` : Le numéro de la traversée.
+- **Retour** : Un tableau associatif des tarifs indexé par l'ID du type.
+
+```php
+function getTarifsByNumTra($numTra) { ... }
+```
+
+## Fonction `getTempsTotalTraversee`
+
+Calcule le temps total d'une traversée.
+
+### Détails
+
+- **Requête** : Récupère l'heure de départ et le temps de liaison pour calculer la durée totale.
+- **Paramètres** :
+    - `$numTra` : Le numéro de la traversée.
+- **Retour** : Le temps total au format "XXhYY" ou `null` si erreur.
+
+```php
+function getTempsTotalTraversee($numTra) { ... }
+```
+
+## Fonction `getPrixMinimumPourTraversee`
+
+Trouve le prix minimum parmi tous les types de billets pour une traversée.
+
+### Détails
+
+- **Logique** : Parcourt tous les types de billets (1 à 7) et compare leurs tarifs.
+- **Paramètres** :
+    - `$numTra` : Le numéro de la traversée.
+- **Retour** : Le prix minimum trouvé ou `null` si aucun prix n'est disponible.
+
+```php
+function getPrixMinimumPourTraversee($numTra) { ... }
+```
+
+## Fonction `checkReservationExists`
+
+Vérifie l'existence d'un numéro de réservation dans la base de données.
+
+### Détails
+
+- **Requête** : Vérifie si le numéro de réservation existe dans la table des réservations.
+- **Paramètres** :
+    - `$numRes` : Le numéro de réservation à vérifier.
+- **Retour** : `true` si la réservation existe, `false` sinon.
+
+```php
+function checkReservationExists($numRes) { ... }
+```
+
+## Fonction `getInfosTraversee`
+
+Récupère toutes les informations détaillées d'une traversée spécifique.
+
+### Détails
+
+- **Requête** : Sélectionne les informations complètes d'une traversée incluant le bateau, les ports et les détails de liaison.
+- **Paramètres** :
+    - `$numTra` : Le numéro de la traversée.
+- **Retour** : Un tableau associatif contenant tous les détails de la traversée ou `null` si non trouvée.
+
+```php
+function getInfosTraversee($numTra) { ... }
+```
+
+## Sessions
+
+Le fichier inclut également une gestion de session pour stocker le numéro de traversée sélectionné par l'utilisateur :
+
+```php
+session_start();
+if (isset($_POST['numTra'])) {
+    $_SESSION['numTra'] = $_POST['numTra'];
+}
