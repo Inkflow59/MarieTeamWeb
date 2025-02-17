@@ -64,7 +64,7 @@ try {
         $_SESSION['derniere_reservation'] = $numRes;
         
         // Rediriger vers une page de confirmation
-        header('Location: ../confirmation.html?success=1');
+        header('Location: ../confirmation.php?success=1');
         exit();
     } else {
         throw new Exception("Échec de la réservation");
