@@ -1,32 +1,212 @@
+/* Styles pour les grands écrans */
+@media screen and (min-width: 1441px) {
+    .centre {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .description {
+        max-width: 600px;
+    }
+
+    .actualites-slider {
+        gap: 3rem;
+    }
+
+    .article {
+        min-width: calc(33.333% - 4rem);
+    }
+}
+
+/* Styles pour les écrans moyens */
+@media screen and (max-width: 1440px) {
+    .centre {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .horizontale {
+        gap: 150px;
+    }
+
+    .description {
+        max-width: 500px;
+    }
+
+    .article {
+        min-width: calc(50% - 3rem);
+    }
+}
+
+/* Styles pour les tablettes */
+@media screen and (max-width: 1024px) {
+    .horizontale {
+        gap: 80px;
+    }
+
+    .row, .row-reverse {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .description {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    .article {
+        min-width: calc(100% - 2rem);
+    }
+
+    .wrapper {
+        padding: 1rem;
+    }
+
+    .review-card {
+        width: calc(50% - 2rem);
+    }
+}
+
+/* Styles pour les petits écrans et tablettes */
 @media screen and (max-width: 768px) {
     .horizontale {
         flex-direction: column;
         align-items: center;
+        gap: 40px;
     }
 
     .cadre {
-        display: none;
+        max-width: 90%;
+        margin: 1rem auto;
+        padding: 1.5rem;
     }
 
     .btn-experience, .btn-client, .btn-reserve {
         width: 100%;
         padding: 1rem;
+        font-size: 1rem;
     }
 
     .reserve-section {
         margin-top: 1rem;
+        width: 90%;
     }
 
     .reserve-title {
-        font-size: 4rem;
+        font-size: clamp(2rem, 8vw, 4rem);
     }
 
-    .main{
-        height: 100%;
+    .main {
+        height: auto;
+        padding: 2rem 0;
     }
 
-    .center{
-        gap: 10px;
+    .center {
+        gap: 20px;
         flex-direction: column-reverse;
+        padding: 1rem;
+    }
+
+    .miniature {
+        width: 100%;
+        height: auto;
+        max-width: 90vw;
+    }
+
+    .title {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .description {
+        width: 90%;
+        text-align: left;
+        margin: 0 auto;
+    }
+
+    .actualites {
+        padding: 1rem;
+    }
+
+    .slider-nav {
+        width: 30px;
+        height: 30px;
+    }
+
+    .review-card {
+        width: 100%;
+    }
+
+    .wrapper {
+        gap: 1rem;
+    }
+}
+
+/* Styles pour les mobiles */
+@media screen and (max-width: 480px) {
+    .cadre {
+        padding: 1rem;
+    }
+
+    .btn-experience, .btn-client, .btn-reserve {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .reserve-title {
+        font-size: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .title {
+        font-size: 1.2rem;
+    }
+
+    .description {
+        font-size: 0.9rem;
+    }
+
+    .article-title {
+        font-size: 1rem;
+    }
+
+    .article-description {
+        font-size: 0.9rem;
+    }
+
+    .review-card {
+        padding: 1rem;
+    }
+
+    .info h4 {
+        font-size: 1rem;
+    }
+
+    .single-review p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Ajustements pour l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Support du mode sombre */
+@media (prefers-color-scheme: dark) {
+    .review-card {
+        color: #ffffff;
+    }
+
+    .article {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .slider-nav {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
     }
 }

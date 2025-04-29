@@ -1,99 +1,231 @@
-.case{
-    display: flex;
-    height: 3rem;
-    padding: 2.0625rem 2.9375rem;
-    flex-direction: column;
-    gap: 0.625rem;
-    border-radius: 0.875rem;
-    background: #FFF;
-    width: 80%;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-width: 50rem;
+/* Style général */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fa;
+    min-height: 100vh;
 }
 
-.casePrix{
-    display: flex;
-    padding: 0.875rem 2.3125rem;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.625rem;
-    flex-shrink: 0;
-    border-radius: 0.875rem;
-    background: #FFF;
-    box-shadow: 0px 4px 4.3px 0px #000;
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f6f8fb 0%, #e9eef5 100%);
+    z-index: -1;
 }
 
-.payer{
-    display: flex;
-width: 9.1875rem;
-height: 2.25rem;
-padding: 0.375rem 2.875rem;
-justify-content: center;
-align-items: center;
-gap: 0.625rem;
-flex-shrink: 0;
-border-radius: 0.9375rem;
-background: #000;
-color: #FFF;
-font-family: Inter;
-font-size: 1rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;}
-
-.espace1{
-    display: flex;
-    align-items: center;
-    gap: 2.125rem;
+.center {
+    max-width: 1400px;
+    margin: 1rem auto;
+    padding: 0 1rem;
 }
 
-.type{
-    color: #000;
-font-family: Inter;
-font-size: 1.25rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
+/* Grille pour les sections */
+.grid-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-.space{
+.section-title {
+    grid-column: 1 / -1;
+    margin: 1rem 0 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Style des cartes */
+.case {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+}
+
+.case:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+}
+
+.space {
+    padding: 1rem;
     display: flex;
-    width: auto;
     justify-content: space-between;
-    gap: 30rem;
+    align-items: center;
+    height: 100%;
 }
 
-.prix{
+.espace1 {
     display: flex;
     align-items: center;
-    gap: 2.125rem;
+    gap: 0.75rem;
 }
 
-.svg{
-    width: 3.75rem;
-height: 3.75rem;
+/* Style des icônes */
+.svg svg {
+    width: 32px;
+    height: 32px;
+    fill: #2563eb;
 }
 
-.center{
-    margin-top: 10rem;
-    justify-content: center;
+/* Style du texte */
+.type {
+    font-size: 1rem;
+    color: #1f2937;
+    margin: 0;
+    font-weight: 500;
+}
+
+.description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0.25rem 0 0;
+}
+
+/* Style des prix */
+.prix {
     display: flex;
-    flex-direction: column;
-    gap: 1.3125rem;
     align-items: center;
+    gap: 0.75rem;
 }
 
+.prix .type {
+    font-size: 1.1rem;
+    color: #2563eb;
+    font-weight: 600;
+}
 
-@media (max-width: 768px) {
-    .space{
-        display: flex;
-        width: auto;
-        justify-content: space-between;
-        gap: 7vh;
+/* Style des inputs */
+.quantite {
+    width: 70px;
+    padding: 0.4rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-align: center;
+    transition: border-color 0.2s ease;
+}
+
+.quantite:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* Style du total */
+.casePrix {
+    background: #2563eb;
+    border-radius: 12px;
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    grid-column: 1 / -1;
+}
+
+.casePrix .type {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Style du formulaire */
+#reservationForm {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    grid-column: 1 / -1;
+}
+
+#reservationForm h3 {
+    color: #1f2937;
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+#reservationForm label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: #4b5563;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+#reservationForm input[type="text"] {
+    width: 100%;
+    padding: 0.6rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease;
+}
+
+#reservationForm input[type="text"]:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+#reservationForm input[type="button"] {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+#reservationForm input[type="button"]:hover {
+    background: #1d4ed8;
+}
+
+/* Responsive design */
+@media (min-width: 1024px) {
+    .grid-section {
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
-.payer:hover{
-    cursor: pointer;
+@media (max-width: 768px) {
+    .grid-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .space {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+    
+    .espace1 {
+        flex-direction: column;
+    }
+    
+    .prix {
+        flex-direction: column;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
 }

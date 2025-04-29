@@ -1,667 +1,252 @@
-        .search-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin: 20px auto;
-          padding: 15px 20px;
-          width: 90%;
-          max-width: 800px;
-          background-color: #ffffff;
-          border: 1px solid #e0e0e0;
-          border-radius: 50px;
-          font-family: Arial, sans-serif;
-        }
-
-        /* Style des sections */
-        .section {
-          flex: 1;
-          padding: 0 15px;
-          text-align: left;
-          color: #333;
-        }
-
-        .section label {
-          display: block;
-          font-size: 0.8em;
-          font-weight: bold;
-          color: #666;
-        }
-
-        .section input,
-        .section select {
-          width: 100%;
-          border: none;
-          background: transparent;
-          font-size: 1em;
-          color: #333;
-          outline: none;
-        }
-
-        /* Ligne de séparation entre sections */
-        .divider {
-          width: 1px;
-          height: 40px;
-          background-color: #e0e0e0;
-        }
-
-        /* Bouton de recherche */
-        .search-button {
-          background-color: #0085a7;
-          border: none;
-          border-radius: 5%;
-          font-size: 12px;
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-        }
-
-        .search-button img {
-          width: 20px;
-          height: 20px;
-        }
-
-        select#provenance-select {
-          background-color: #f7f9fc;
-          color: #333;
-          font-size: 14px;
-          padding: 10px 15px;
-          border: none;
-          border-radius: 6px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-        
-        select#provenance-select:focus {
-          outline: none; /* Supprime le contour lors du focus */
-          box-shadow: 0 0 6px rgba(0, 123, 255, 0.4); /* Ajoute un effet lumineux au focus */
-        }
-        
-        select#provenance-select option {
-          background-color: #ffffff; /* Fond des options */
-          color: #333; /* Texte des options */
-        }
-
-        /* Styles pour l'input et le bouton */
-        .input-group {
-          display: flex;
-          align-items: center;
-          
-        }
-
-        #destination {
-          flex: 1;
-          border: none;
-          background: transparent;
-          font-size: 1em;
-          padding: 5px;
-          outline: none;
-
-        }
-
-        .horizontale {
-          display: flex;
-          flex-direction: column;
-        }
-
-        .reservation-container {
-          background-color: #ffffff;
-          width: 100%;
-          max-width: 700px;
-          padding: 20px;
-          border-radius: 12px;
-          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          
-        }
-        
-
-        .route-info {
-          width: 100%;
-        }
-
-        .route-details {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: 14px;
-          margin-bottom: 10px;
-        }
-
-        .city {
-          font-weight: 600;
-          color: #333;
-          letter-spacing: 0.3px;
-        }
-
-        .time {
-          color: #777;
-        }
-
-        .route-bar {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-          margin-bottom: 15px;
-          
-        }
-
-        .bar {
-          width: 70%;
-          height: 5px;
-          background: linear-gradient(to right, #007bff 0%, #00bcd4 100%);
-          border-radius: 50px;
-          position: relative;
-        }
-
-        .travel-time {
-          position: absolute;
-          top: -20px;
-          font-size: 14px;
-          font-weight: 700;
-          color: #333;
-          
-          
-        }
-
-        .continue-section {
-          display: flex;
-          justify-content: flex-end;
-          margin-top: 20px;
-        }
-
-        button {
-          background-color: #007bff;
-          color: white;
-          padding: 10px 25px;
-          border: none;
-          border-radius: 50px;
-          font-size: 14px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
-        }
-
-        button:hover {
-          background-color: #0056b3;
-          transform: translateY(-2px);
-        }
-
-        button:focus {
-          outline: none;
-        }
-
-        @media (max-width: 768px) {
-          .reservation-container {
-            padding: 15px;
-          }
-
-          .route-details {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-
-          .route-bar {
-            flex-direction: column;
-          }
-
-          .travel-time {
-            position: relative;
-            top: 0;
-            margin-top: 8px;
-          }
-
-          .rect {
-            display: inline-flex;
-            height: 7.25rem;
-            padding: 0.125rem 1.1875rem;
-            flex-direction: row;
-            gap: 0.625rem;
-            flex-shrink: 0;
-            border-radius: 1.375rem;
-            background-color: #FFF;
-            align-items: center;
-          }
-
-          .horaire {
-            display: flex;
-            width: 12.75rem;
-            justify-content: center;
-            align-items: center;
-            align-content: center;
-            gap: 0.6875rem 6.5625rem;
-            flex-wrap: wrap;
-
-          }
-
-        }
-
-        .rect {
-          display: inline-flex;
-          height: 7.25rem;
-          padding: 0.125rem 1.1875rem;
-          flex-direction: row;
-          gap: 0.625rem;
-          flex-shrink: 0;
-          border-radius: 1.375rem;
-          background-color: #FFF;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .separation {
-          height: 90%;
-          width: 2px;
-          background: rgb(0, 0, 0);
-          margin-left: 1rem;
-          margin-right: 4rem;
-        }
-
-        .verticale {
-          display: flex;
-          flex-direction: column;
-          color: black;
-        }
-
-        .separations {
-          color: #00ABE9;
-          font-size: 0.9375rem;
-          font-style: normal;
-          line-height: normal;
-        }
-
-        .horizontale {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 0.6875rem;
-          align-items: flex-start;
-        }
-
-        .horaire {
-          display: flex;
-          width: 12.75rem;
-          justify-content: center;
-          align-items: center;
-          align-content: center;
-          gap: 0.6875rem 6.5625rem;
-          flex-wrap: wrap;
-          margin-right: 10rem;
-        }
-      
-
-
-        .center{
-          display: flex;
-          justify-content: center;
-        }
-
-        .trajets{
-          margin-top: 1rem;
-          display: inline-flex;
-          gap: 3rem;
-          flex-direction: column;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .pagination a {
-            padding: 8px 12px;
-            text-decoration: none;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            color: #333;
-        }
-
-        .pagination a.active {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-
-        .pagination a.pagination-nav {
-            background-color: #f8f9fa;
-        }
-
-        .pagination a:hover:not(.active) {
-            background-color: #f1f1f1;
-        }
-      
-
-
-        .center{
-          display: flex;
-          justify-content: center;
-        }
-
-        .trajets{
-          margin-top: 1rem;
-          display: inline-flex;
-          gap: 3rem;
-          flex-direction: column;
-        }
-
-        .trajet-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin: 16px auto;
-            max-width: 800px;
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .trajet-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .trajet-date {
-            background: #f8f9fa;
-            padding: 8px 16px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .trajet-date .date {
-            color: #666;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .trajet-content {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            gap: 24px;
-        }
-
-        .trajet-icon {
-            color: #0066cc;
-            padding: 12px;
-            border-radius: 50%;
-            background: #f0f7ff;
-        }
-
-        .trajet-details {
-            flex: 1;
-        }
-
-        .trajet-times {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .departure, .arrival {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .time {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .city {
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .journey-line {
-            flex: 1;
-            position: relative;
-            height: 2px;
-            background: #e0e0e0;
-            margin: 0 12px;
-        }
-
-        .duration {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #f8f9fa;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            color: #666;
-            white-space: nowrap;
-        }
-
-        .book-button {
-            background: #0066cc;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.2s ease;
-        }
-
-        .book-button:hover {
-            background: #0052a3;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .trajet-content {
-                flex-direction: column;
-                padding: 16px;
-                gap: 16px;
-            }
-
-            .trajet-times {
-                width: 100%;
-            }
-
-            .book-button {
-                width: 100%;
-                text-align: center;
-            }
-        }
-      
-
-
-        .center{
-          display: flex;
-          justify-content: center;
-        }
-
-        .trajets{
-          margin-top: 1rem;
-          display: inline-flex;
-          gap: 3rem;
-          flex-direction: column;
-        }
-
-        /* Conteneur principal des trajets */
-        .trajets-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 16px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
-        }
-
-        .trajets-header {
-            padding: 20px;
-            border-bottom: 1px solid #e0e0e0;
-            margin-bottom: 20px;
-        }
-
-        .trajets-header h2 {
-            color: #333;
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .trajet-card {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            margin: 16px 0;
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .trajet-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-
-        .trajet-date {
-            background: #f0f7ff;
-            padding: 12px 20px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .trajet-date .date {
-            color: #0066cc;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .trajet-content {
-            padding: 24px;
-        }
-
-        /* Mise à jour des styles existants */
-        .trajet-times {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-
-        .book-button {
-            background: #0066cc;
-            color: white;
-            padding: 12px 32px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .book-button:hover {
-            background: #0052a3;
-            transform: translateY(-1px);
-        }
-
-        /* Style pour la pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 32px;
-            padding: 16px;
-        }
-
-        .pagination a {
-            padding: 8px 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            color: #666;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .pagination a.active {
-            background: #0066cc;
-            color: white;
-            border-color: #0066cc;
-        }
-
-        .pagination a:hover:not(.active) {
-            background: #f8f9fa;
-            color: #0066cc;
-        }
-      
-
-
-        .center{
-          display: flex;
-          justify-content: center;
-        }
-
-        .trajets{
-          margin-top: 1rem;
-          display: inline-flex;
-          gap: 3rem;
-          flex-direction: column;
-        }
-
-        .error-message {
-            color: red; /* Couleur rouge */
-            font-size: 2rem; /* Taille de police grande */
-            text-align: center; /* Centrer le texte */
-            margin: 20px 0; /* Marge pour espacer le message */
-        }
-      
-
-
-        .center{
-          display: flex;
-          justify-content: center;
-        }
-
-        .trajets{
-          margin-top: 1rem;
-          display: inline-flex;
-          gap: 3rem;
-          flex-direction: column;
-        }
-
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .loading-overlay.active {
-            display: flex;
-        }
-
-        .loading-gif {
-            width: 300px;  /* Augmentation de la taille à 300px */
-            height: 300px; /* Augmentation de la taille à 300px */
-        }
-      
-
-
-        .center{
-          display: flex;
-          justify-content: center;
-        }
-
-        .trajets{
-          margin-top: 1rem;
-          display: inline-flex;
-          gap: 3rem;
-          flex-direction: column;
-        }
-
-      
+/* Variables globales */
+:root {
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+}
+
+/* Styles de base */
+body {
+    color: var(--text-primary);
+}
+
+.search-container {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 1200px;
+}
+
+/* Style des formulaires */
+.form-group label {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+select, input[type="date"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #fff;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+option {
+    color: var(--text-primary);
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px auto;
+    padding: 15px 20px;
+    width: 90%;
+    max-width: 800px;
+    background-color: var(--bg-light);
+    border: 1px solid var(--bg-gray);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.section {
+    flex: 1;
+    padding: 0 15px;
+    text-align: left;
+}
+
+.section label {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.section input,
+.section select {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 1em;
+    color: var(--text-primary);
+    outline: none;
+    padding: 0.5rem 0;
+}
+
+.section select:focus {
+    color: var(--primary-color);
+}
+
+.divider {
+    width: 1px;
+    height: 2rem;
+    background-color: var(--bg-gray);
+    margin: 0 1rem;
+}
+
+.search-button {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.search-button:hover {
+    background-color: var(--primary-dark);
+}
+
+.trajet-card {
+    background: var(--bg-light);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    margin: 1rem auto;
+    max-width: 800px;
+    overflow: hidden;
+    transition: transform var(--transition-speed) ease, 
+                box-shadow var(--transition-speed) ease;
+}
+
+.trajet-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.trajet-date {
+    background: var(--bg-gray);
+    padding: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    border-bottom: 1px solid var(--bg-gray);
+}
+
+.trajet-content {
+    padding: 1.5rem;
+}
+
+.trajet-times {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.departure, .arrival {
+    flex: 1;
+}
+
+.time {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.city {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.book-button {
+    background: var(--primary-color);
+    color: var(--text-light);
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.book-button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.loading-gif {
+    width: 300px;
+    height: 300px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+    padding: 1rem;
+}
+
+.pagination a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    color: #4b5563;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.pagination a:hover {
+    background-color: #f3f4f6;
+    color: #1e40af;
+    border-color: #93c5fd;
+    transform: translateY(-1px);
+}
+
+.pagination a.active {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.pagination-nav {
+    background-color: #f3f4f6;
+    font-weight: 600;
+}
+
+.error-message {
+    text-align: center;
+    color: #ef4444;
+    padding: 1rem;
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    margin: 1rem auto;
+    max-width: 32rem;
+    font-size: 0.875rem;
+}
+

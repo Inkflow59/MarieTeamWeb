@@ -1,102 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
-
-  <link rel="stylesheet" href="css/navbar.css">
-
-
-  <link rel="stylesheet" href="css/reservation.css">
-
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/reservation.css">
+    <title>Réservation de traversées - MarieTeam</title>
 </head>
 
-<body>
-  <?php
-  include 'module/header.php';
-  ?>
+<body class="bg-gray-50">
+    <?php include 'module/header.php'; ?>
+    <?php include "php/BackCore.php"; ?>
 
-  <?php
-  include "php/BackCore.php";
-  ?>
-  <form method="GET" class="search-bar">
-    <!-- Provenance Section -->
-    <div class="section">
-      <label for="provenance">D'où venez-vous ?</label>
-      <select id="provenance" name="provenance">
-        <option value="">--Secteur--</option>
-        <option value="Méditerrannée">Méditerrannée</option>
-        <option value="Atlantique">Atlantique</option>
-        <option value="Manche">Manche</option>
-        <option value="Corse">Corse</option>
-      </select>
-    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="search-container">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Rechercher une traversée</h1>
+            
+            <form method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="form-group">
+                    <label for="provenance" class="text-gray-900">Secteur</label>
+                    <select id="provenance" name="provenance" class="text-gray-900">
+                        <option value="">Tous les secteurs</option>
+                        <option value="Méditerrannée">Méditerrannée</option>
+                        <option value="Atlantique">Atlantique</option>
+                        <option value="Manche">Manche</option>
+                        <option value="Corse">Corse</option>
+                    </select>
+                </div>
 
-    <div class="divider"></div>
+                <div class="form-group">
+                    <label for="depart" class="text-gray-900">Port de départ</label>
+                    <select name="depart" id="depart" class="text-gray-900">
+                        <option value="">Choisir un départ</option>
+                        <?php
+                        $port = getPorts();
+                        foreach($port as $p) {
+                            echo "<option value='".urlencode($p)."'>".$p."</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
 
-    <div class="divider"></div>
+                <div class="form-group">
+                    <label for="arrive" class="text-gray-900">Port d'arrivée</label>
+                    <select name="arrive" id="arrive" class="text-gray-900">
+                        <option value="">Choisir une arrivée</option>
+                        <?php
+                        foreach($port as $p) {
+                            echo "<option value='".urlencode($p)."'>".$p."</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
 
-    <div class="section">
-      <label for="depart">Départ</label>
-      <select name="depart" id="depart">
-        <option value="">--Départ--</option>
-        <?php
-        $port = getPorts();
-        for($i=0; $i<count($port); $i++) {
-          echo "<option value='".urlencode($port[$i])."'>".$port[$i]."</option>";
-        }
-        ?>
-      </select>
-    </div>
+                <div class="form-group">
+                    <label for="arrival_date" class="text-gray-900">Date de départ</label>
+                    <input type="date" id="arrival_date" name="arrival_date" required class="text-gray-900">
+                </div>
 
-    <div class="divider"></div>
-
-
-    <div class="section">
-      <label for="arrivée">Arrivée</label>
-      <select name="arrive" id="arrive">
-        <option value="">--Arrivée--</option>
-        <?php
-        $port = getPorts();
-        for($i=0; $i<count($port); $i++) {
-          echo "<option value='".urlencode($port[$i])."'>".$port[$i]."</option>";
-        }
-        ?>
-      </select>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="section">
-      <label for="arrival-date">Date</label>
-
-      <div class="relative max-w-sm">
-        <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-          <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-          </svg>
+                <div class="col-span-full flex justify-center mt-4">
+                    <button type="submit" class="search-button">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        Rechercher une traversée
+                    </button>
+                </div>
+            </form>
         </div>
-        <input id="arrival_date" name="arrival_date" type="date"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Sélectionnez une date" required>
-      </div>
     </div>
 
-    <button type="submit" class="search-button">
-      <p>reserver</p>
-    </button>
-  </form>
-  
-  <?php
+    <!-- Reste du contenu -->
+    <?php
 // Nombre de trajets par page
-$trajetsParPage = 25;
+$trajetsParPage = 5; // Modification à 5 trajets par page
 
 // Détermine la page actuelle
 $pageActuelle = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
@@ -157,27 +137,27 @@ function genererHTMLTrajet($t) {
             <div class='bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex'>
                 <div class='flex items-center justify-center w-24 bg-blue-100 dark:bg-blue-900'>
                     <svg xmlns='http://www.w3.org/2000/svg' width='60' height='61' viewBox='0 0 60 61' fill='none'>
-                        <path d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53' stroke='black' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/>
+                        <path d='M10 44.25L7.5 30.5L30 23L52.5 30.5L50 44.25M12.5 28.8332V18C12.5 15.2386 14.7386 13 17.5 13H42.5C45.2615 13 47.5 15.2386 47.5 18V28.8332M25 13V8C25 6.6193 26.1193 5.5 27.5 5.5H32.5C33.8807 5.5 35 6.6193 35 8V13M5 53C7.5 55.5 15 55.5 20 50.5C25 55.5 35 55.5 40 50.5C45 55.5 52.5 55.5 55 53' stroke='#1f2937' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/>
                     </svg>
                 </div>
                 <div class='w-[1px] bg-gray-300 h-auto my-6'></div>
                 <div class='flex-1 p-6'>
                     <div class='mb-4'>
-                        <h3 class='text-lg font-semibold text-gray-900 dark:text-gray-100'>".$t["port_depart"]." - ".$t["port_arrivee"]."</h3>
+                        <h3 class='text-lg font-semibold text-gray-900'>".$t["port_depart"]." - ".$t["port_arrivee"]."</h3>
                         <span class='text-sm text-blue-600 font-medium'>À partir de ".$prix."€</span>
                     </div>
                     <div class='flex items-center justify-between mb-4'>
                         <div class='text-center'>
-                            <p class='text-lg font-bold text-gray-800 dark:text-gray-200'>".substr($t['heure'], 0, 5)."</p>
-                            <p class='text-xs text-gray-500'>Port de départ</p>
+                            <p class='text-lg font-bold text-gray-800'>".substr($t['heure'], 0, 5)."</p>
+                            <p class='text-sm text-gray-500'>Port de départ</p>
                         </div>
                         <div class='flex-1 mx-4 border-t border-gray-300'></div>
                         <div class='text-center'>
-                            <p class='text-lg font-bold text-gray-800 dark:text-gray-200'>".getHeureArrivee($t['numTra'])."</p>
-                            <p class='text-xs text-gray-500'>Port d'arrivée</p>
+                            <p class='text-lg font-bold text-gray-800'>".getHeureArrivee($t['numTra'])."</p>
+                            <p class='text-sm text-gray-500'>Port d'arrivée</p>
                         </div>
                     </div>
-                    <div class='flex gap-6 text-xs text-gray-500'>
+                    <div class='flex gap-6 text-sm text-gray-500'>
                         <div class='flex items-center gap-2'>
                             <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4 text-gray-400' fill='none' stroke='currentColor' stroke-width='2'>
                                 <path d='M12 6v12m6-6H6' />
@@ -195,7 +175,7 @@ function genererHTMLTrajet($t) {
                 <form method='POST' action='selection.php' onsubmit='showLoading(event)'>
                     <input type='hidden' name='numTra' value='".$t['numTra']."'>
                     <div class='p-6 flex items-center justify-center w-64'>
-                        <button class='w-full py-3 px-4 text-sm font-semibold border border-blue-500 rounded-lg'>
+                        <button class='w-full py-3 px-4 text-sm font-semibold text-gray-900 border border-blue-500 rounded-lg hover:bg-blue-50 transition-colors duration-200'>
                             Sélectionner cette traversée
                         </button>
                     </div>

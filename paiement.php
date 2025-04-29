@@ -7,7 +7,6 @@ include 'module/header.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/payement.css">
     <link rel="stylesheet" href="css/bootstrap.css">
     <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' rel='stylesheet'>
@@ -15,22 +14,6 @@ include 'module/header.php';
     <title>Paiement</title>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="left">
-            <li class="signature">MarieTeam</li>
-            </div>
-            <div class="menu">
-            <a href="index.html"><li>Accueil</li></a>
-            <a href="reservation.php"><li>Reservation</li></a>
-            <a href="#"><li>Contact</li></a>
-            <a href="#"><li>Mon ticket</li></a>
-        </div>
-        </nav>
-    </header>
-
-    <div class="bg"></div>
-
     <div class="container d-flex justify-content-center mt-5 mb-5">
         <div class="row g-3">
           <div class="col-md-6">  
