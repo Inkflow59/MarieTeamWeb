@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 01 mai 2025 à 16:07
+-- Généré le : jeu. 01 mai 2025 à 17:53
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -145,7 +145,7 @@ CREATE TRIGGER `PlusDePlace` BEFORE INSERT ON `reservation` FOR EACH ROW BEGIN
     DECLARE nombreReservations INT;
 
     -- Récupérer la capacité maximale du bateau lié à la traversée
-    SELECT contenir.capaciteMax 
+    SELECT MAX(contenir.capaciteMax)
     INTO capaciteBateau
     FROM contenir
     JOIN bateau ON contenir.idBat = bateau.idBat
