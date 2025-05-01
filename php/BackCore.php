@@ -347,6 +347,7 @@ function consulterReservation($numRes) {
         FROM enregistrer e
         LEFT JOIN type t ON e.idType = t.idType
         WHERE e.numRes = ?
+        ORDER BY e.idType
     ";
 
     $stmt = $db->prepare($sql_types);
@@ -383,6 +384,7 @@ function getHeureArrivee($numTra) {
         FROM traversee t
         JOIN liaison l ON t.code = l.code
         WHERE t.numTra = ?
+        LIMIT 1
     ";
 
     // Préparer et exécuter la requête
@@ -555,31 +557,34 @@ function getNombreTotalRecherche($nomSecteur, $date, $villeDepart, $villeArrivee
 function getTarifByType($numTra, $idType) {
     global $db; // Rendre la variable $db globale accessible dans la fonction
 
-    // Requête SQL pour récupérer le tarif basé sur le numTra et l'idType
+    // Récupérer d'abord le code de liaison pour cette traversée
+    $sql_code = "SELECT code FROM traversee WHERE numTra = ? LIMIT 1";
+    $stmt_code = $db->prepare($sql_code);
+    $stmt_code->bind_param("i", $numTra);
+    $stmt_code->execute();
+    $result_code = $stmt_code->get_result();
+    
+    if ($result_code->num_rows === 0) {
+        return null; // Retourner null si la traversée n'existe pas
+    }
+    
+    $code = $result_code->fetch_assoc()['code'];
+    
+    // Requête SQL pour récupérer le tarif le plus récent pour ce type et cette liaison
     $sql = "
-        SELECT 
-            t.tarif
-        FROM 
-            tarifer t
-        INNER JOIN 
-            type ty ON t.idType = ty.idType
-        INNER JOIN 
-            traversee tr ON t.code = tr.code
-        WHERE 
-            tr.numTra = ? AND t.idType = ?
-        LIMIT 1;
+        SELECT tarif
+        FROM tarifer
+        WHERE idType = ? AND code = ?
+        ORDER BY dateDeb DESC
+        LIMIT 1
     ";
 
     // Préparer la requête
     $stmt = $db->prepare($sql);
-
-    // Lier les paramètres : numTra (entier) et idType (entier)
-    $stmt->bind_param("ii", $numTra, $idType); // "ii" indique que les deux paramètres sont des entiers
+    $stmt->bind_param("ii", $idType, $code);
 
     // Exécution de la requête
     $stmt->execute();
-
-    // Récupérer le résultat
     $result = $stmt->get_result();
 
     // Vérification si un tarif a été trouvé
@@ -625,17 +630,37 @@ function getPorts(){
  */
 function getTarifsByNumTra($numTra) {
     global $db; // Rendre la variable $db globale accessible dans la fonction
+    
+    error_log("Recherche des tarifs pour numTra: $numTra");
 
-    // Requête SQL pour récupérer les tarifs basés sur le numTra
+    // Récupérer d'abord le code de liaison pour cette traversée
+    $sql_code = "SELECT code FROM traversee WHERE numTra = ? LIMIT 1";
+    $stmt_code = $db->prepare($sql_code);
+    $stmt_code->bind_param("i", $numTra);
+    $stmt_code->execute();
+    $result_code = $stmt_code->get_result();
+    
+    if ($result_code->num_rows === 0) {
+        return []; // Retourner un tableau vide si la traversée n'existe pas
+    }
+    
+    $code = $result_code->fetch_assoc()['code'];
+      // Requête SQL simplifiée pour récupérer les tarifs basés sur le code de liaison
+    // Pour chaque type, on ne prend que le tarif avec la date de début la plus récente
     $sql = "
-        SELECT idType, tarif 
-        FROM tarifer 
-        WHERE code = (SELECT code FROM traversee WHERE numTra = ?)
+        SELECT t1.idType, t1.tarif 
+        FROM tarifer t1
+        JOIN (
+            SELECT idType, code, MAX(dateDeb) AS maxDate 
+            FROM tarifer 
+            WHERE code = ?
+            GROUP BY idType, code
+        ) t2 ON t1.idType = t2.idType AND t1.code = t2.code AND t1.dateDeb = t2.maxDate
     ";
 
     // Préparer la requête
     $stmt = $db->prepare($sql);
-    $stmt->bind_param("i", $numTra); // Lier le paramètre numTra
+    $stmt->bind_param("i", $code);
 
     // Exécution de la requête
     $stmt->execute();
@@ -663,7 +688,8 @@ function getTempsTotalTraversee($numTra){
     $sql = "SELECT t.heure as heure_depart, l.tempsLiaison 
             FROM traversee t
             JOIN liaison l ON t.code = l.code
-            WHERE t.numTra = ?";
+            WHERE t.numTra = ?
+            LIMIT 1";
             
     $stmt = $db->prepare($sql);
     $stmt->bind_param("i", $numTra);
@@ -699,21 +725,32 @@ function getTempsTotalTraversee($numTra){
  * @return float|null Prix minimum trouvé ou null si aucun prix
  */
 function getPrixMinimumPourTraversee($numTra) {
-    // Tableau des types de billets (de 1 à 7 selon la structure de la base de données)
-    $types = range(1, 7);
-    $prixMinimum = null;
+    global $db;
     
-    // Parcourir tous les types de billets
-    foreach ($types as $type) {
-        $prix = getTarifByType($numTra, $type);
-        
-        // Si un prix est trouvé et qu'il est inférieur au prix minimum actuel (ou si c'est le premier prix valide)
-        if ($prix !== null && ($prixMinimum === null || $prix < $prixMinimum)) {
-            $prixMinimum = $prix;
-        }
+    // Requête SQL pour récupérer le prix minimum en tenant compte de la date
+    $sql = "
+        SELECT MIN(t.tarif) as prixMinimum 
+        FROM tarifer t
+        JOIN traversee tr ON t.code = tr.code
+        WHERE tr.numTra = ? 
+        AND t.dateDeb = (
+            SELECT MAX(dateDeb) 
+            FROM tarifer 
+            WHERE dateDeb <= CURRENT_DATE
+            AND code = tr.code
+        )
+    ";
+    
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("i", $numTra);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        return $row['prixMinimum'];
     }
     
-    return $prixMinimum;
+    return null;
 }
 
 /**
@@ -725,12 +762,17 @@ function getPrixMinimumPourTraversee($numTra) {
 function checkReservationExists($numRes) {
     global $db;
     
-    $stmt = $db->prepare("SELECT numRes FROM reservation WHERE numRes = ?");
-    $stmt->bind_param("i", $numRes);
+    error_log("Vérification si le numRes existe déjà: $numRes");
+    
+    $stmt = $db->prepare("SELECT numRes FROM reservation WHERE numRes = ? LIMIT 1");
+    $stmt->bind_param("s", $numRes);
     $stmt->execute();
     $result = $stmt->get_result();
     
-    return $result->num_rows > 0;
+    $exists = $result->num_rows > 0;
+    error_log("Le numRes $numRes existe: " . ($exists ? "OUI" : "NON"));
+    
+    return $exists;
 }
 
 /**
@@ -765,6 +807,7 @@ function getInfosTraversee($numTra) {
             port p2 ON l.idPort_Arrivee = p2.idPort
         WHERE 
             t.numTra = ?
+        LIMIT 1
     ";
 
     // Préparer et exécuter la requête

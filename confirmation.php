@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
+<head>    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmation de réservation</title>
     <?php
     session_start();
     if(isset($_SESSION['derniere_reservation'])) {
-        $numBillet = $_SESSION['derniere_reservation'];
-        header("Refresh: 3; URL=afficher_billet.php?billet=" . $numBillet);
+        $numBillet = $_SESSION['derniere_reservation'];        // Déclenchement automatique du téléchargement PDF après un court délai
+        echo '<script>
+            window.onload = function() {
+                // Attendre 2 secondes avant de télécharger le PDF
+                setTimeout(function() {
+                    window.location.href = "generate_pdf.php?billet=' . $numBillet . '";
+                }, 2000);
+                
+                // Rediriger vers la page d\'affichage du billet après 5 secondes
+                setTimeout(function() {
+                    window.location.href = "afficher_billet.php?billet=' . $numBillet . '";
+                }, 5000);
+            }
+        </script>';
     }
     ?>
 </head>
@@ -31,14 +42,14 @@
               <path opacity=".4" d="M59.948 88.142l10.558-3.603-4.888-4.455-5.67 8.058z"></path>
               <path opacity=".3" d="M18.512 19.236l5.667 1.456.519-8.738-6.186 7.282z"></path>
             </g>
-          </svg>
-      
-          <div>
+          </svg>          <div>
             <h1 class="cd-margin-bottom-xs">Merci beaucoup pour votre commande!</h1>
               <p class="thank-you__paragraph cd-margin-bottom-xs">Nous vous souhaitons une bonne journée et un excellent voyage.</p>
-              <p class="thank-you__paragraph cd-margin-bottom-xs">Vous allez être redirigé vers votre billet dans quelques secondes...</p>
+              <p class="thank-you__paragraph cd-margin-bottom-xs">Votre billet va être téléchargé automatiquement dans quelques instants...</p>
               <?php if(isset($_SESSION['derniere_reservation'])): ?>
-              <p><a class="cd-link" href="afficher_billet.php?billet=<?php echo $_SESSION['derniere_reservation']; ?>">Voir mon billet maintenant →</a></p>
+              <p class="thank-you__paragraph cd-margin-bottom-xs">Si le téléchargement ne démarre pas automatiquement, <a class="cd-link" href="generate_pdf.php?billet=<?php echo $_SESSION['derniere_reservation']; ?>">cliquez ici pour télécharger votre billet</a>.</p>
+              <p class="thank-you__paragraph cd-margin-bottom-lg">Vous serez automatiquement redirigé vers la page de votre billet en ligne dans quelques secondes.</p>
+              <p><a class="cd-link cd-btn cd-btn--primary" href="afficher_billet.php?billet=<?php echo $_SESSION['derniere_reservation']; ?>">Voir mon billet en ligne maintenant →</a></p>
               <?php endif; ?>
           </div>
         </div>

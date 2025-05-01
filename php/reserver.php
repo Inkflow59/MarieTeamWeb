@@ -11,25 +11,28 @@ try {
     // Décoder les données JSON
     $reservationData = json_decode($_POST['reservationData'], true);
     
+    // Journalisation pour le débogage
+    error_log("Données reçues: " . print_r($reservationData, true));
+    
     if (!$reservationData) {
         throw new Exception("Données de réservation invalides");
-    }
-
-    // Vérifier que les idType sont valides avant de continuer
+    }    // Vérifier que les idType sont valides avant de continuer
     $quantites = $reservationData['quantites'];
     foreach ($quantites as $idType => $quantite) {
-        // Vérifier si l'idType existe dans la table type
-        $stmt = $db->prepare("SELECT idType FROM type WHERE idType = ?");
-        if (!$stmt) {
-            throw new Exception("Erreur de préparation de la requête de vérification");
-        }
-        
-        $stmt->bind_param("i", $idType);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($result->num_rows === 0) {
-            throw new Exception("Type de billet invalide : $idType");
+        if ($quantite > 0) {  // Vérifier uniquement les types avec une quantité > 0
+            // Vérifier si l'idType existe dans la table type
+            $stmt = $db->prepare("SELECT idType FROM type WHERE idType = ? LIMIT 1");
+            if (!$stmt) {
+                throw new Exception("Erreur de préparation de la requête de vérification");
+            }
+            
+            $stmt->bind_param("i", $idType);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows === 0) {
+                throw new Exception("Type de billet invalide : $idType");
+            }
         }
     }
 
@@ -73,6 +76,7 @@ try {
 } catch (Exception $e) {
     // Ajouter un log pour le débogage
     error_log("Erreur lors de la réservation : " . $e->getMessage());
+    error_log("Trace complète: " . $e->getTraceAsString());
     
     // En cas d'erreur, rediriger vers la page de réservation avec un message d'erreur
     header('Location: ../reservation.php?error=' . urlencode("Erreur lors de la réservation : " . $e->getMessage()));
